@@ -1,40 +1,38 @@
 package fr.simon.marquis.preferencesmanager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.content.Context;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
+import android.widget.ArrayAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class AppAdapter extends BaseAdapter {
-	List<AppEntry> applications;
+public class AppAdapter extends ArrayAdapter<AppEntry> {
 	LayoutInflater layoutInflater;
 	Context ctx;
 
-	public AppAdapter(List<AppEntry> applications, LayoutInflater layoutInflater, Context ctx) {
-		this.applications = applications;
-		this.layoutInflater = layoutInflater;
+	public AppAdapter(Context ctx) {
+		super(ctx, android.R.layout.simple_list_item_2);
+		this.layoutInflater = (LayoutInflater)ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.ctx = ctx;
 	}
 
-	@Override
-	public int getCount() {
-		return applications.size();
-	}
-
-	@Override
-	public AppEntry getItem(int arg0) {
-		return applications.get(arg0);
-	}
-
-	@Override
-	public long getItemId(int arg0) {
-		return 0;
-	}
+	public void setData(List<AppEntry> data) {
+        clear();
+        if (data != null) {
+            for (AppEntry appEntry : data) {
+                add(appEntry);
+            }
+        }
+    }
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
@@ -63,4 +61,42 @@ public class AppAdapter extends BaseAdapter {
 		private ImageView imageView;
 		private TextView textView;
 	}
+//
+//	@Override
+//	public Filter getFilter() {
+//		return new Filter() {
+//
+//			@Override
+//			protected void publishResults(CharSequence constraint,
+//					FilterResults results) {
+//				Log.e("","publishResults "+results.count);
+//				applications = (List<AppEntry>) results.values;
+//				notifyDataSetChanged();
+//			}
+//
+//			@Override
+//			protected FilterResults performFiltering(CharSequence constraint) {
+//				
+//				Log.e("","performFiltering");
+//				FilterResults results = new FilterResults();
+//				if (TextUtils.isEmpty(constraint)) {
+//					results.values = _applications;
+//					results.count = _applications.size();
+//				} else {
+//					List<AppEntry> resApps = new ArrayList<AppEntry>();
+//					for (AppEntry p : applications) {
+//						if (p.getLabel().toUpperCase()
+//								.contains(constraint.toString().toUpperCase()))
+//							resApps.add(p);
+//					}
+//
+//					results.values = resApps;
+//					results.count = resApps.size();
+//
+//				}
+//				return results;
+//			}
+//		};
+//	}
+
 }
