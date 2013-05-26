@@ -12,6 +12,8 @@ import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
@@ -29,10 +31,21 @@ public class AppListActivity extends SherlockActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_app_list);
-		listView = (StickyListHeadersListView) findViewById(R.id.listView);
 		appAdapter = new AppAdapter(this);
 		appAdapter.setData(getAppEntries());
+		listView = (StickyListHeadersListView) findViewById(R.id.listView);
 		listView.setAdapter(appAdapter);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				if (!App.getRoot().connected()) {
+					Utils.displayNoRoot(AppListActivity.this).show();
+				} else {
+					
+				}
+			}
+		});
 
 	}
 
@@ -51,7 +64,7 @@ public class AppListActivity extends SherlockActivity {
 						public boolean onQueryTextChange(String newText) {
 							Log.e("", "TextChanged" + newText);
 							curFilter = !TextUtils.isEmpty(newText) ? newText
-									: null;
+									.trim() : null;
 							appAdapter.setFilter(curFilter);
 							appAdapter.getFilter().filter(curFilter);
 							return true;
