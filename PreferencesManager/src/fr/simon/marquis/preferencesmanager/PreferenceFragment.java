@@ -16,6 +16,8 @@ public class PreferenceFragment extends Fragment {
 
 	private String mName;
 	private String mPath;
+	
+	private PreferenceFile preferenceFile;
 
 	private OnFragmentInteractionListener mListener;
 
@@ -55,6 +57,8 @@ public class PreferenceFragment extends Fragment {
 				.findViewById(R.id.section_label);
 		dummyTextView.setText(App.getRoot().file.read(mPath + "/" + mName)
 				.toString());
+		
+		preferenceFile = PreferenceFile.fromXML(App.getRoot().file.read(mPath + "/" + mName).toString());
 		return rootView;
 	}
 	
