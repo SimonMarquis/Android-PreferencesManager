@@ -1,4 +1,4 @@
-package fr.simon.marquis.preferencesmanager;
+package fr.simon.marquis.preferencesmanager.ui;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -18,6 +18,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.emilsjolander.components.stickylistheaders.StickyListHeadersAdapter;
+
+import fr.simon.marquis.preferencesmanager.R;
+import fr.simon.marquis.preferencesmanager.model.AppEntry;
 
 public class AppAdapter extends ArrayAdapter<AppEntry> implements
 		StickyListHeadersAdapter {

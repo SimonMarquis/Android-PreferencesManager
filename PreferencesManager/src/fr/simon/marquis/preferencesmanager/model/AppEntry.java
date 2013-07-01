@@ -1,4 +1,4 @@
-package fr.simon.marquis.preferencesmanager;
+package fr.simon.marquis.preferencesmanager.model;
 
 import java.io.File;
 

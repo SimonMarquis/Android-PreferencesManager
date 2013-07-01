@@ -1,4 +1,4 @@
-package fr.simon.marquis.preferencesmanager;
+package fr.simon.marquis.preferencesmanager.ui;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -9,6 +9,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import fr.simon.marquis.preferencesmanager.R;
+import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 
 public class PreferenceFragment extends Fragment {
 	public static final String ARG_NAME = "NAME";
@@ -16,7 +18,7 @@ public class PreferenceFragment extends Fragment {
 
 	private String mName;
 	private String mPath;
-	
+
 	private PreferenceFile preferenceFile;
 
 	private OnFragmentInteractionListener mListener;
@@ -42,7 +44,7 @@ public class PreferenceFragment extends Fragment {
 			mName = getArguments().getString(ARG_NAME);
 			mPath = getArguments().getString(ARG_PATH);
 		}
-		
+
 		setRetainInstance(true);
 		setHasOptionsMenu(true);
 	}
@@ -57,12 +59,12 @@ public class PreferenceFragment extends Fragment {
 				.findViewById(R.id.section_label);
 		dummyTextView.setText(App.getRoot().file.read(mPath + "/" + mName)
 				.toString());
-		
-		preferenceFile = PreferenceFile.fromXML(App.getRoot().file.read(mPath + "/" + mName).toString());
+
+		preferenceFile = PreferenceFile.fromXML(App.getRoot().file.read(
+				mPath + "/" + mName).toString());
 		return rootView;
 	}
-	
-	
+
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);

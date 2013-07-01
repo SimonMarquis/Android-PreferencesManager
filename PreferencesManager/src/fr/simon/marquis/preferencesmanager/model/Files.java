@@ -1,4 +1,4 @@
-package fr.simon.marquis.preferencesmanager;
+package fr.simon.marquis.preferencesmanager.model;
 
 import java.util.ArrayList;
 
@@ -13,12 +13,12 @@ public class Files {
 		super();
 		files = new ArrayList<File>();
 	}
-	
-	public static Files fromJSON(JSONArray jsonArray){
+
+	public static Files fromJSON(JSONArray jsonArray) {
 		Files _f = new Files();
 		for (int i = 0; i < jsonArray.length(); i++) {
 			File _t = File.fromJSON(jsonArray.optJSONObject(i));
-			if(_t != null)
+			if (_t != null)
 				_f.add(_t);
 		}
 		return _f;
@@ -32,19 +32,19 @@ public class Files {
 		return files.size();
 	}
 
-	public File get(int position){
+	public File get(int position) {
 		return files.get(position);
 	}
-	
-	public JSONArray toJSON(){
+
+	public JSONArray toJSON() {
 		JSONArray array = new JSONArray();
 		for (File file : files) {
 			JSONObject obj = file.toJSON();
-			if(obj != null){
+			if (obj != null) {
 				array.put(obj);
 			}
 		}
-		return array;	
+		return array;
 	}
-	
+
 }

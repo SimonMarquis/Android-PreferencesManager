@@ -1,7 +1,9 @@
-package fr.simon.marquis.preferencesmanager;
+package fr.simon.marquis.preferencesmanager.util;
 
 import java.text.Collator;
 import java.util.Comparator;
+
+import fr.simon.marquis.preferencesmanager.model.AppEntry;
 
 public class MyComparator implements Comparator<AppEntry> {
 	private final Collator sCollator = Collator.getInstance();

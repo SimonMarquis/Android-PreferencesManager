@@ -1,4 +1,4 @@
-package fr.simon.marquis.preferencesmanager;
+package fr.simon.marquis.preferencesmanager.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,6 +22,13 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.emilsjolander.components.stickylistheaders.StickyListHeadersListView;
 import com.spazedog.rootfw.container.FileStat;
+
+import fr.simon.marquis.preferencesmanager.R;
+import fr.simon.marquis.preferencesmanager.model.AppEntry;
+import fr.simon.marquis.preferencesmanager.model.File;
+import fr.simon.marquis.preferencesmanager.model.Files;
+import fr.simon.marquis.preferencesmanager.util.MyComparator;
+import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class AppListActivity extends SherlockActivity {
 	StickyListHeadersListView listView;
@@ -53,7 +60,7 @@ public class AppListActivity extends SherlockActivity {
 					} else {
 						Intent i = new Intent(AppListActivity.this,
 								PreferencesActivity.class);
-						Log.e("!",files.toJSON().toString());
+						Log.e("!", files.toJSON().toString());
 						i.putExtra("FILES", files.toJSON().toString());
 						startActivity(i);
 					}
@@ -73,8 +80,7 @@ public class AppListActivity extends SherlockActivity {
 		return findFiles(files, path, new Files());
 	}
 
-	private Files findFiles(ArrayList<FileStat> files, String path,
-			Files list) {
+	private Files findFiles(ArrayList<FileStat> files, String path, Files list) {
 		if (files == null)
 			return list;
 
