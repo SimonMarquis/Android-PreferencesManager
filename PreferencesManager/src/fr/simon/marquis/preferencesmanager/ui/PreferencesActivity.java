@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Menu;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.Files;
@@ -24,21 +25,27 @@ public class PreferencesActivity extends SherlockFragmentActivity implements
 	ViewPager mViewPager;
 
 	Files files;
+	String packageName;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_preferences);
 
-		String str = getIntent().getExtras().getString("FILES");
+		Bundle b = getIntent().getExtras();
+		if (b == null) {
+			finish();
+			return;
+		}
+		
 		try {
-			files = Files.fromJSON(new JSONArray(str));
+			files = Files.fromJSON(new JSONArray(b.getString("FILES")));
+			getSupportActionBar().setTitle(b.getString("TITLE"));
+			packageName = b.getString("PACKAGE_NAME");
 		} catch (JSONException e) {
 			finish();
-			// Error
+			return;
 		}
-
-		// Log.e("",Arrays.toString(files));
 
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
 				getSupportFragmentManager());
@@ -51,6 +58,12 @@ public class PreferencesActivity extends SherlockFragmentActivity implements
 	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.preferences, menu);
 		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+
+		return super.onPrepareOptionsMenu(menu);
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {

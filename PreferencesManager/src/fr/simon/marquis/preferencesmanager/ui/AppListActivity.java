@@ -21,7 +21,7 @@ import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.emilsjolander.components.stickylistheaders.StickyListHeadersListView;
-import com.spazedog.rootfw.container.FileStat;
+import com.spazedog.lib.rootfw.container.FileStat;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
@@ -50,8 +50,9 @@ public class AppListActivity extends SherlockActivity {
 				if (!App.getRoot().connected()) {
 					Utils.displayNoRoot(AppListActivity.this).show();
 				} else {
-					Files files = findXmlFiles(((AppAdapter) listView
-							.getWrappedAdapter()).getItem(arg2));
+					AppEntry item = ((AppAdapter) listView.getWrappedAdapter())
+							.getItem(arg2);
+					Files files = findXmlFiles(item);
 					if (files == null || files.size() == 0) {
 						Toast.makeText(AppListActivity.this,
 								"Pas de fichiers de préférences",
@@ -60,8 +61,13 @@ public class AppListActivity extends SherlockActivity {
 					} else {
 						Intent i = new Intent(AppListActivity.this,
 								PreferencesActivity.class);
-						Log.e("!", files.toJSON().toString());
+						Log.d("", item.getLabel());
+						Log.d("", item.getApplicationInfo().packageName);
+						Log.d("", files.toJSON().toString());
+						i.putExtra("TITLE", item.getLabel());
+						i.putExtra("PACKAGE_NAME", item.getApplicationInfo().packageName);
 						i.putExtra("FILES", files.toJSON().toString());
+						
 						startActivity(i);
 					}
 				}
@@ -115,7 +121,6 @@ public class AppListActivity extends SherlockActivity {
 
 						@Override
 						public boolean onQueryTextChange(String newText) {
-							Log.e("", "TextChanged" + newText);
 							curFilter = !TextUtils.isEmpty(newText) ? newText
 									.trim() : null;
 							((AppAdapter) listView.getWrappedAdapter())

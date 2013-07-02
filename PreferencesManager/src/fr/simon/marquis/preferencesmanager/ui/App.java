@@ -2,7 +2,7 @@ package fr.simon.marquis.preferencesmanager.ui;
 
 import android.app.Application;
 
-import com.spazedog.rootfw.RootFW;
+import com.spazedog.lib.rootfw.RootFW;
 
 public class App extends Application {
 	private static RootFW root;

@@ -11,6 +11,8 @@ import org.xmlpull.v1.XmlPullParserException;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
+import android.text.TextUtils;
+import android.util.Log;
 import android.util.Xml;
 
 public class PreferenceFile {
@@ -23,6 +25,10 @@ public class PreferenceFile {
 	}
 
 	public static PreferenceFile fromXML(String string) {
+		Log.e("", "INTÉRIEUR");
+		// Check for empty files
+		if (TextUtils.isEmpty(string) || string.trim().isEmpty())
+			return null;
 
 		try {
 			PreferenceFile p = null;
@@ -73,24 +79,12 @@ public class PreferenceFile {
 		try {
 			serializer.setOutput(writer);
 			serializer.startDocument("UTF-8", true);
-			serializer.startTag("", "messages");
-			// serializer.attribute("", "number",
-			// String.valueOf(messages.size()));
-			// for (Message msg: messages){
-			// serializer.startTag("", "message");
-			// serializer.attribute("", "date", msg.getDate());
-			// serializer.startTag("", "title");
-			// serializer.text(msg.getTitle());
-			// serializer.endTag("", "title");
-			// serializer.startTag("", "url");
-			// serializer.text(msg.getLink().toExternalForm());
-			// serializer.endTag("", "url");
-			// serializer.startTag("", "body");
-			// serializer.text(msg.getDescription());
-			// serializer.endTag("", "body");
-			// serializer.endTag("", "message");
-			// }
-			serializer.endTag("", "messages");
+			serializer.startTag("", "map");
+
+			for (PreferenceEntry p : prefs) {
+				p.addTag(serializer);
+			}
+			serializer.endTag("", "map");
 			serializer.endDocument();
 			return writer.toString();
 		} catch (IllegalArgumentException e) {

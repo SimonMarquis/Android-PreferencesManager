@@ -4,6 +4,9 @@ import java.io.IOException;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlSerializer;
+
+import android.util.Log;
 
 public class PreferenceEntry {
 
@@ -25,9 +28,12 @@ public class PreferenceEntry {
 	private String value;
 
 	public PreferenceEntry(XmlPullParser parser) {
-		EntryType t = EntryType.valueOf(parser.getName());
+		String s = parser.getName().toUpperCase();
+		entryType = EntryType.valueOf(s);
+		Log.e("", "new PreferenceEntry " + s);
 		name = parser.getAttributeValue(null, "name");
-		switch (t) {
+		Log.e("", "Name " + name);
+		switch (entryType) {
 		case INT:
 		case BOOLEAN:
 		case LONG:
@@ -43,5 +49,31 @@ public class PreferenceEntry {
 		default:
 			break;
 		}
+		Log.e("", "Value " + value);
 	}
+
+	public void addTag(XmlSerializer serializer) {
+		try {
+			serializer.startTag("", entryType.name());
+			serializer.attribute(null, "name", name);
+			switch (entryType) {
+			case INT:
+			case BOOLEAN:
+			case LONG:
+				serializer.attribute(null, "value", value);
+				break;
+			case STRING:
+				serializer.text(value);
+				break;
+			}
+			serializer.endTag("", entryType.getVal());
+		} catch (IllegalArgumentException e) {
+			Log.e("","",e);
+		} catch (IllegalStateException e) {
+			Log.e("","",e);
+		} catch (IOException e) {
+			Log.e("","",e);
+		}
+	}
+
 }

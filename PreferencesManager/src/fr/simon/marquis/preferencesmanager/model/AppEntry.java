@@ -94,6 +94,9 @@ public class AppEntry {
 			}
 		}
 
+		//Hack to get some favourites app
+		isStarred = mLabel.contains("li");
+		
 		if (mSortingValue == null)
 			mSortingValue = (isStarred ? " " : "") + mLabel;
 
