@@ -54,7 +54,7 @@ public class PreferenceEntry {
 
 	public void addTag(XmlSerializer serializer) {
 		try {
-			serializer.startTag("", entryType.name());
+			serializer.startTag("", entryType.getVal());
 			serializer.attribute(null, "name", name);
 			switch (entryType) {
 			case INT:

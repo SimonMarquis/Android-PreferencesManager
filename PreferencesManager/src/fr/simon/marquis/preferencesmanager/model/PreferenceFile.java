@@ -75,10 +75,11 @@ public class PreferenceFile {
 
 	public String toXML() {
 		XmlSerializer serializer = Xml.newSerializer();
+		serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
 		StringWriter writer = new StringWriter();
 		try {
 			serializer.setOutput(writer);
-			serializer.startDocument("UTF-8", true);
+			serializer.startDocument("utf-8", true);
 			serializer.startTag("", "map");
 
 			for (PreferenceEntry p : prefs) {
