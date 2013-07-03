@@ -1,6 +1,7 @@
 package fr.simon.marquis.preferencesmanager.ui;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +14,7 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -21,29 +22,27 @@ import com.emilsjolander.components.stickylistheaders.StickyListHeadersAdapter;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
+import fr.simon.marquis.preferencesmanager.util.MyComparator;
 
-public class AppAdapter extends ArrayAdapter<AppEntry> implements
-		StickyListHeadersAdapter {
+public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter {
 	private LayoutInflater layoutInflater;
 	private Context ctx;
 	private Pattern pattern;
 	private int color;
+	private ArrayList<AppEntry> applications;
 
-	public AppAdapter(Context ctx) {
-		super(ctx, -1);
+	public AppAdapter(Context ctx, ArrayList<AppEntry> applications) {
+		this.applications = applications;
 		this.layoutInflater = (LayoutInflater) ctx
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.ctx = ctx;
 		this.color = ctx.getResources().getColor(R.color.blue);
 	}
 
-	public void setData(List<AppEntry> data) {
-		clear();
-		if (data != null) {
-			for (AppEntry appEntry : data) {
-				add(appEntry);
-			}
-		}
+	@Override
+	public void notifyDataSetChanged() {
+		Collections.sort(applications, new MyComparator());
+		super.notifyDataSetChanged();
 	}
 
 	@Override
@@ -62,7 +61,7 @@ public class AppAdapter extends ArrayAdapter<AppEntry> implements
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		AppEntry item = getItem(position);
+		AppEntry item = applications.get(position);
 
 		holder.textView.setText(createSpannable(item.getLabel()));
 		holder.imageView.setImageDrawable(item.getIcon(ctx));
@@ -87,7 +86,8 @@ public class AppAdapter extends ArrayAdapter<AppEntry> implements
 		} else {
 			holder = (HeaderViewHolder) convertView.getTag();
 		}
-		String headerText = String.valueOf(getItem(position).getHeaderChar());
+		String headerText = String.valueOf(applications.get(position)
+				.getHeaderChar());
 		holder.text.setText(headerText);
 		return convertView;
 	}
@@ -98,7 +98,7 @@ public class AppAdapter extends ArrayAdapter<AppEntry> implements
 
 	@Override
 	public long getHeaderId(int position) {
-		return getItem(position).getHeaderChar();
+		return applications.get(position).getHeaderChar();
 	}
 
 	public void setFilter(String filter) {
@@ -129,6 +129,21 @@ public class AppAdapter extends ArrayAdapter<AppEntry> implements
 					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		}
 		return spannable;
+	}
+
+	@Override
+	public int getCount() {
+		return applications == null ? 0 : applications.size();
+	}
+
+	@Override
+	public Object getItem(int position) {
+		return applications.get(position);
+	}
+
+	@Override
+	public long getItemId(int position) {
+		return 0;
 	}
 
 }

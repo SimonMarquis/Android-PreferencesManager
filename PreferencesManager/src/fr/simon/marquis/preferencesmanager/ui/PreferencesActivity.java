@@ -12,10 +12,12 @@ import android.support.v4.view.ViewPager;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuItem;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.Files;
-import fr.simon.marquis.preferencesmanager.ui.PreferenceFragment.OnFragmentInteractionListener;
+import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnFragmentInteractionListener;
+import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class PreferencesActivity extends SherlockFragmentActivity implements
 		OnFragmentInteractionListener {
@@ -37,7 +39,7 @@ public class PreferencesActivity extends SherlockFragmentActivity implements
 			finish();
 			return;
 		}
-		
+
 		try {
 			files = Files.fromJSON(new JSONArray(b.getString("FILES")));
 			getSupportActionBar().setTitle(b.getString("TITLE"));
@@ -59,11 +61,31 @@ public class PreferencesActivity extends SherlockFragmentActivity implements
 		getSupportMenuInflater().inflate(R.menu.preferences, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-
+		boolean fav = Utils.isFavorite(packageName, this);
+		menu.findItem(R.id.action_fav)
+				.setIcon(
+						fav ? R.drawable.ic_action_star_10
+								: R.drawable.ic_action_star_0)
+				.setTitle(fav ? R.string.action_unfav : R.string.action_fav);
 		return super.onPrepareOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_fav:
+			Utils.setFavorite(packageName,
+					!Utils.isFavorite(packageName, this), this);
+			supportInvalidateOptionsMenu();
+			break;
+
+		default:
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	public class SectionsPagerAdapter extends FragmentPagerAdapter {
@@ -74,12 +96,12 @@ public class PreferencesActivity extends SherlockFragmentActivity implements
 
 		@Override
 		public Fragment getItem(int position) {
-			PreferenceFragment fragment = PreferenceFragment.newInstance(null,
-					null);
+			PreferencesFragment fragment = PreferencesFragment.newInstance(
+					null, null);
 			Bundle args = new Bundle();
-			args.putString(PreferenceFragment.ARG_NAME, files.get(position)
+			args.putString(PreferencesFragment.ARG_NAME, files.get(position)
 					.getName());
-			args.putString(PreferenceFragment.ARG_PATH, files.get(position)
+			args.putString(PreferencesFragment.ARG_PATH, files.get(position)
 					.getPath());
 			fragment.setArguments(args);
 			return fragment;

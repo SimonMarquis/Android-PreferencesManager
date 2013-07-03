@@ -1,12 +1,8 @@
 package fr.simon.marquis.preferencesmanager.ui;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.widget.SearchViewCompat;
 import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
@@ -27,7 +23,6 @@ import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.model.File;
 import fr.simon.marquis.preferencesmanager.model.Files;
-import fr.simon.marquis.preferencesmanager.util.MyComparator;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class AppListActivity extends SherlockActivity {
@@ -39,8 +34,7 @@ public class AppListActivity extends SherlockActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_app_list);
-		AppAdapter appAdapter = new AppAdapter(this);
-		appAdapter.setData(getAppEntries());
+		AppAdapter appAdapter = new AppAdapter(this, Utils.getApplications(this));
 		listView = (StickyListHeadersListView) findViewById(R.id.listView);
 		listView.setAdapter(appAdapter);
 		listView.setOnItemClickListener(new OnItemClickListener() {
@@ -50,8 +44,7 @@ public class AppListActivity extends SherlockActivity {
 				if (!App.getRoot().connected()) {
 					Utils.displayNoRoot(AppListActivity.this).show();
 				} else {
-					AppEntry item = ((AppAdapter) listView.getWrappedAdapter())
-							.getItem(arg2);
+					AppEntry item = Utils.getApplications(AppListActivity.this).get(arg2);
 					Files files = findXmlFiles(item);
 					if (files == null || files.size() == 0) {
 						Toast.makeText(AppListActivity.this,
@@ -65,9 +58,10 @@ public class AppListActivity extends SherlockActivity {
 						Log.d("", item.getApplicationInfo().packageName);
 						Log.d("", files.toJSON().toString());
 						i.putExtra("TITLE", item.getLabel());
-						i.putExtra("PACKAGE_NAME", item.getApplicationInfo().packageName);
+						i.putExtra("PACKAGE_NAME",
+								item.getApplicationInfo().packageName);
 						i.putExtra("FILES", files.toJSON().toString());
-						
+
 						startActivity(i);
 					}
 				}
@@ -125,31 +119,14 @@ public class AppListActivity extends SherlockActivity {
 									.trim() : null;
 							((AppAdapter) listView.getWrappedAdapter())
 									.setFilter(curFilter);
-							((AppAdapter) listView.getWrappedAdapter())
-									.getFilter().filter(curFilter);
+//	TODO						((AppAdapter) listView.getWrappedAdapter())
+//									.getFilter().filter(curFilter);
 							return true;
 						}
 					});
 			item.setActionView(searchView);
 		}
 		return true;
-	}
-
-	public List<AppEntry> getAppEntries() {
-		List<ApplicationInfo> apps = getPackageManager()
-				.getInstalledApplications(
-						PackageManager.GET_UNINSTALLED_PACKAGES
-								| PackageManager.GET_DISABLED_COMPONENTS);
-		if (apps == null)
-			apps = new ArrayList<ApplicationInfo>();
-
-		List<AppEntry> entries = new ArrayList<AppEntry>(apps.size());
-		for (int i = 0; i < apps.size(); i++) {
-			entries.add(new AppEntry(apps.get(i), this));
-		}
-
-		Collections.sort(entries, new MyComparator());
-		return entries;
 	}
 
 }

@@ -12,7 +12,7 @@ import android.widget.TextView;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 
-public class PreferenceFragment extends Fragment {
+public class PreferencesFragment extends Fragment {
 	public static final String ARG_NAME = "NAME";
 	public static final String ARG_PATH = "PATH";
 
@@ -23,9 +23,9 @@ public class PreferenceFragment extends Fragment {
 
 	private OnFragmentInteractionListener mListener;
 
-	public static PreferenceFragment newInstance(String paramName,
+	public static PreferencesFragment newInstance(String paramName,
 			String paramPath) {
-		PreferenceFragment fragment = new PreferenceFragment();
+		PreferencesFragment fragment = new PreferencesFragment();
 		Bundle args = new Bundle();
 		args.putString(ARG_NAME, paramName);
 		args.putString(ARG_PATH, paramPath);
@@ -33,7 +33,7 @@ public class PreferenceFragment extends Fragment {
 		return fragment;
 	}
 
-	public PreferenceFragment() {
+	public PreferencesFragment() {
 		// Required empty public constructor
 	}
 

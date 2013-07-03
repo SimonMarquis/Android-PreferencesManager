@@ -2,6 +2,8 @@ package fr.simon.marquis.preferencesmanager.model;
 
 import java.io.File;
 
+import fr.simon.marquis.preferencesmanager.util.Utils;
+
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
@@ -31,7 +33,7 @@ public class AppEntry {
 	/**
 	 * Detect if app is starred by user
 	 */
-	private boolean isStarred;
+	private boolean isFavorite;
 	/**
 	 * Char value used by indexed ListView
 	 */
@@ -43,6 +45,7 @@ public class AppEntry {
 	 */
 	public AppEntry(ApplicationInfo info, Context context) {
 		mInfo = info;
+		isFavorite = Utils.isFavorite(mInfo.packageName, context);
 		mApkFile = new File(info.sourceDir);
 		loadLabels(context);
 	}
@@ -78,6 +81,16 @@ public class AppEntry {
 	public String toString() {
 		return mLabel;
 	}
+	
+	
+
+	public boolean isFavorite() {
+		return isFavorite;
+	}
+
+	public void setFavorite(boolean isFavorite) {
+		this.isFavorite = isFavorite;
+	}
 
 	/**
 	 * Generate the labels
@@ -94,11 +107,8 @@ public class AppEntry {
 			}
 		}
 
-		//Hack to get some favourites app
-		isStarred = mLabel.contains("li");
-		
 		if (mSortingValue == null)
-			mSortingValue = (isStarred ? " " : "") + mLabel;
+			mSortingValue = (isFavorite ? " " : "") + mLabel;
 
 		headerChar = formatChar(mLabel);
 	}
@@ -110,7 +120,7 @@ public class AppEntry {
 	 * @return
 	 */
 	private char formatChar(String s) {
-		if (isStarred)
+		if (isFavorite)
 			return '☆';
 		char c = Character.toUpperCase(s.charAt(0));
 		if (c >= '0' && c <= '9')

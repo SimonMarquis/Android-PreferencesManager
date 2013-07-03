@@ -12,7 +12,6 @@ import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.Xml;
 
 public class PreferenceFile {
@@ -25,7 +24,6 @@ public class PreferenceFile {
 	}
 
 	public static PreferenceFile fromXML(String string) {
-		Log.e("", "INTÉRIEUR");
 		// Check for empty files
 		if (TextUtils.isEmpty(string) || string.trim().isEmpty())
 			return null;
@@ -75,7 +73,8 @@ public class PreferenceFile {
 
 	public String toXML() {
 		XmlSerializer serializer = Xml.newSerializer();
-		serializer.setFeature("http://xmlpull.org/v1/doc/features.html#indent-output", true);
+		serializer.setFeature(
+				"http://xmlpull.org/v1/doc/features.html#indent-output", true);
 		StringWriter writer = new StringWriter();
 		try {
 			serializer.setOutput(writer);
