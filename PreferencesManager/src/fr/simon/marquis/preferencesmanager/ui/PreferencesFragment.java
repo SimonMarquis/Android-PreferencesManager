@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
@@ -22,6 +23,8 @@ public class PreferencesFragment extends Fragment {
 	private PreferenceFile preferenceFile;
 
 	private OnFragmentInteractionListener mListener;
+	
+	private ListView listView;
 
 	public static PreferencesFragment newInstance(String paramName,
 			String paramPath) {
@@ -63,6 +66,9 @@ public class PreferencesFragment extends Fragment {
 				mPath + "/" + mName).toString());
 		dummyTextView.setText(App.getRoot().file.read(mPath + "/" + mName)
 				.toString() + "\n\n\n__________________\n\n\n"+preferenceFile.toXml());
+		
+		listView = (ListView) rootView.findViewById(R.id.listView);
+		listView.setAdapter(new PreferenceAdapter(getActivity(), preferenceFile));
 		return rootView;
 	}
 
