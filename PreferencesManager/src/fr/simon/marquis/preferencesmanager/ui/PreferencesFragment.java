@@ -23,7 +23,7 @@ public class PreferencesFragment extends Fragment {
 	private PreferenceFile preferenceFile;
 
 	private OnFragmentInteractionListener mListener;
-	
+
 	private ListView listView;
 
 	public static PreferencesFragment newInstance(String paramName,
@@ -61,12 +61,14 @@ public class PreferencesFragment extends Fragment {
 		TextView dummyTextView = (TextView) rootView
 				.findViewById(R.id.section_label);
 
-		//FIXME: STACKOVERFLOW if the file is empty U_u
+		// FIXME: STACKOVERFLOW if the file is empty U_u
 		preferenceFile = PreferenceFile.fromXml(App.getRoot().file.read(
 				mPath + "/" + mName).toString());
 		dummyTextView.setText(App.getRoot().file.read(mPath + "/" + mName)
-				.toString() + "\n\n\n__________________\n\n\n"+preferenceFile.toXml());
-		
+				.toString()
+				+ "\n\n\n__________________\n\n\n"
+				+ preferenceFile.toXml());
+
 		listView = (ListView) rootView.findViewById(R.id.listView);
 		listView.setAdapter(new PreferenceAdapter(getActivity(), preferenceFile));
 		return rootView;

@@ -49,8 +49,8 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter 
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = layoutInflater
-					.inflate(R.layout.row_application, null);
+			convertView = layoutInflater.inflate(R.layout.row_application,
+					parent, false);
 			holder = new ViewHolder();
 			holder.textView = (TextView) convertView
 					.findViewById(R.id.item_text);

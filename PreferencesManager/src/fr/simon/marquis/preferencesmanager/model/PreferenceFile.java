@@ -50,9 +50,6 @@ public class PreferenceFile {
 	public void setPreferences(Map map) {
 		mPreferences = map;
 		mList = new ArrayList<Entry<String, Object>>(mPreferences.entrySet());
-		
-		Log.e("","Il y en a " + mList.size());
-		Log.e("",mList.get(0).getKey() + " --> " + mList.get(0).getValue());
 	}
 
 	public Map<String, Object> getPreferences() {
