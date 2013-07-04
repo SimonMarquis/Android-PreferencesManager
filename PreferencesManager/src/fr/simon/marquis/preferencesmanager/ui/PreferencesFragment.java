@@ -59,10 +59,10 @@ public class PreferencesFragment extends Fragment {
 				.findViewById(R.id.section_label);
 
 		//FIXME: STACKOVERFLOW if the file is empty U_u
-		preferenceFile = PreferenceFile.fromXML(App.getRoot().file.read(
+		preferenceFile = PreferenceFile.fromXml(App.getRoot().file.read(
 				mPath + "/" + mName).toString());
 		dummyTextView.setText(App.getRoot().file.read(mPath + "/" + mName)
-				.toString() + "\n\n\n__________________\n\n\n"+preferenceFile.toXML());
+				.toString() + "\n\n\n__________________\n\n\n"+preferenceFile.toXml());
 		return rootView;
 	}
 

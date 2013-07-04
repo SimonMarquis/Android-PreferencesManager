@@ -1,108 +1,62 @@
 package fr.simon.marquis.preferencesmanager.model;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-import org.xmlpull.v1.XmlSerializer;
 
 import android.text.TextUtils;
-import android.util.Xml;
+import fr.simon.marquis.preferencesmanager.util.XmlUtils;
 
 public class PreferenceFile {
 
-	ArrayList<PreferenceEntry> prefs;
+	private Map<String, Object> mPreferences;
 
 	public PreferenceFile() {
 		super();
-		prefs = new ArrayList<PreferenceEntry>();
+		mPreferences = new HashMap<String, Object>();
 	}
 
-	public static PreferenceFile fromXML(String string) {
+	public static PreferenceFile fromXml(String xml) {
+		PreferenceFile preferenceFile = new PreferenceFile();
+
 		// Check for empty files
-		if (TextUtils.isEmpty(string) || string.trim().isEmpty())
-			return null;
+		if (TextUtils.isEmpty(xml) || xml.trim().isEmpty())
+			return preferenceFile;
 
 		try {
-			PreferenceFile p = null;
-			XmlPullParser parser = XmlPullParserFactory.newInstance()
-					.newPullParser();
-			InputStream is = new ByteArrayInputStream(string.getBytes());
-			parser.setInput(is, null);
-			int eventType = parser.getEventType();
-			while (eventType != XmlPullParser.END_DOCUMENT) {
-				switch (eventType) {
-				case XmlPullParser.START_DOCUMENT:
-					break;
+			InputStream in = new ByteArrayInputStream(xml.getBytes());
+			Map map = XmlUtils.readMapXml(in);
+			in.close();
 
-				case XmlPullParser.START_TAG:
-					String tagName = parser.getName();
-
-					if (tagName.equalsIgnoreCase("map")) {
-						p = new PreferenceFile();
-					}
-
-					else if (tagName.equalsIgnoreCase("string")
-							|| tagName.equalsIgnoreCase("boolean")
-							|| tagName.equalsIgnoreCase("long")
-							|| tagName.equalsIgnoreCase("int")) {
-						if (p == null)
-							p = new PreferenceFile();
-						p.add(new PreferenceEntry(parser));
-					}
-					break;
-				}
-				eventType = parser.next();
+			if (map != null) {
+				preferenceFile.setPreferences(map);
 			}
-			return p;
 		} catch (XmlPullParserException e) {
-			return null;
 		} catch (IOException e) {
-			return null;
 		}
+		return preferenceFile;
 	}
 
-	private void add(PreferenceEntry entry) {
-		prefs.add(entry);
+	public void setPreferences(Map map) {
+		mPreferences = map;
 	}
 
-	public String toXML() {
-		XmlSerializer serializer = Xml.newSerializer();
-		serializer.setFeature(
-				"http://xmlpull.org/v1/doc/features.html#indent-output", true);
-		StringWriter writer = new StringWriter();
+	public Map<String, Object> getPreferences() {
+		return mPreferences;
+	}
+
+	public String toXml() {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		try {
-			serializer.setOutput(writer);
-			serializer.startDocument("utf-8", true);
-			serializer.startTag("", "map");
-
-			for (PreferenceEntry p : prefs) {
-				p.addTag(serializer);
-			}
-			serializer.endTag("", "map");
-			serializer.endDocument();
-			return writer.toString();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
+			XmlUtils.writeMapXml(mPreferences, out);
+		} catch (XmlPullParserException e) {
 		} catch (IOException e) {
-			e.printStackTrace();
 		}
-		return null;
+		return out.toString();
 	}
-
-	public void readInt() {
-
-	}
-
-	public void readString() {
-
-	}
-
 }
