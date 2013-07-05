@@ -19,12 +19,16 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
 import android.util.Log;
+
+import com.spazedog.lib.rootfw.container.FileStat;
+
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
+import fr.simon.marquis.preferencesmanager.ui.App;
 
 public class Utils {
 
-	private static final String TAG = "PreferencesManager";
+	public static final String TAG = "PreferencesManager";
 	private static final String FAVORITES_KEY = "FAVORITES_KEY";
 	private static ArrayList<AppEntry> applications;
 	private static HashSet<String> favorites;
@@ -136,4 +140,15 @@ public class Utils {
 		}
 	}
 
+	public static void debugFile(String file){
+		FileStat fileStat = App.getRoot().file.stat(file);
+		Log.e(Utils.TAG,
+				file + " [ `" + fileStat.access() + "` , `" + fileStat.link()
+						+ "` , `" + fileStat.mm() + "` , `" + fileStat.name()
+						+ "` , `" + fileStat.permission() + "` , `"
+						+ fileStat.type() + "` , `" + fileStat.group()
+						+ "` , `" + fileStat.size() + "` , `" + fileStat.user()
+						+ "` ]");
+	}
+	
 }

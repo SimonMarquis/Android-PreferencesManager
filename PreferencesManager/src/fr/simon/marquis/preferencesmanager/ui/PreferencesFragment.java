@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
+import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class PreferencesFragment extends Fragment {
 	public static final String ARG_NAME = "NAME";
@@ -61,9 +62,11 @@ public class PreferencesFragment extends Fragment {
 		TextView dummyTextView = (TextView) rootView
 				.findViewById(R.id.section_label);
 
+		String file = mPath + "/" + mName;
+		Utils.debugFile(file);
 		// FIXME: STACKOVERFLOW if the file is empty U_u
-		preferenceFile = PreferenceFile.fromXml(App.getRoot().file.read(
-				mPath + "/" + mName).toString());
+		preferenceFile = PreferenceFile.fromXml(App.getRoot().file.read(file)
+				.toString());
 		dummyTextView.setText(App.getRoot().file.read(mPath + "/" + mName)
 				.toString()
 				+ "\n\n\n__________________\n\n\n"
