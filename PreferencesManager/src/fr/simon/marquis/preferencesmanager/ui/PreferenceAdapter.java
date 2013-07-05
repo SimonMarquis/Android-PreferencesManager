@@ -3,7 +3,6 @@ package fr.simon.marquis.preferencesmanager.ui;
 import java.util.Map.Entry;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
