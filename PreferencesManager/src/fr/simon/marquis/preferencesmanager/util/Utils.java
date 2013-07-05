@@ -3,8 +3,10 @@ package fr.simon.marquis.preferencesmanager.util;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -82,15 +84,8 @@ public class Utils {
 		if (favorites.size() == 0) {
 			ed.remove(FAVORITES_KEY);
 		} else {
-			StringBuilder sb = new StringBuilder();
-			Iterator<String> itr = favorites.iterator();
-	        while(itr.hasNext()){
-	           sb.append(itr.next() + (itr.hasNext() ? "|" : ""));
-	        }
-			
-			String s = sb.toString();
-			Log.e(TAG, "--- " + s);
-			ed.putString(FAVORITES_KEY, s);
+			JSONArray array = new JSONArray(favorites);
+			ed.putString(FAVORITES_KEY, array.toString());
 		}
 
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
@@ -116,9 +111,7 @@ public class Utils {
 		if (favorites == null) {
 			initFavorites(ctx);
 		}
-		boolean fav = favorites.contains(packageName);
-		Log.e(TAG,packageName + " --> " + fav);
-		return fav;
+		return favorites.contains(packageName);
 	}
 
 	private static void initFavorites(Context ctx) {
@@ -127,23 +120,20 @@ public class Utils {
 
 			SharedPreferences sp = PreferenceManager
 					.getDefaultSharedPreferences(ctx);
+
 			if (sp.contains(FAVORITES_KEY)) {
-				String str = sp.getString(FAVORITES_KEY, null);
-				
-				if(str.contains("|")){
-					String[] tab = str.split("\\|");
-					for (String s : tab) {
-						Log.e(TAG,"found "+s);
-						favorites.add(s);
+				try {
+					JSONArray array = new JSONArray(sp.getString(FAVORITES_KEY,
+							"[]"));
+					for (int i = 0; i < array.length(); i++) {
+						favorites.add(array.optString(i));
 					}
-				} else {
-					favorites.add(str);
+				} catch (JSONException e) {
+					Log.e(TAG, "error parsing JSON", e);
 				}
-				
-				Log.e(TAG,"FAVORITES_KEY is " + str + " --> "+favorites.size());
-				Log.e(TAG,favorites.toString());
+				Log.e(TAG, favorites.toString());
 			}
 		}
 	}
-	
+
 }
