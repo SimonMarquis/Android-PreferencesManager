@@ -15,9 +15,12 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Map.Entry;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,11 +70,34 @@ public class PreferenceAdapter extends BaseAdapter {
 		}
 
 		Entry<String, Object> item = mPreferenceFile.getList().get(position);
-
-//		holder.thumb.setBackgroundColor(Color.BLUE);
+		Object obj = item.getValue();
+		int color = Color.BLACK;
+		if(obj instanceof String){
+			color = Color.BLUE;
+		} else if(obj instanceof Integer){
+			color = Color.CYAN;
+		} else if(obj instanceof Long){
+			color = Color.DKGRAY;
+		} else if(obj instanceof Float){
+			color = Color.GREEN;
+		} else if(obj instanceof Double){
+			color = Color.MAGENTA;
+		} else if(obj instanceof Boolean){
+			color = Color.RED;
+		} else if(obj instanceof int[]){
+			color = Color.YELLOW;
+		} else if(obj instanceof ArrayList){
+			color = Color.GRAY;
+		} else if(obj instanceof HashSet){
+			color = Color.LTGRAY;
+		}
+		holder.thumb.setBackgroundColor(color);
 		holder.name.setText(item.getKey());
-		holder.value.setText(item.getValue() == null ? null : item.getValue()
-				.toString());
+		holder.value
+				.setText(obj.getClass().getName()
+						+ " - "
+						+ (item.getValue() == null ? null : item.getValue()
+								.toString()));
 
 		return convertView;
 	}
