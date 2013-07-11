@@ -85,11 +85,15 @@ public class PreferencesFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		listView = (ListView) view.findViewById(R.id.listView);
 
-		ParsingTask task = new ParsingTask(mPath + "/" + mName);
-		if (Utils.hasHONEYCOMB()) {
-			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		if( preferenceFile == null) {
+			ParsingTask task = new ParsingTask(mPath + "/" + mName);
+			if (Utils.hasHONEYCOMB()) {
+				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			} else {
+				task.execute();
+			}
 		} else {
-			task.execute();
+			updateListView(preferenceFile);
 		}
 	}
 
