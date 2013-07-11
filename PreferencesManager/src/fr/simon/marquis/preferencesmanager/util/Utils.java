@@ -63,7 +63,7 @@ public class Utils {
 	}
 
 	public static ArrayList<AppEntry> getApplications(Context ctx) {
-		if (applications != null && applications.size() > 0) {
+		if (applications != null) {
 			return applications;
 		}
 
@@ -82,6 +82,16 @@ public class Utils {
 		Collections.sort(entries, new MyComparator());
 		applications = new ArrayList<AppEntry>(entries);
 		return applications;
+	}
+	
+	public static void verifyFavorites(Context ctx){
+		for (AppEntry a : applications) {
+			boolean b = isFavorite(a.getApplicationInfo().packageName, ctx);
+			if(b){
+				Log.e("",a.getApplicationInfo().packageName + " " + b);
+			}
+			a.setFavorite(b);
+		}
 	}
 
 	public static void setFavorite(String packageName, boolean favorite,
@@ -150,14 +160,14 @@ public class Utils {
 				} catch (JSONException e) {
 					Log.e(TAG, "error parsing JSON", e);
 				}
-				Log.e(TAG, favorites.toString());
+				Log.e(TAG, "Favorites are : " + favorites.toString());
 			}
 		}
 	}
 
 	public static void debugFile(String file){
 		FileStat fileStat = App.getRoot().file.stat(file);
-		Log.e(Utils.TAG,
+		Log.d(Utils.TAG,
 				file + " [ `" + fileStat.access() + "` , `" + fileStat.link()
 						+ "` , `" + fileStat.mm() + "` , `" + fileStat.name()
 						+ "` , `" + fileStat.permission() + "` , `"

@@ -27,27 +27,28 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import fr.simon.marquis.preferencesmanager.R;
-import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 
 public class PreferenceAdapter extends BaseAdapter {
 
 	private LayoutInflater layoutInflater;
-	private PreferenceFile mPreferenceFile;
+	private PreferencesFragment mPreferencesFragment;
 
-	public PreferenceAdapter(Context ctx, PreferenceFile preferenceFile) {
+	// private PreferenceFile mPreferenceFile;
+
+	public PreferenceAdapter(Context ctx, PreferencesFragment f) {
 		this.layoutInflater = (LayoutInflater) ctx
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.mPreferenceFile = preferenceFile;
+		this.mPreferencesFragment = f;
 	}
 
 	@Override
 	public int getCount() {
-		return mPreferenceFile.getList().size();
+		return mPreferencesFragment.preferenceFile.getList().size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return mPreferenceFile.getList().get(position);
+		return mPreferencesFragment.preferenceFile.getList().get(position);
 	}
 
 	@Override
@@ -59,7 +60,8 @@ public class PreferenceAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = layoutInflater.inflate(R.layout.row_preference, parent, false);
+			convertView = layoutInflater.inflate(R.layout.row_preference,
+					parent, false);
 			holder = new ViewHolder();
 			holder.thumb = (View) convertView.findViewById(R.id.item_thumb);
 			holder.name = (TextView) convertView.findViewById(R.id.item_name);
@@ -69,35 +71,33 @@ public class PreferenceAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		Entry<String, Object> item = mPreferenceFile.getList().get(position);
+		Entry<String, Object> item = mPreferencesFragment.preferenceFile
+				.getList().get(position);
 		Object obj = item.getValue();
 		int color = Color.BLACK;
-		if(obj instanceof String){
-			color = Color.BLUE;
-		} else if(obj instanceof Integer){
-			color = Color.CYAN;
-		} else if(obj instanceof Long){
-			color = Color.DKGRAY;
-		} else if(obj instanceof Float){
-			color = Color.GREEN;
-		} else if(obj instanceof Double){
-			color = Color.MAGENTA;
-		} else if(obj instanceof Boolean){
-			color = Color.RED;
-		} else if(obj instanceof int[]){
-			color = Color.YELLOW;
-		} else if(obj instanceof ArrayList){
-			color = Color.GRAY;
-		} else if(obj instanceof HashSet){
-			color = Color.LTGRAY;
+		if (obj instanceof String) {
+			color = 0xff33B5E5;
+		} else if (obj instanceof Integer) {
+			color = 0xff99CC00;
+		} else if (obj instanceof Long) {
+			color = 0xffFFBB33;
+		} else if (obj instanceof Float) {
+			color = 0xffFF8800;
+		} else if (obj instanceof Double) {
+			color = 0xff669900;
+		} else if (obj instanceof Boolean) {
+			color = 0xffAA66CC;
+		} else if (obj instanceof int[]) {
+			color = 0xffFF4444;
+		} else if (obj instanceof ArrayList) {
+			color = 0xffCC0000;
+		} else if (obj instanceof HashSet) {
+			color = 0xffcccccc;
 		}
 		holder.thumb.setBackgroundColor(color);
 		holder.name.setText(item.getKey());
-		holder.value
-				.setText(obj.getClass().getName()
-						+ " - "
-						+ (item.getValue() == null ? null : item.getValue()
-								.toString()));
+		holder.value.setText((item.getValue() == null ? null : item.getValue()
+				.toString()));
 
 		return convertView;
 	}

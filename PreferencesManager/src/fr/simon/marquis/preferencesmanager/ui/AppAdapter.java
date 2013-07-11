@@ -26,6 +26,7 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,21 +42,22 @@ import fr.simon.marquis.preferencesmanager.util.MyComparator;
 
 public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter {
 	private LayoutInflater layoutInflater;
-	private Context ctx;
+	private Context context;
 	private Pattern pattern;
-	private int color;
 	private ArrayList<AppEntry> applications;
+	private int color;
 
 	public AppAdapter(Context ctx, ArrayList<AppEntry> applications) {
+		this.context = ctx;
 		this.applications = applications;
-		this.layoutInflater = (LayoutInflater) ctx
+		this.layoutInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		this.ctx = ctx;
-		this.color = ctx.getResources().getColor(R.color.blue);
+		this.color = context.getResources().getColor(R.color.blue);
 	}
 
 	@Override
 	public void notifyDataSetChanged() {
+		Log.e("","notifyDataSetChanged");
 		Collections.sort(applications, new MyComparator());
 		super.notifyDataSetChanged();
 	}
@@ -79,7 +81,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter 
 		AppEntry item = applications.get(position);
 
 		holder.textView.setText(createSpannable(item.getLabel()));
-		holder.imageView.setImageDrawable(item.getIcon(ctx));
+		holder.imageView.setImageDrawable(item.getIcon(context));
 
 		return convertView;
 	}
@@ -148,7 +150,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter 
 
 	@Override
 	public int getCount() {
-		return applications == null ? 0 : applications.size();
+		return applications.size();
 	}
 
 	@Override

@@ -15,6 +15,8 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
+import java.util.HashMap;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -24,6 +26,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
@@ -31,6 +34,7 @@ import com.actionbarsherlock.view.MenuItem;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.Files;
+import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnFragmentInteractionListener;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
@@ -57,6 +61,14 @@ public class PreferencesActivity extends SherlockFragmentActivity implements
 
 		try {
 			files = Files.fromJSON(new JSONArray(b.getString("FILES")));
+//			long start = System.currentTimeMillis();
+//			HashMap<String, PreferenceFile> _prefs = new HashMap<String, PreferenceFile>();
+//			for(int i = 0; i < files.size(); i++) {
+//				String _title = files.get(i).getPath()  + "/" + files.get(i).getName();
+//				_prefs.put(_title, PreferenceFile.fromXml(App.getRoot().file.read(_title).toString()));
+//			}
+//			Log.e("",(System.currentTimeMillis() - start) + "ms to read all files");
+			
 			getSupportActionBar().setTitle(b.getString("TITLE"));
 			packageName = b.getString("PACKAGE_NAME");
 		} catch (JSONException e) {

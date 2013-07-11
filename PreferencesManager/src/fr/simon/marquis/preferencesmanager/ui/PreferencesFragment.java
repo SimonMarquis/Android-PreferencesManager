@@ -15,20 +15,24 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
+import java.util.Map.Entry;
+
 import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
-import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class PreferencesFragment extends Fragment {
 	public static final String ARG_NAME = "NAME";
@@ -37,7 +41,7 @@ public class PreferencesFragment extends Fragment {
 	private String mName;
 	private String mPath;
 
-	private PreferenceFile preferenceFile;
+	public PreferenceFile preferenceFile;
 
 	private OnFragmentInteractionListener mListener;
 
@@ -117,6 +121,19 @@ public class PreferencesFragment extends Fragment {
 		mListener = null;
 	}
 
+	public void updateListView(PreferenceFile p){
+		preferenceFile = p;
+		listView.setAdapter(new PreferenceAdapter(getActivity(),this));
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				//TODO
+				Log.e("",((Entry<String, Object>)listView.getAdapter().getItem(arg2)).getValue().toString());
+			}
+		});
+	}
+	
 	public interface OnFragmentInteractionListener {
 		// TODO: Update argument type and name
 		public void onFragmentInteraction(Uri uri);
@@ -137,7 +154,7 @@ public class PreferencesFragment extends Fragment {
 
 		@Override
 		protected PreferenceFile doInBackground(Void... params) {
-			Utils.debugFile(mFile);
+//			Utils.debugFile(mFile);
 			return PreferenceFile.fromXml(App.getRoot().file.read(mFile)
 					.toString());
 		}
@@ -145,11 +162,9 @@ public class PreferencesFragment extends Fragment {
 		@Override
 		protected void onPostExecute(PreferenceFile result) {
 			super.onPostExecute(result);
-			preferenceFile = result;
 			// App.getRoot().file.read(mPath + "/" + mName).toString();
 			// preferenceFile.toXml();
-			listView.setAdapter(new PreferenceAdapter(getActivity(),
-					preferenceFile));
+			updateListView(result);
 		}
 
 	}

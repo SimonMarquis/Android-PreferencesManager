@@ -17,7 +17,9 @@ package fr.simon.marquis.preferencesmanager.ui;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SearchViewCompat;
 import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
@@ -41,6 +43,7 @@ import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class AppListActivity extends SherlockActivity {
+	private static final int REQUEST_CODE = 123456;
 	StickyListHeadersListView listView;
 
 	String curFilter;
@@ -49,9 +52,12 @@ public class AppListActivity extends SherlockActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_app_list);
-		AppAdapter appAdapter = new AppAdapter(this, Utils.getApplications(this));
+		new GetApplicationsTask(this).execute();
+	}
+	
+	public void updateListView(ArrayList<AppEntry> apps){
 		listView = (StickyListHeadersListView) findViewById(R.id.listView);
-		listView.setAdapter(appAdapter);
+		listView.setAdapter(new AppAdapter(this, apps));
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
@@ -59,8 +65,12 @@ public class AppListActivity extends SherlockActivity {
 				if (!App.getRoot().connected()) {
 					Utils.displayNoRoot(AppListActivity.this).show();
 				} else {
-					AppEntry item = Utils.getApplications(AppListActivity.this).get(arg2);
+					AppEntry item = (AppEntry) ((AppAdapter) listView.getWrappedAdapter()).getItem(arg2);
+					
+					long start = System.currentTimeMillis();
 					Files files = findXmlFiles(item);
+					Log.e("",(System.currentTimeMillis() - start) + "ms to findXmlFiles");
+					
 					if (files == null || files.size() == 0) {
 						Toast.makeText(AppListActivity.this,
 								"Pas de fichiers de préférences",
@@ -69,21 +79,33 @@ public class AppListActivity extends SherlockActivity {
 					} else {
 						Intent i = new Intent(AppListActivity.this,
 								PreferencesActivity.class);
-						Log.d("", item.getLabel());
-						Log.d("", item.getApplicationInfo().packageName);
-						Log.d("", files.toJSON().toString());
 						i.putExtra("TITLE", item.getLabel());
 						i.putExtra("PACKAGE_NAME",
 								item.getApplicationInfo().packageName);
 						i.putExtra("FILES", files.toJSON().toString());
 
-						startActivity(i);
+						startActivityForResult(i,REQUEST_CODE);
 					}
 				}
 			}
 
 		});
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if(requestCode == REQUEST_CODE){
+			((AppAdapter) listView.getWrappedAdapter()).notifyDataSetChanged();
+		}
+	}
 
+	@Override
+	protected void onStart() {
+		if (!App.getRoot().connected()) {
+			Utils.displayNoRoot(AppListActivity.this).show();
+		}
+		super.onStart();
 	}
 
 	private Files findXmlFiles(AppEntry app) {
@@ -134,14 +156,40 @@ public class AppListActivity extends SherlockActivity {
 									.trim() : null;
 							((AppAdapter) listView.getWrappedAdapter())
 									.setFilter(curFilter);
-//	TODO						((AppAdapter) listView.getWrappedAdapter())
-//									.getFilter().filter(curFilter);
+							// TODO ((AppAdapter) listView.getWrappedAdapter())
+							// .getFilter().filter(curFilter);
 							return true;
 						}
 					});
 			item.setActionView(searchView);
 		}
 		return true;
+	}
+
+	public class GetApplicationsTask extends
+			AsyncTask<Void, Void, ArrayList<AppEntry>> {
+		private Context mContext;
+
+		public GetApplicationsTask(Context ctx) {
+			this.mContext = ctx;
+		}
+
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+
+		@Override
+		protected ArrayList<AppEntry> doInBackground(Void... params) {
+			return Utils.getApplications(mContext);
+		}
+
+		@Override
+		protected void onPostExecute(ArrayList<AppEntry> result) {
+			super.onPostExecute(result);
+			updateListView(result);
+		}
+
 	}
 
 }

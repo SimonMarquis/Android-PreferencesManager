@@ -81,6 +81,9 @@ public class PreferenceFile {
 	}
 
 	public List<Entry<String, Object>> getList() {
+		if(mList == null){
+			mList = new ArrayList<Entry<String, Object>>();
+		}
 		return mList;
 	}
 
