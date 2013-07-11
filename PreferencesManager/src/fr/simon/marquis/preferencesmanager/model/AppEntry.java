@@ -63,6 +63,8 @@ public class AppEntry {
 		isFavorite = Utils.isFavorite(mInfo.packageName, context);
 		mApkFile = new File(info.sourceDir);
 		loadLabels(context);
+		//Pre-load the icons for smooth scrolling
+		getIcon(context);
 	}
 
 	public ApplicationInfo getApplicationInfo() {
@@ -105,6 +107,9 @@ public class AppEntry {
 
 	public void setFavorite(boolean isFavorite) {
 		this.isFavorite = isFavorite;
+		//IMPORTANT! also update the char used for sorting
+		mSortingValue = (isFavorite ? " " : "") + mLabel;
+		headerChar = formatChar(mLabel);
 	}
 
 	/**
