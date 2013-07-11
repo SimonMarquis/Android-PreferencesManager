@@ -52,10 +52,16 @@ public class AppListActivity extends SherlockActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_app_list);
-		new GetApplicationsTask(this).execute();
+		GetApplicationsTask task = new GetApplicationsTask(this);
+		if(Utils.hasHONEYCOMB()){
+			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
+		} else {
+			task.execute();
+		}
+		
 	}
-	
-	public void updateListView(ArrayList<AppEntry> apps){
+
+	public void updateListView(ArrayList<AppEntry> apps) {
 		listView = (StickyListHeadersListView) findViewById(R.id.listView);
 		listView.setAdapter(new AppAdapter(this, apps));
 		listView.setOnItemClickListener(new OnItemClickListener() {
@@ -65,12 +71,14 @@ public class AppListActivity extends SherlockActivity {
 				if (!App.getRoot().connected()) {
 					Utils.displayNoRoot(AppListActivity.this).show();
 				} else {
-					AppEntry item = (AppEntry) ((AppAdapter) listView.getWrappedAdapter()).getItem(arg2);
-					
+					AppEntry item = (AppEntry) ((AppAdapter) listView
+							.getWrappedAdapter()).getItem(arg2);
+
 					long start = System.currentTimeMillis();
 					Files files = findXmlFiles(item);
-					Log.e("",(System.currentTimeMillis() - start) + "ms to findXmlFiles");
-					
+					Log.e("", (System.currentTimeMillis() - start)
+							+ "ms to findXmlFiles");
+
 					if (files == null || files.size() == 0) {
 						Toast.makeText(AppListActivity.this,
 								"Pas de fichiers de préférences",
@@ -84,18 +92,18 @@ public class AppListActivity extends SherlockActivity {
 								item.getApplicationInfo().packageName);
 						i.putExtra("FILES", files.toJSON().toString());
 
-						startActivityForResult(i,REQUEST_CODE);
+						startActivityForResult(i, REQUEST_CODE);
 					}
 				}
 			}
 
 		});
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		if(requestCode == REQUEST_CODE){
+		if (requestCode == REQUEST_CODE) {
 			((AppAdapter) listView.getWrappedAdapter()).notifyDataSetChanged();
 		}
 	}

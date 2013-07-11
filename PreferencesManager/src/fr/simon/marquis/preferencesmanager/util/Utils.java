@@ -32,6 +32,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
@@ -83,12 +84,12 @@ public class Utils {
 		applications = new ArrayList<AppEntry>(entries);
 		return applications;
 	}
-	
-	public static void verifyFavorites(Context ctx){
+
+	public static void verifyFavorites(Context ctx) {
 		for (AppEntry a : applications) {
 			boolean b = isFavorite(a.getApplicationInfo().packageName, ctx);
-			if(b){
-				Log.e("",a.getApplicationInfo().packageName + " " + b);
+			if (b) {
+				Log.e("", a.getApplicationInfo().packageName + " " + b);
 			}
 			a.setFavorite(b);
 		}
@@ -165,7 +166,7 @@ public class Utils {
 		}
 	}
 
-	public static void debugFile(String file){
+	public static void debugFile(String file) {
 		FileStat fileStat = App.getRoot().file.stat(file);
 		Log.d(Utils.TAG,
 				file + " [ `" + fileStat.access() + "` , `" + fileStat.link()
@@ -175,5 +176,9 @@ public class Utils {
 						+ "` , `" + fileStat.size() + "` , `" + fileStat.user()
 						+ "` ]");
 	}
-	
+
+	public static boolean hasHONEYCOMB() {
+		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+	}
+
 }

@@ -20,7 +20,6 @@ import java.util.Map.Entry;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -33,6 +32,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
+import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class PreferencesFragment extends Fragment {
 	public static final String ARG_NAME = "NAME";
@@ -86,7 +86,7 @@ public class PreferencesFragment extends Fragment {
 		listView = (ListView) view.findViewById(R.id.listView);
 
 		ParsingTask task = new ParsingTask(mPath + "/" + mName);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+		if (Utils.hasHONEYCOMB()) {
 			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		} else {
 			task.execute();
