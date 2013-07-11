@@ -30,4 +30,10 @@
 
     <string name="action_fav">Add to favorites</string>
     <string name="action_unfav">Remove from favorites</string>
+    <string name="action_add">Add a preference</string>
+ 
+    
+    
+    <string name="btn_backup">Backup</string>
+    <string name="btn_restore">Restore</string>
 </resources>
