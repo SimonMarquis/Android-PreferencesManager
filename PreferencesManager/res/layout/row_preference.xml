@@ -31,7 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_toRightOf="@id/item_thumb"
-        android:ellipsize="end"
+        android:ellipsize="marquee"
         android:lines="1"
         android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -42,7 +42,7 @@
         android:layout_below="@id/item_name"
         android:layout_gravity="center_vertical"
         android:layout_toRightOf="@id/item_thumb"
-        android:ellipsize="end"
+        android:ellipsize="marquee"
         android:lines="1"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/tertiary_text_light" />
