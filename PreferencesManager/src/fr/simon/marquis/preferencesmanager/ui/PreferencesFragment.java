@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.TextView;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.util.Utils;
@@ -46,6 +47,7 @@ public class PreferencesFragment extends Fragment {
 	private OnFragmentInteractionListener mListener;
 
 	private ListView listView;
+	private View loadingView, emptyView;
 
 	public static PreferencesFragment newInstance(String paramName,
 			String paramPath) {
@@ -83,9 +85,11 @@ public class PreferencesFragment extends Fragment {
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
+		loadingView = (View) view.findViewById(R.id.loadingView);
+		emptyView = (View) view.findViewById(R.id.emptyView);
 		listView = (ListView) view.findViewById(R.id.listView);
 
-		if( preferenceFile == null) {
+		if (preferenceFile == null) {
 			ParsingTask task = new ParsingTask(mPath + "/" + mName);
 			if (Utils.hasHONEYCOMB()) {
 				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -125,19 +129,22 @@ public class PreferencesFragment extends Fragment {
 		mListener = null;
 	}
 
-	public void updateListView(PreferenceFile p){
+	public void updateListView(PreferenceFile p) {
 		preferenceFile = p;
-		listView.setAdapter(new PreferenceAdapter(getActivity(),this));
+		loadingView.setVisibility(View.GONE);
+		listView.setAdapter(new PreferenceAdapter(getActivity(), this));
+		listView.setEmptyView(emptyView);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				//TODO
-				Log.e("",((Entry<String, Object>)listView.getAdapter().getItem(arg2)).getValue().toString());
+				// TODO
+				Log.e("", ((Entry<String, Object>) listView.getAdapter()
+						.getItem(arg2)).getValue().toString());
 			}
 		});
 	}
-	
+
 	public interface OnFragmentInteractionListener {
 		// TODO: Update argument type and name
 		public void onFragmentInteraction(Uri uri);
@@ -158,7 +165,7 @@ public class PreferencesFragment extends Fragment {
 
 		@Override
 		protected PreferenceFile doInBackground(Void... params) {
-//			Utils.debugFile(mFile);
+			// Utils.debugFile(mFile);
 			return PreferenceFile.fromXml(App.getRoot().file.read(mFile)
 					.toString());
 		}
