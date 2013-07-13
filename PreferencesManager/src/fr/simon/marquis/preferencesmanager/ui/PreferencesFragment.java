@@ -27,10 +27,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.TextView;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.util.Utils;
@@ -97,7 +97,7 @@ public class PreferencesFragment extends Fragment {
 				task.execute();
 			}
 		} else {
-			updateListView(preferenceFile);
+			updateListView(preferenceFile, false);
 		}
 	}
 
@@ -129,9 +129,13 @@ public class PreferencesFragment extends Fragment {
 		mListener = null;
 	}
 
-	public void updateListView(PreferenceFile p) {
+	public void updateListView(PreferenceFile p, boolean animate) {
 		preferenceFile = p;
 		loadingView.setVisibility(View.GONE);
+		if (animate) {
+			loadingView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+			listView.startAnimation(AnimationUtils.loadAnimation(getActivity(),android.R.anim.fade_in));
+		}
 		listView.setAdapter(new PreferenceAdapter(getActivity(), this));
 		listView.setEmptyView(emptyView);
 		listView.setOnItemClickListener(new OnItemClickListener() {
@@ -175,7 +179,7 @@ public class PreferencesFragment extends Fragment {
 			super.onPostExecute(result);
 			// App.getRoot().file.read(mPath + "/" + mName).toString();
 			// preferenceFile.toXml();
-			updateListView(result);
+			updateListView(result, true);
 		}
 
 	}

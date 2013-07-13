@@ -26,6 +26,7 @@ import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Toast;
@@ -44,14 +45,18 @@ import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class AppListActivity extends SherlockActivity {
 	private static final int REQUEST_CODE = 123456;
-	StickyListHeadersListView listView;
-
+	private StickyListHeadersListView listView;
+	private View loadingView;
+	
 	String curFilter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_app_list);
+		loadingView = findViewById(R.id.loadingView);
+		listView = (StickyListHeadersListView) findViewById(R.id.listView);
+		
 		GetApplicationsTask task = new GetApplicationsTask(this);
 		if(Utils.hasHONEYCOMB()){
 			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
@@ -62,7 +67,9 @@ public class AppListActivity extends SherlockActivity {
 	}
 
 	public void updateListView(ArrayList<AppEntry> apps) {
-		listView = (StickyListHeadersListView) findViewById(R.id.listView);
+		loadingView.setVisibility(View.GONE);
+		loadingView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+		listView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
 		listView.setAdapter(new AppAdapter(this, apps));
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
