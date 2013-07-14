@@ -15,30 +15,24 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
-import java.util.HashMap;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-
+import android.view.Menu;
+import android.view.MenuItem;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.Files;
-import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnFragmentInteractionListener;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class PreferencesActivity extends SherlockFragmentActivity implements
+public class PreferencesActivity extends FragmentActivity implements
 		OnFragmentInteractionListener {
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
@@ -69,7 +63,7 @@ public class PreferencesActivity extends SherlockFragmentActivity implements
 //			}
 //			Log.e("",(System.currentTimeMillis() - start) + "ms to read all files");
 			
-			getSupportActionBar().setTitle(b.getString("TITLE"));
+			getActionBar().setTitle(b.getString("TITLE"));
 			packageName = b.getString("PACKAGE_NAME");
 		} catch (JSONException e) {
 			finish();
@@ -84,11 +78,11 @@ public class PreferencesActivity extends SherlockFragmentActivity implements
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.preferences, menu);
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.preferences_activity, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-
+	
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean fav = Utils.isFavorite(packageName, this);

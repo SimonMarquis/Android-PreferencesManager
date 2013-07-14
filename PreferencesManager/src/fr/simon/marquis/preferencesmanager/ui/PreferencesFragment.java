@@ -21,10 +21,13 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
@@ -102,8 +105,42 @@ public class PreferencesFragment extends Fragment {
 	}
 
 	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.preferences_fragment, menu);
+		super.onCreateOptionsMenu(menu, inflater);
+	}
+
+	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.action_add_int:
+
+			return true;
+		case R.id.action_add_boolean:
+			createBooleanPref();
+			return true;
+		default:
+			return super.onOptionsItemSelected(item);
+		}
+	}
+
+	private void createBooleanPref() {
+		DialogFragment newFragment = AddPreferenceDialog
+				.newInstance(getString(R.string.title_add_boolean));
+		//efficace ?
+		newFragment.setTargetFragment(this, ("Fragment:"+mPath+"/"+mName).hashCode());
+		newFragment.show(getFragmentManager(), "dialog");
+	}
+
+	public void addBooleanPref(String key, boolean value) {
+		preferenceFile.add(key, value);
+		((PreferenceAdapter) listView.getAdapter()).notifyDataSetChanged();
+		preferenceFile.save(mPath+"/"+mName, getActivity());
 	}
 
 	public void onButtonPressed(Uri uri) {
@@ -133,8 +170,10 @@ public class PreferencesFragment extends Fragment {
 		preferenceFile = p;
 		loadingView.setVisibility(View.GONE);
 		if (animate) {
-			loadingView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
-			listView.startAnimation(AnimationUtils.loadAnimation(getActivity(),android.R.anim.fade_in));
+			loadingView.startAnimation(AnimationUtils.loadAnimation(
+					getActivity(), android.R.anim.fade_out));
+			listView.startAnimation(AnimationUtils.loadAnimation(getActivity(),
+					android.R.anim.fade_in));
 		}
 		listView.setAdapter(new PreferenceAdapter(getActivity(), this));
 		listView.setEmptyView(emptyView);

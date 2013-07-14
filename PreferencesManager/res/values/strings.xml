@@ -39,7 +39,8 @@
     <string name="action_add_stringset">StringSet</string>
     
     
-    <string name="hint_boolean">Key value</string>
+    <string name="hint_key">Key</string>
+    <string name="hint_value">Value</string>
     
     
     <string name="title_add_boolean">Add a boolean value</string>

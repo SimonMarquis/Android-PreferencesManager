@@ -47,7 +47,7 @@ public class AppListActivity extends SherlockActivity {
 	private static final int REQUEST_CODE = 123456;
 	private StickyListHeadersListView listView;
 	private View loadingView;
-	
+
 	String curFilter;
 
 	@Override
@@ -56,20 +56,23 @@ public class AppListActivity extends SherlockActivity {
 		setContentView(R.layout.activity_app_list);
 		loadingView = findViewById(R.id.loadingView);
 		listView = (StickyListHeadersListView) findViewById(R.id.listView);
-		
+
 		GetApplicationsTask task = new GetApplicationsTask(this);
-		if(Utils.hasHONEYCOMB()){
-			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
+		if (Utils.hasHONEYCOMB()) {
+			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+					(Void[]) null);
 		} else {
 			task.execute();
 		}
-		
+
 	}
 
 	public void updateListView(ArrayList<AppEntry> apps) {
 		loadingView.setVisibility(View.GONE);
-		loadingView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
-		listView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+		loadingView.startAnimation(AnimationUtils.loadAnimation(this,
+				android.R.anim.fade_out));
+		listView.startAnimation(AnimationUtils.loadAnimation(this,
+				android.R.anim.fade_in));
 		listView.setAdapter(new AppAdapter(this, apps));
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -111,7 +114,10 @@ public class AppListActivity extends SherlockActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == REQUEST_CODE) {
-			((AppAdapter) listView.getWrappedAdapter()).notifyDataSetChanged();
+			if (listView != null && listView.getWrappedAdapter() != null) {
+				((AppAdapter) listView.getWrappedAdapter())
+						.notifyDataSetChanged();
+			}
 		}
 	}
 
