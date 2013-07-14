@@ -31,6 +31,18 @@
     <string name="action_fav">Add to favorites</string>
     <string name="action_unfav">Remove from favorites</string>
     <string name="action_add">Add a preference</string>
+    <string name="action_add_int">Integer</string>
+    <string name="action_add_string">String</string>
+    <string name="action_add_boolean">Boolean</string>
+    <string name="action_add_float">Float</string>
+    <string name="action_add_long">Long</string>
+    <string name="action_add_stringset">StringSet</string>
+    
+    
+    <string name="hint_boolean">Key value</string>
+    
+    
+    <string name="title_add_boolean">Add a boolean value</string>
  
     
     
