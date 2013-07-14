@@ -36,6 +36,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
+import fr.simon.marquis.preferencesmanager.model.PreferenceType;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class PreferencesFragment extends Fragment {
@@ -119,25 +120,24 @@ public class PreferencesFragment extends Fragment {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_add_int:
-
+			showPrefDialog(PreferenceType.INT);
 			return true;
 		case R.id.action_add_boolean:
-			createBooleanPref();
+			showPrefDialog(PreferenceType.BOOLEAN);
 			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
-	private void createBooleanPref() {
-		DialogFragment newFragment = AddPreferenceDialog
-				.newInstance(getString(R.string.title_add_boolean));
+	private void showPrefDialog(PreferenceType type) {
+		DialogFragment newFragment = AddPreferenceDialog.newInstance(type);
 		//efficace ?
 		newFragment.setTargetFragment(this, ("Fragment:"+mPath+"/"+mName).hashCode());
 		newFragment.show(getFragmentManager(), "dialog");
 	}
 
-	public void addBooleanPref(String key, boolean value) {
+	public void addPrefKeyValue(String key, Object value) {
 		preferenceFile.add(key, value);
 		((PreferenceAdapter) listView.getAdapter()).notifyDataSetChanged();
 		preferenceFile.save(mPath+"/"+mName, getActivity());
