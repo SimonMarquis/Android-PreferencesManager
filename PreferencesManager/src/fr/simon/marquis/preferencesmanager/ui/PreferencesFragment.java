@@ -125,6 +125,18 @@ public class PreferencesFragment extends Fragment {
 		case R.id.action_add_boolean:
 			showPrefDialog(PreferenceType.BOOLEAN);
 			return true;
+		case R.id.action_add_string:
+			showPrefDialog(PreferenceType.STRING);
+			return true;
+		case R.id.action_add_float:
+			showPrefDialog(PreferenceType.FLOAT);
+			return true;
+		case R.id.action_add_long:
+			showPrefDialog(PreferenceType.LONG);
+			return true;
+		case R.id.action_add_stringset:
+			showPrefDialog(PreferenceType.STRINGSET);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}

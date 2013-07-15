@@ -24,19 +24,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:gravity="center"
         android:ems="10"
+        android:gravity="center"
         android:hint="@string/hint_key"
         android:inputType="textNoSuggestions" >
     </EditText>
 
-    <Switch
+    <EditText
         android:id="@+id/value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:checked="true"
-        android:textOff="false"
-        android:textOn="true" />
+        android:ems="5"
+        android:gravity="center"
+        android:hint="@string/hint_value"
+        android:inputType="numberSigned" >
+    </EditText>
 
 </LinearLayout>

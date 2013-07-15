@@ -43,7 +43,12 @@
     <string name="hint_value">Value</string>
     
     
-    <string name="title_add_boolean">Add a boolean value</string>
+    <string name="title_add_boolean">Add a <i>Boolean</i> value</string>
+    <string name="title_add_int">Add an <i>Integer</i> value</string>
+    <string name="title_add_string">Add a <i>String</i> value</string>
+    <string name="title_add_float">Add a <i>Float</i> value</string>
+    <string name="title_add_long">Add a <i>Long</i> value</string>
+    <string name="title_add_stringset">Add a <i>StringSet</i> value</string>
  
     
     

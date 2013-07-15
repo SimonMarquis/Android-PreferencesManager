@@ -5,6 +5,8 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -55,13 +57,23 @@ public class AddPreferenceDialog extends DialogFragment {
 						}).create();
 	}
 
-	private String generateTitle() {
+	private Spanned generateTitle() {
+		String title = null;
 		switch (mPreferenceType) {
 		case BOOLEAN:
-			return getString(R.string.title_add_boolean);
-		default:
-			return null;
+			title = getString(R.string.title_add_boolean);
+		case INT:
+			title = getString(R.string.title_add_int);
+		case STRING:
+			title = getString(R.string.title_add_string);
+		case FLOAT:
+			title = getString(R.string.title_add_float);
+		case LONG:
+			title = getString(R.string.title_add_long);
+		case STRINGSET:
+			title = getString(R.string.title_add_stringset);
 		}
+		return Html.fromHtml(title);
 	}
 
 	private View buildView() {
@@ -69,6 +81,19 @@ public class AddPreferenceDialog extends DialogFragment {
 		switch (mPreferenceType) {
 		case BOOLEAN:
 			layout = R.layout.dialog_add_boolean;
+			break;
+		case INT:
+		case LONG:
+			layout = R.layout.dialog_add_integer;
+			break;
+		case STRING:
+			layout = R.layout.dialog_add_string;
+			break;
+		case FLOAT:
+			layout = R.layout.dialog_add_float;
+			break;
+		case STRINGSET:
+			layout = R.layout.dialog_add_stringset;
 			break;
 		}
 		View view = getActivity().getLayoutInflater().inflate(layout, null);
@@ -92,6 +117,22 @@ public class AddPreferenceDialog extends DialogFragment {
 			switch (mPreferenceType) {
 			case BOOLEAN:
 				value = ((CompoundButton) mValue).isChecked();
+				break;
+			case INT:
+				value = Integer.valueOf(((EditText) mValue).getText().toString());
+				break;
+			case STRING:
+				value = ((EditText) mValue).getText().toString();
+				break;
+			case FLOAT:
+				value = Float.valueOf(((EditText) mValue).getText().toString());
+				break;
+			case LONG:
+				value = Long.valueOf(((EditText) mValue).getText().toString());
+				break;
+			case STRINGSET:
+				//FIXME
+				value = ((EditText) mValue).getText().toString();
 				break;
 			}
 			fragment.addPrefKeyValue(key, value);
