@@ -5,9 +5,14 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import fr.simon.marquis.preferencesmanager.R;
@@ -17,6 +22,8 @@ public class AddPreferenceDialog extends DialogFragment {
 	private EditText mKey;
 	private View mValue;
 	private PreferenceType mPreferenceType;
+
+	private Button mButton;
 
 	public static AddPreferenceDialog newInstance(PreferenceType type) {
 		AddPreferenceDialog frag = new AddPreferenceDialog();
@@ -36,25 +43,153 @@ public class AddPreferenceDialog extends DialogFragment {
 			return null;
 		}
 
-		// TODO add a validation step
+		createValidator();
 
-		return new AlertDialog.Builder(getActivity())
+		AlertDialog dialog = new AlertDialog.Builder(getActivity())
 				// .setIcon(R.drawable.alert_dialog_icon)
 				.setTitle(generateTitle())
 				.setView(view)
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								performOK();
+									int which) {
 							}
 						})
 				.setNegativeButton(android.R.string.cancel,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
-									int whichButton) {
+									int which) {
 							}
 						}).create();
+
+		return dialog;
+	}
+
+	private void createValidator() {
+		mKey.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before,
+					int count) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				if (mButton != null) {
+					mButton.setEnabled(TextUtils.isEmpty(s.toString().trim()));
+				}
+			}
+		});
+
+		switch (mPreferenceType) {
+		case FLOAT:
+			((EditText) mValue).addTextChangedListener(new TextWatcher() {
+				@Override
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
+				}
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					if (mButton != null) {
+						try {
+							Float.parseFloat(s.toString().trim());
+							mButton.setEnabled(true);
+						} catch (NumberFormatException e) {
+							mButton.setEnabled(false);
+						}
+					}
+				}
+			});
+			break;
+		case LONG:
+			((EditText) mValue).addTextChangedListener(new TextWatcher() {
+				@Override
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
+				}
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					if (mButton != null) {
+						try {
+							Long.parseLong(s.toString().trim());
+							mButton.setEnabled(true);
+						} catch (NumberFormatException e) {
+							mButton.setEnabled(false);
+						}
+					}
+				}
+			});
+			break;
+		case INT:
+			((EditText) mValue).addTextChangedListener(new TextWatcher() {
+				@Override
+				public void onTextChanged(CharSequence s, int start,
+						int before, int count) {
+				}
+
+				@Override
+				public void beforeTextChanged(CharSequence s, int start,
+						int count, int after) {
+				}
+
+				@Override
+				public void afterTextChanged(Editable s) {
+					if (mButton != null) {
+						try {
+							Integer.parseInt(s.toString().trim());
+							mButton.setEnabled(true);
+						} catch (NumberFormatException e) {
+							mButton.setEnabled(false);
+						}
+					}
+				}
+			});
+			break;
+		case STRINGSET:
+			//TODO validation
+			break;
+		default:
+			break;
+		}
+	}
+
+	@Override
+	public void onHiddenChanged(boolean hidden) {
+		// TODO Auto-generated method stub
+		super.onHiddenChanged(hidden);
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+		mButton = ((AlertDialog) getDialog())
+				.getButton(DialogInterface.BUTTON_POSITIVE);
+		mButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				performOK();
+				dismiss();
+			}
+		});
+		mButton.setEnabled(TextUtils.isEmpty(mKey.toString().trim()));
 	}
 
 	private Spanned generateTitle() {
@@ -62,16 +197,22 @@ public class AddPreferenceDialog extends DialogFragment {
 		switch (mPreferenceType) {
 		case BOOLEAN:
 			title = getString(R.string.title_add_boolean);
+			break;
 		case INT:
 			title = getString(R.string.title_add_int);
+			break;
 		case STRING:
 			title = getString(R.string.title_add_string);
+			break;
 		case FLOAT:
 			title = getString(R.string.title_add_float);
+			break;
 		case LONG:
 			title = getString(R.string.title_add_long);
+			break;
 		case STRINGSET:
 			title = getString(R.string.title_add_stringset);
+			break;
 		}
 		return Html.fromHtml(title);
 	}
@@ -119,7 +260,8 @@ public class AddPreferenceDialog extends DialogFragment {
 				value = ((CompoundButton) mValue).isChecked();
 				break;
 			case INT:
-				value = Integer.valueOf(((EditText) mValue).getText().toString());
+				value = Integer.valueOf(((EditText) mValue).getText()
+						.toString());
 				break;
 			case STRING:
 				value = ((EditText) mValue).getText().toString();
@@ -131,7 +273,7 @@ public class AddPreferenceDialog extends DialogFragment {
 				value = Long.valueOf(((EditText) mValue).getText().toString());
 				break;
 			case STRINGSET:
-				//FIXME
+				// FIXME
 				value = ((EditText) mValue).getText().toString();
 				break;
 			}
