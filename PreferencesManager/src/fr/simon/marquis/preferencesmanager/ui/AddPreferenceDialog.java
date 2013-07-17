@@ -42,6 +42,8 @@ public class AddPreferenceDialog extends DialogFragment {
 		if (view == null) {
 			return null;
 		}
+		
+		initValues();
 
 		createValidator();
 
@@ -66,114 +68,52 @@ public class AddPreferenceDialog extends DialogFragment {
 
 		return dialog;
 	}
+	
+	private void initValues() {
+		switch (mPreferenceType) {
+		case BOOLEAN:
+			((CompoundButton) mValue).setChecked(true);
+			break;
+		
+		default:
+			break;
+		}
+	}
 
 	private void createValidator() {
-		mKey.addTextChangedListener(new TextWatcher() {
+		TextWatcher textWatcher = new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
-			}
-
+					int count) {}
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
-			}
-
+					int after) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				if (mButton != null) {
-					mButton.setEnabled(TextUtils.isEmpty(s.toString().trim()));
-				}
+				validate();
 			}
-		});
+		};
+		
+		mKey.addTextChangedListener(textWatcher);
 
 		switch (mPreferenceType) {
+		case STRING:
 		case FLOAT:
-			((EditText) mValue).addTextChangedListener(new TextWatcher() {
-				@Override
-				public void onTextChanged(CharSequence s, int start,
-						int before, int count) {
-				}
-
-				@Override
-				public void beforeTextChanged(CharSequence s, int start,
-						int count, int after) {
-				}
-
-				@Override
-				public void afterTextChanged(Editable s) {
-					if (mButton != null) {
-						try {
-							Float.parseFloat(s.toString().trim());
-							mButton.setEnabled(true);
-						} catch (NumberFormatException e) {
-							mButton.setEnabled(false);
-						}
-					}
-				}
-			});
-			break;
 		case LONG:
-			((EditText) mValue).addTextChangedListener(new TextWatcher() {
-				@Override
-				public void onTextChanged(CharSequence s, int start,
-						int before, int count) {
-				}
-
-				@Override
-				public void beforeTextChanged(CharSequence s, int start,
-						int count, int after) {
-				}
-
-				@Override
-				public void afterTextChanged(Editable s) {
-					if (mButton != null) {
-						try {
-							Long.parseLong(s.toString().trim());
-							mButton.setEnabled(true);
-						} catch (NumberFormatException e) {
-							mButton.setEnabled(false);
-						}
-					}
-				}
-			});
-			break;
 		case INT:
-			((EditText) mValue).addTextChangedListener(new TextWatcher() {
-				@Override
-				public void onTextChanged(CharSequence s, int start,
-						int before, int count) {
-				}
-
-				@Override
-				public void beforeTextChanged(CharSequence s, int start,
-						int count, int after) {
-				}
-
-				@Override
-				public void afterTextChanged(Editable s) {
-					if (mButton != null) {
-						try {
-							Integer.parseInt(s.toString().trim());
-							mButton.setEnabled(true);
-						} catch (NumberFormatException e) {
-							mButton.setEnabled(false);
-						}
-					}
-				}
-			});
+			((EditText) mValue).addTextChangedListener(textWatcher);
+			break;
+		case BOOLEAN:
+			//always valid
 			break;
 		case STRINGSET:
-			//TODO validation
-			break;
-		default:
+			// TODO validation
 			break;
 		}
 	}
 
 	@Override
 	public void onHiddenChanged(boolean hidden) {
-		// TODO Auto-generated method stub
 		super.onHiddenChanged(hidden);
 	}
 
@@ -189,7 +129,9 @@ public class AddPreferenceDialog extends DialogFragment {
 				dismiss();
 			}
 		});
-		mButton.setEnabled(TextUtils.isEmpty(mKey.toString().trim()));
+		
+		//first validate to correctly disable the OK button
+		validate();
 	}
 
 	private Spanned generateTitle() {
@@ -223,7 +165,7 @@ public class AddPreferenceDialog extends DialogFragment {
 		case BOOLEAN:
 			layout = R.layout.dialog_add_boolean;
 			break;
-		case INT:
+		case INT:/*same layout as Long are integer*/
 		case LONG:
 			layout = R.layout.dialog_add_integer;
 			break;
@@ -249,9 +191,7 @@ public class AddPreferenceDialog extends DialogFragment {
 			return;
 		}
 
-		if (!validate()) {
-
-		} else {
+		if (validate()) {
 			String key = mKey.getText().toString();
 			Object value = null;
 
@@ -260,8 +200,7 @@ public class AddPreferenceDialog extends DialogFragment {
 				value = ((CompoundButton) mValue).isChecked();
 				break;
 			case INT:
-				value = Integer.valueOf(((EditText) mValue).getText()
-						.toString());
+				value = Integer.valueOf(((EditText) mValue).getText().toString());
 				break;
 			case STRING:
 				value = ((EditText) mValue).getText().toString();
@@ -282,6 +221,41 @@ public class AddPreferenceDialog extends DialogFragment {
 	}
 
 	private boolean validate() {
-		return true;
+		if (mButton == null) {
+			return false;
+		}
+		String key = mKey.getText().toString().trim();
+		boolean keyValid = !TextUtils.isEmpty(key) /* TODO: && key isUnique*/;
+		boolean valueValid = false;
+		try {
+			switch (mPreferenceType) {
+			case BOOLEAN:
+				valueValid = true;
+				break;
+			case FLOAT:
+				Float f = Float.parseFloat(((EditText) mValue).getText().toString().trim());
+				valueValid = !Float.isInfinite(f) && !Float.isNaN(f);
+				break;
+			case LONG:
+				Long.parseLong(((EditText) mValue).getText().toString().trim());
+				valueValid = true;
+				break;
+			case INT:
+				Integer.parseInt(((EditText) mValue).getText().toString().trim());
+				valueValid = true;
+				break;
+			case STRING:
+				//Maybe there are some things to validate in a string?
+				valueValid = true;
+				break;
+			case STRINGSET:
+				//TODO
+				break;
+			}
+		} catch (NumberFormatException e) {
+			valueValid = false;
+		}
+		mButton.setEnabled(keyValid && valueValid);
+		return keyValid && valueValid;
 	}
 }
