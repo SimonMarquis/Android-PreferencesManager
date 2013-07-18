@@ -31,6 +31,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -39,17 +41,20 @@ import com.emilsjolander.components.stickylistheaders.StickyListHeadersAdapter;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.util.MyComparator;
+import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter {
+public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter, Filterable {
 	private LayoutInflater layoutInflater;
 	private Context context;
 	private Pattern pattern;
 	private ArrayList<AppEntry> applications;
+	private ArrayList<AppEntry> applicationsToDisplay;
 	private int color;
 
 	public AppAdapter(Context ctx, ArrayList<AppEntry> applications) {
 		this.context = ctx;
 		this.applications = applications;
+		this.applicationsToDisplay = applications;
 		this.layoutInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.color = context.getResources().getColor(R.color.blue);
@@ -58,7 +63,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter 
 	@Override
 	public void notifyDataSetChanged() {
 		Log.e("","notifyDataSetChanged");
-		Collections.sort(applications, new MyComparator());
+		Collections.sort(applicationsToDisplay, new MyComparator());
 		super.notifyDataSetChanged();
 	}
 
@@ -78,7 +83,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter 
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		AppEntry item = applications.get(position);
+		AppEntry item = applicationsToDisplay.get(position);
 
 		holder.textView.setText(createSpannable(item.getLabel()));
 		holder.imageView.setImageDrawable(item.getIcon(context));
@@ -103,7 +108,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter 
 		} else {
 			holder = (HeaderViewHolder) convertView.getTag();
 		}
-		String headerText = String.valueOf(applications.get(position)
+		String headerText = String.valueOf(applicationsToDisplay.get(position)
 				.getHeaderChar());
 		holder.text.setText(headerText);
 		return convertView;
@@ -115,7 +120,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter 
 
 	@Override
 	public long getHeaderId(int position) {
-		return applications.get(position).getHeaderChar();
+		return applicationsToDisplay.get(position).getHeaderChar();
 	}
 
 	public void setFilter(String filter) {
@@ -150,12 +155,12 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter 
 
 	@Override
 	public int getCount() {
-		return applications.size();
+		return applicationsToDisplay.size();
 	}
 
 	@Override
 	public Object getItem(int position) {
-		return applications.get(position);
+		return applicationsToDisplay.get(position);
 	}
 
 	@Override
@@ -163,4 +168,51 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter 
 		return 0;
 	}
 
+	@Override
+	public Filter getFilter() {
+		return new Filter()
+	       {
+	            @Override
+	            protected FilterResults performFiltering(CharSequence charSequence)
+	            {
+	                FilterResults results = new FilterResults();
+	                Log.e(Utils.TAG,"Test "+charSequence);
+	                if(charSequence == null || charSequence.length() == 0)
+	                {
+	                    results.values = applications;
+	                    results.count = applications.size();
+	                }
+	                else
+	                {
+	                	ArrayList<AppEntry> filterResultsData = new ArrayList<AppEntry>();
+	                    for(AppEntry data : applications)
+	                    {
+	                        //In this loop, you'll filter through originalData and compare each item to charSequence.
+	                        //If you find a match, add it to your new ArrayList
+	                        //I'm not sure how you're going to do comparison, so you'll need to fill out this conditional
+	                    	Log.e(Utils.TAG,charSequence.toString().trim() + " <--> "+ data.getLabel() + " == " + Boolean.valueOf(data.getLabel().matches("(?i).*"+charSequence.toString().trim()+".*")));
+	                    	
+	                    	Pattern p = Pattern.compile(charSequence.toString().trim(),Pattern.CASE_INSENSITIVE);
+	                    	if(p.matcher(data.getLabel()).find())
+//	                        		data.getLabel().toLowerCase().contains(charSequence.toString().toLowerCase()))
+	                        {
+	                            filterResultsData.add(data);
+	                        }
+	                    }            
+
+	                    results.values = filterResultsData;
+	                    results.count = filterResultsData.size();
+	                }
+
+	                return results;
+	            }
+
+	            @Override
+	            protected void publishResults(CharSequence charSequence, FilterResults filterResults)
+	            {
+	                applicationsToDisplay = (ArrayList<AppEntry>)filterResults.values;
+	                notifyDataSetChanged();
+	            }
+	        };
+	}
 }

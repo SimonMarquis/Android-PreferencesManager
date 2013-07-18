@@ -175,10 +175,13 @@ public class AppListActivity extends SherlockActivity {
 						public boolean onQueryTextChange(String newText) {
 							curFilter = !TextUtils.isEmpty(newText) ? newText
 									.trim() : null;
-							((AppAdapter) listView.getWrappedAdapter())
-									.setFilter(curFilter);
-							// TODO ((AppAdapter) listView.getWrappedAdapter())
-							// .getFilter().filter(curFilter);
+									AppAdapter adapter = ((AppAdapter) listView.getWrappedAdapter());
+									if(adapter == null){
+										return false;
+									}
+							
+									adapter.setFilter(curFilter);
+									adapter.getFilter().filter(curFilter);
 							return true;
 						}
 					});
