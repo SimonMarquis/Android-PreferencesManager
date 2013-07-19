@@ -125,6 +125,9 @@ public class AppEntry {
 				CharSequence label = mInfo.loadLabel(ctx.getPackageManager());
 				mLabel = label != null ? label.toString() : mInfo.packageName;
 			}
+			
+			//repalce false spaces O_o
+			mLabel = mLabel.replaceAll("\\s", " ");
 		}
 
 		if (mSortingValue == null)

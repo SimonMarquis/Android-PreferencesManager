@@ -17,6 +17,7 @@ package fr.simon.marquis.preferencesmanager.ui;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,7 +44,8 @@ import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.util.MyComparator;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter, Filterable {
+public class AppAdapter extends BaseAdapter implements
+		StickyListHeadersAdapter, Filterable {
 	private LayoutInflater layoutInflater;
 	private Context context;
 	private Pattern pattern;
@@ -62,7 +64,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter,
 
 	@Override
 	public void notifyDataSetChanged() {
-		Log.e("","notifyDataSetChanged");
+		Log.e("", "notifyDataSetChanged");
 		Collections.sort(applicationsToDisplay, new MyComparator());
 		super.notifyDataSetChanged();
 	}
@@ -170,49 +172,42 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter,
 
 	@Override
 	public Filter getFilter() {
-		return new Filter()
-	       {
-	            @Override
-	            protected FilterResults performFiltering(CharSequence charSequence)
-	            {
-	                FilterResults results = new FilterResults();
-	                Log.e(Utils.TAG,"Test "+charSequence);
-	                if(charSequence == null || charSequence.length() == 0)
-	                {
-	                    results.values = applications;
-	                    results.count = applications.size();
-	                }
-	                else
-	                {
-	                	ArrayList<AppEntry> filterResultsData = new ArrayList<AppEntry>();
-	                    for(AppEntry data : applications)
-	                    {
-	                        //In this loop, you'll filter through originalData and compare each item to charSequence.
-	                        //If you find a match, add it to your new ArrayList
-	                        //I'm not sure how you're going to do comparison, so you'll need to fill out this conditional
-	                    	Log.e(Utils.TAG,charSequence.toString().trim() + " <--> "+ data.getLabel() + " == " + Boolean.valueOf(data.getLabel().matches("(?i).*"+charSequence.toString().trim()+".*")));
-	                    	
-	                    	Pattern p = Pattern.compile(charSequence.toString().trim(),Pattern.CASE_INSENSITIVE);
-	                    	if(p.matcher(data.getLabel()).find())
-//	                        		data.getLabel().toLowerCase().contains(charSequence.toString().toLowerCase()))
-	                        {
-	                            filterResultsData.add(data);
-	                        }
-	                    }            
+		return new Filter() {
+			@Override
+			protected FilterResults performFiltering(CharSequence charSequence) {
+				FilterResults results = new FilterResults();
+				Log.e(Utils.TAG, "Test " + charSequence);
+				if (charSequence == null || charSequence.length() == 0) {
+					results.values = applications;
+					results.count = applications.size();
+				} else {
+					String prefixString = charSequence.toString()
+							.toLowerCase(Locale.getDefault()).trim();
+					ArrayList<AppEntry> filterResultsData = new ArrayList<AppEntry>();
+					for (AppEntry data : applications) {
+						Pattern p = Pattern.compile(prefixString,
+								Pattern.CASE_INSENSITIVE);
+						if (p.matcher(
+								data.getLabel()
+										.toLowerCase(Locale.getDefault())
+										.trim()).find()) {
+							filterResultsData.add(data);
+						}
+					}
 
-	                    results.values = filterResultsData;
-	                    results.count = filterResultsData.size();
-	                }
+					results.values = filterResultsData;
+					results.count = filterResultsData.size();
+				}
 
-	                return results;
-	            }
+				return results;
+			}
 
-	            @Override
-	            protected void publishResults(CharSequence charSequence, FilterResults filterResults)
-	            {
-	                applicationsToDisplay = (ArrayList<AppEntry>)filterResults.values;
-	                notifyDataSetChanged();
-	            }
-	        };
+			@Override
+			protected void publishResults(CharSequence charSequence,
+					FilterResults filterResults) {
+				applicationsToDisplay = (ArrayList<AppEntry>) filterResults.values;
+				notifyDataSetChanged();
+			}
+		};
 	}
 }
