@@ -50,7 +50,8 @@
     <string name="title_add_long">Add a <i>Long</i> value</string>
     <string name="title_add_stringset">Add a <i>StringSet</i> value</string>
  
-    
+    <string name="show_system_apps">Show system apps</string>
+    <string name="hide_system_apps">Hide system apps</string>
     
     <string name="btn_backup">Backup</string>
     <string name="btn_restore">Restore</string>

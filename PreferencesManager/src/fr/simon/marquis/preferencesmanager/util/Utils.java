@@ -64,10 +64,7 @@ public class Utils {
 	}
 
 	public static ArrayList<AppEntry> getApplications(Context ctx) {
-		if (applications != null) {
-			return applications;
-		}
-
+		boolean showSystemApps = isShowSystemApps(ctx);
 		List<ApplicationInfo> appsInfo = ctx.getPackageManager()
 				.getInstalledApplications(
 						PackageManager.GET_UNINSTALLED_PACKAGES
@@ -76,8 +73,10 @@ public class Utils {
 			appsInfo = new ArrayList<ApplicationInfo>();
 
 		List<AppEntry> entries = new ArrayList<AppEntry>(appsInfo.size());
-		for (int i = 0; i < appsInfo.size(); i++) {
-			entries.add(new AppEntry(appsInfo.get(i), ctx));
+		for (ApplicationInfo a : appsInfo) {
+			if (showSystemApps || (a.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+				entries.add(new AppEntry(a, ctx));
+			}
 		}
 
 		Collections.sort(entries, new MyComparator());
@@ -164,6 +163,17 @@ public class Utils {
 				Log.e(TAG, "Favorites are : " + favorites.toString());
 			}
 		}
+	}
+
+	public static boolean isShowSystemApps(Context ctx) {
+		return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
+				"showSystemApps", false);
+	}
+
+	public static void setShowSystemApps(Context ctx, boolean show) {
+		Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+		e.putBoolean("showSystemApps", show);
+		e.commit();
 	}
 
 	public static void debugFile(String file) {

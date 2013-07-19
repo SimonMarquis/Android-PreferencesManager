@@ -47,6 +47,7 @@ public class AppListActivity extends SherlockActivity {
 	private static final int REQUEST_CODE = 123456;
 	private StickyListHeadersListView listView;
 	private View loadingView;
+	private GetApplicationsTask task;
 
 	String curFilter;
 
@@ -57,22 +58,34 @@ public class AppListActivity extends SherlockActivity {
 		loadingView = findViewById(R.id.loadingView);
 		listView = (StickyListHeadersListView) findViewById(R.id.listView);
 
-		GetApplicationsTask task = new GetApplicationsTask(this);
-		if (Utils.hasHONEYCOMB()) {
-			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-					(Void[]) null);
-		} else {
-			task.execute();
-		}
+		startTask();
+	}
 
+	/**
+	 * @return true if a new task is started
+	 */
+	private boolean startTask() {
+		if(task == null || task.isCancelled()){
+			task = new GetApplicationsTask(this);
+			if (Utils.hasHONEYCOMB()) {
+				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
+						(Void[]) null);
+			} else {
+				task.execute();
+			}
+			return true;
+		}
+		return false;
+		
 	}
 
 	public void updateListView(ArrayList<AppEntry> apps) {
-		loadingView.setVisibility(View.GONE);
 		loadingView.startAnimation(AnimationUtils.loadAnimation(this,
 				android.R.anim.fade_out));
+		loadingView.setVisibility(View.GONE);
 		listView.startAnimation(AnimationUtils.loadAnimation(this,
 				android.R.anim.fade_in));
+		listView.setVisibility(View.VISIBLE);
 		listView.setAdapter(new AppAdapter(this, apps));
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -160,11 +173,14 @@ public class AppListActivity extends SherlockActivity {
 		return list;
 	}
 
+	
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuItem item = menu.add("Search");
-		item.setIcon(android.R.drawable.ic_menu_search);
-		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		getSupportMenuInflater().inflate(R.menu.app_list_activity, menu);
+		MenuItem itemSearch = menu.add("Search");
+		itemSearch.setIcon(android.R.drawable.ic_menu_search);
+		itemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		View searchView = SearchViewCompat.newSearchView(getSupportActionBar()
 				.getThemedContext());
 		if (searchView != null) {
@@ -185,9 +201,30 @@ public class AppListActivity extends SherlockActivity {
 							return true;
 						}
 					});
-			item.setActionView(searchView);
+			itemSearch.setActionView(searchView);
 		}
-		return true;
+		return super.onCreateOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		menu.findItem(R.id.show_system_apps).setTitle(Utils.isShowSystemApps(this) ? R.string.hide_system_apps : R.string.show_system_apps);
+		return super.onPrepareOptionsMenu(menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case R.id.show_system_apps:
+			Utils.setShowSystemApps(this, !Utils.isShowSystemApps(this));
+			boolean launched = startTask();
+			if(!launched){
+				Utils.setShowSystemApps(this, !Utils.isShowSystemApps(this));
+			}
+			supportInvalidateOptionsMenu();
+			break;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 
 	public class GetApplicationsTask extends
@@ -200,6 +237,12 @@ public class AppListActivity extends SherlockActivity {
 
 		@Override
 		protected void onPreExecute() {
+			loadingView.startAnimation(AnimationUtils.loadAnimation(mContext,
+					android.R.anim.fade_in));
+			loadingView.setVisibility(View.VISIBLE);
+			listView.startAnimation(AnimationUtils.loadAnimation(mContext,
+					android.R.anim.fade_out));
+			listView.setVisibility(View.GONE);
 			super.onPreExecute();
 		}
 
@@ -212,6 +255,17 @@ public class AppListActivity extends SherlockActivity {
 		protected void onPostExecute(ArrayList<AppEntry> result) {
 			super.onPostExecute(result);
 			updateListView(result);
+			finishTask();
+		}
+
+		private void finishTask() {
+			task = null;
+		}
+
+		@Override
+		protected void onCancelled() {
+			finishTask();
+			super.onCancelled();
 		}
 
 	}
