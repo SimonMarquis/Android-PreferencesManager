@@ -65,7 +65,7 @@ public class AppListActivity extends SherlockActivity {
 	 * @return true if a new task is started
 	 */
 	private boolean startTask() {
-		if(task == null || task.isCancelled()){
+		if (task == null || task.isCancelled()) {
 			task = new GetApplicationsTask(this);
 			if (Utils.hasHONEYCOMB()) {
 				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
@@ -76,16 +76,19 @@ public class AppListActivity extends SherlockActivity {
 			return true;
 		}
 		return false;
-		
+	}
+
+	private void toggleDisplay(boolean showList) {
+		loadingView.startAnimation(AnimationUtils.loadAnimation(this,
+				showList ? android.R.anim.fade_out : android.R.anim.fade_in));
+		loadingView.setVisibility(showList ? View.GONE : View.VISIBLE);
+		listView.startAnimation(AnimationUtils.loadAnimation(this,
+				showList ? android.R.anim.fade_in : android.R.anim.fade_out));
+		listView.setVisibility(showList ? View.VISIBLE : View.GONE);
 	}
 
 	public void updateListView(ArrayList<AppEntry> apps) {
-		loadingView.startAnimation(AnimationUtils.loadAnimation(this,
-				android.R.anim.fade_out));
-		loadingView.setVisibility(View.GONE);
-		listView.startAnimation(AnimationUtils.loadAnimation(this,
-				android.R.anim.fade_in));
-		listView.setVisibility(View.VISIBLE);
+		toggleDisplay(true);
 		listView.setAdapter(new AppAdapter(this, apps));
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -173,8 +176,6 @@ public class AppListActivity extends SherlockActivity {
 		return list;
 	}
 
-	
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.app_list_activity, menu);
@@ -191,13 +192,14 @@ public class AppListActivity extends SherlockActivity {
 						public boolean onQueryTextChange(String newText) {
 							curFilter = !TextUtils.isEmpty(newText) ? newText
 									.trim() : null;
-									AppAdapter adapter = ((AppAdapter) listView.getWrappedAdapter());
-									if(adapter == null){
-										return false;
-									}
-							
-									adapter.setFilter(curFilter);
-									adapter.getFilter().filter(curFilter);
+							AppAdapter adapter = ((AppAdapter) listView
+									.getWrappedAdapter());
+							if (adapter == null) {
+								return false;
+							}
+
+							adapter.setFilter(curFilter);
+							adapter.getFilter().filter(curFilter);
 							return true;
 						}
 					});
@@ -205,20 +207,22 @@ public class AppListActivity extends SherlockActivity {
 		}
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.findItem(R.id.show_system_apps).setTitle(Utils.isShowSystemApps(this) ? R.string.hide_system_apps : R.string.show_system_apps);
+		menu.findItem(R.id.show_system_apps).setTitle(
+				Utils.isShowSystemApps(this) ? R.string.hide_system_apps
+						: R.string.show_system_apps);
 		return super.onPrepareOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.show_system_apps:
 			Utils.setShowSystemApps(this, !Utils.isShowSystemApps(this));
 			boolean launched = startTask();
-			if(!launched){
+			if (!launched) {
 				Utils.setShowSystemApps(this, !Utils.isShowSystemApps(this));
 			}
 			supportInvalidateOptionsMenu();
@@ -237,12 +241,7 @@ public class AppListActivity extends SherlockActivity {
 
 		@Override
 		protected void onPreExecute() {
-			loadingView.startAnimation(AnimationUtils.loadAnimation(mContext,
-					android.R.anim.fade_in));
-			loadingView.setVisibility(View.VISIBLE);
-			listView.startAnimation(AnimationUtils.loadAnimation(mContext,
-					android.R.anim.fade_out));
-			listView.setVisibility(View.GONE);
+			toggleDisplay(false);
 			super.onPreExecute();
 		}
 
