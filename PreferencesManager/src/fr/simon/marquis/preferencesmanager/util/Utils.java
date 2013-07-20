@@ -34,12 +34,15 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.spazedog.lib.rootfw.container.FileStat;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
+import fr.simon.marquis.preferencesmanager.model.File;
+import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.ui.App;
 
 public class Utils {
@@ -189,6 +192,35 @@ public class Utils {
 
 	public static boolean hasHONEYCOMB() {
 		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+	}
+	
+	
+	public static Files findXmlFiles(String packageName) {
+		String path = "data/data/" + packageName;
+		ArrayList<FileStat> files = App.getRoot().file.statList(path);
+		return findFiles(files, path, new Files());
+	}
+
+	public static Files findFiles(ArrayList<FileStat> files, String path, Files list) {
+		if (files == null)
+			return list;
+
+		for (FileStat file : files) {
+			if (file == null || TextUtils.isEmpty(file.name()))
+				continue;
+			if (".".equals(file.name()) || "..".equals(file.name()))
+				continue;
+			if ("d".equals(file.type())) {
+				String p = path + "/" + file.name();
+				findFiles(App.getRoot().file.statList(p), p, list);
+				continue;
+			}
+			if ("f".equals(file.type()) && file.name().endsWith(".xml")) {
+				list.add(new File(file.name(), path));
+			}
+		}
+
+		return list;
 	}
 
 }

@@ -24,23 +24,18 @@ import android.os.Bundle;
 import android.support.v4.widget.SearchViewCompat;
 import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.emilsjolander.components.stickylistheaders.StickyListHeadersListView;
-import com.spazedog.lib.rootfw.container.FileStat;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
-import fr.simon.marquis.preferencesmanager.model.File;
-import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class AppListActivity extends SherlockActivity {
@@ -94,35 +89,17 @@ public class AppListActivity extends SherlockActivity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				if (!App.getRoot().connected()) {
-					Utils.displayNoRoot(AppListActivity.this).show();
-				} else {
-					AppEntry item = (AppEntry) ((AppAdapter) listView
-							.getWrappedAdapter()).getItem(arg2);
+				AppEntry item = (AppEntry) ((AppAdapter) listView
+						.getWrappedAdapter()).getItem(arg2);
 
-					long start = System.currentTimeMillis();
-					Files files = findXmlFiles(item);
-					Log.e("", (System.currentTimeMillis() - start)
-							+ "ms to findXmlFiles");
+				Intent i = new Intent(AppListActivity.this,
+						PreferencesActivity.class);
+				i.putExtra("TITLE", item.getLabel());
+				i.putExtra("PACKAGE_NAME",
+						item.getApplicationInfo().packageName);
 
-					if (files == null || files.size() == 0) {
-						Toast.makeText(AppListActivity.this,
-								"Pas de fichiers de préférences",
-								Toast.LENGTH_SHORT).show();
-						// No result, show crouton
-					} else {
-						Intent i = new Intent(AppListActivity.this,
-								PreferencesActivity.class);
-						i.putExtra("TITLE", item.getLabel());
-						i.putExtra("PACKAGE_NAME",
-								item.getApplicationInfo().packageName);
-						i.putExtra("FILES", files.toJSON().toString());
-
-						startActivityForResult(i, REQUEST_CODE);
-					}
-				}
+				startActivityForResult(i, REQUEST_CODE);
 			}
-
 		});
 	}
 
@@ -145,36 +122,6 @@ public class AppListActivity extends SherlockActivity {
 		super.onStart();
 	}
 
-	private Files findXmlFiles(AppEntry app) {
-		if (app == null)
-			return null;
-
-		String path = "data/data/" + app.getApplicationInfo().packageName;
-		ArrayList<FileStat> files = App.getRoot().file.statList(path);
-		return findFiles(files, path, new Files());
-	}
-
-	private Files findFiles(ArrayList<FileStat> files, String path, Files list) {
-		if (files == null)
-			return list;
-
-		for (FileStat file : files) {
-			if (file == null || TextUtils.isEmpty(file.name()))
-				continue;
-			if (".".equals(file.name()) || "..".equals(file.name()))
-				continue;
-			if ("d".equals(file.type())) {
-				String p = path + "/" + file.name();
-				findFiles(App.getRoot().file.statList(p), p, list);
-				continue;
-			}
-			if ("f".equals(file.type()) && file.name().endsWith(".xml")) {
-				list.add(new File(file.name(), path));
-			}
-		}
-
-		return list;
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

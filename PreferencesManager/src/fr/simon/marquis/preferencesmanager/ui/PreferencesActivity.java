@@ -15,10 +15,8 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -27,6 +25,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.AnimationUtils;
+import android.widget.Switch;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnFragmentInteractionListener;
@@ -38,9 +39,13 @@ public class PreferencesActivity extends FragmentActivity implements
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
 	ViewPager mViewPager;
+	View mLoadingView;
+	View mEmptyView;
 
 	Files files;
 	String packageName;
+	
+	FindFilesTask findFilesTask;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -52,29 +57,20 @@ public class PreferencesActivity extends FragmentActivity implements
 			finish();
 			return;
 		}
-
-		try {
-			files = Files.fromJSON(new JSONArray(b.getString("FILES")));
-//			long start = System.currentTimeMillis();
-//			HashMap<String, PreferenceFile> _prefs = new HashMap<String, PreferenceFile>();
-//			for(int i = 0; i < files.size(); i++) {
-//				String _title = files.get(i).getPath()  + "/" + files.get(i).getName();
-//				_prefs.put(_title, PreferenceFile.fromXml(App.getRoot().file.read(_title).toString()));
-//			}
-//			Log.e("",(System.currentTimeMillis() - start) + "ms to read all files");
-			
-			getActionBar().setTitle(b.getString("TITLE"));
-			packageName = b.getString("PACKAGE_NAME");
-		} catch (JSONException e) {
-			finish();
-			return;
-		}
-
-		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
+		
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mSectionsPagerAdapter);
+		mLoadingView = (View) findViewById(R.id.loadingView);
+		mEmptyView = (View) findViewById(R.id.emptyView);
 
+		getActionBar().setTitle(b.getString("TITLE"));
+		packageName = b.getString("PACKAGE_NAME");
+
+		if (!App.getRoot().connected()) {
+			Utils.displayNoRoot(this).show();
+		} else {
+			findFilesTask = new FindFilesTask(packageName);
+			findFilesTask.execute();
+		}
 	}
 
 	@Override
@@ -82,7 +78,7 @@ public class PreferencesActivity extends FragmentActivity implements
 		getMenuInflater().inflate(R.menu.preferences_activity, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	
+
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean fav = Utils.isFavorite(packageName, this);
@@ -142,6 +138,53 @@ public class PreferencesActivity extends FragmentActivity implements
 	@Override
 	public void onFragmentInteraction(Uri uri) {
 
+	}
+	
+	public class FindFilesTask extends AsyncTask<Void, Void, Files> {
+		private String mPackageName;
+		
+		public FindFilesTask(String packageName) {
+			this.mPackageName = packageName;
+		}
+		
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+		}
+		
+		@Override
+		protected Files doInBackground(Void... params) {
+			return Utils.findXmlFiles(mPackageName);
+		}
+		
+		@Override
+		protected void onPostExecute(Files result) {
+			updateFindFiles(result);
+			super.onPostExecute(result);
+		}
+		
+	}
+	
+	private void updateFindFiles(Files f){
+		files = f;
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		mViewPager.setAdapter(mSectionsPagerAdapter);
+		
+		if(files == null || files.size() == 0){
+			mEmptyView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+			mEmptyView.setVisibility(View.VISIBLE);
+			mLoadingView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+			mLoadingView.setVisibility(View.GONE);
+		} else {
+			mEmptyView.setVisibility(View.GONE);
+//			mLoadingView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+			mLoadingView.setVisibility(View.GONE);
+			mViewPager.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+			mViewPager.setVisibility(View.VISIBLE);
+		}
+		
+		
+		
 	}
 
 }
