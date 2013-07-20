@@ -19,11 +19,13 @@
     android:layout_height="match_parent"
     tools:context=".PreferencesActivity$DummySectionFragment" >
 
-    <ListView
-        android:id="@+id/listView"
+    <GridView
+        android:id="@+id/gridView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
+        android:layout_height="wrap_content" 
+        android:layout_centerInParent="true"
+        android:numColumns="@integer/numColumns" >
+    </GridView>
 
     <ImageView
         android:id="@+id/emptyView"

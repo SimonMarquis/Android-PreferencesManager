@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
 import android.widget.ListView;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
@@ -50,7 +51,7 @@ public class PreferencesFragment extends Fragment {
 
 	private OnFragmentInteractionListener mListener;
 
-	private ListView listView;
+	private GridView gridView;
 	private View loadingView, emptyView;
 
 	public static PreferencesFragment newInstance(String paramName,
@@ -91,7 +92,7 @@ public class PreferencesFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		loadingView = (View) view.findViewById(R.id.loadingView);
 		emptyView = (View) view.findViewById(R.id.emptyView);
-		listView = (ListView) view.findViewById(R.id.listView);
+		gridView = (GridView) view.findViewById(R.id.gridView);
 
 		if (preferenceFile == null) {
 			ParsingTask task = new ParsingTask(mPath + "/" + mName);
@@ -151,7 +152,7 @@ public class PreferencesFragment extends Fragment {
 
 	public void addPrefKeyValue(String key, Object value) {
 		preferenceFile.add(key, value);
-		((PreferenceAdapter) listView.getAdapter()).notifyDataSetChanged();
+		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
 		preferenceFile.save(mPath+"/"+mName, getActivity());
 	}
 
@@ -184,17 +185,17 @@ public class PreferencesFragment extends Fragment {
 		if (animate) {
 			loadingView.startAnimation(AnimationUtils.loadAnimation(
 					getActivity(), android.R.anim.fade_out));
-			listView.startAnimation(AnimationUtils.loadAnimation(getActivity(),
+			gridView.startAnimation(AnimationUtils.loadAnimation(getActivity(),
 					android.R.anim.fade_in));
 		}
-		listView.setAdapter(new PreferenceAdapter(getActivity(), this));
-		listView.setEmptyView(emptyView);
-		listView.setOnItemClickListener(new OnItemClickListener() {
+		gridView.setAdapter(new PreferenceAdapter(getActivity(), this));
+		gridView.setEmptyView(emptyView);
+		gridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO
-				Log.e("", ((Entry<String, Object>) listView.getAdapter()
+				Log.e("", ((Entry<String, Object>) gridView.getAdapter()
 						.getItem(arg2)).getValue().toString());
 			}
 		});
