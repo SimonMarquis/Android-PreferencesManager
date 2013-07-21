@@ -49,6 +49,17 @@
     <string name="title_add_float">Add a <i>Float</i> value</string>
     <string name="title_add_long">Add a <i>Long</i> value</string>
     <string name="title_add_stringset">Add a <i>StringSet</i> value</string>
+    
+    <string name="title_edit_boolean">Edit a <i>Boolean</i> value</string>
+    <string name="title_edit_int">Edit an <i>Integer</i> value</string>
+    <string name="title_edit_string">Edit a <i>String</i> value</string>
+    <string name="title_edit_float">Edit a <i>Float</i> value</string>
+    <string name="title_edit_long">Edit a <i>Long</i> value</string>
+    <string name="title_edit_stringset">Edit a <i>StringSet</i> value</string>
+    
+    <string name="dialog_add">Add</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_update">Update</string>
  
     <string name="show_system_apps">Show system apps</string>
     <string name="hide_system_apps">Hide system apps</string>
