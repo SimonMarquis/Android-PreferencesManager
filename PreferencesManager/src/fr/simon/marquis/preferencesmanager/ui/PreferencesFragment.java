@@ -23,7 +23,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +33,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
-import android.widget.ListView;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.model.PreferenceType;
@@ -144,16 +142,23 @@ public class PreferencesFragment extends Fragment {
 	}
 
 	private void showPrefDialog(PreferenceType type) {
-		DialogFragment newFragment = AddPreferenceDialog.newInstance(type);
-		//efficace ?
-		newFragment.setTargetFragment(this, ("Fragment:"+mPath+"/"+mName).hashCode());
-		newFragment.show(getFragmentManager(), "dialog");
+		showPrefDialog(type, false, null, null);
 	}
 
-	public void addPrefKeyValue(String key, Object value) {
-		preferenceFile.add(key, value);
+	private void showPrefDialog(PreferenceType type, boolean editMode,
+			String key, Object obj) {
+		DialogFragment newFragment = PreferenceDialog.newInstance(type,
+				editMode, key, obj);
+		newFragment.setTargetFragment(this,
+				("Fragment:" + mPath + "/" + mName).hashCode());
+		newFragment.show(getFragmentManager(), mPath + "/" + mName + "#" + key);
+	}
+
+	public void addPrefKeyValue(String previousKey, String newKey,
+			Object value, boolean editMode) {
+		preferenceFile.add(previousKey, newKey, value, editMode);
 		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
-		preferenceFile.save(mPath+"/"+mName, getActivity());
+		preferenceFile.save(mPath + "/" + mName, getActivity());
 	}
 
 	public void onButtonPressed(Uri uri) {
@@ -194,15 +199,16 @@ public class PreferencesFragment extends Fragment {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				// TODO
-				Log.e("", ((Entry<String, Object>) gridView.getAdapter()
-						.getItem(arg2)).getValue().toString());
+
+				Entry<String, Object> item = (Entry<String, Object>) gridView
+						.getAdapter().getItem(arg2);
+				showPrefDialog(PreferenceType.fromObject(item.getValue()),
+						true, item.getKey(), item.getValue());
 			}
 		});
 	}
 
 	public interface OnFragmentInteractionListener {
-		// TODO: Update argument type and name
 		public void onFragmentInteraction(Uri uri);
 	}
 
@@ -235,5 +241,4 @@ public class PreferencesFragment extends Fragment {
 		}
 
 	}
-
 }
