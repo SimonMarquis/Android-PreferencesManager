@@ -15,25 +15,21 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Map.Entry;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 import fr.simon.marquis.preferencesmanager.R;
+import fr.simon.marquis.preferencesmanager.model.PreferenceType;
 
 public class PreferenceAdapter extends BaseAdapter {
 
 	private LayoutInflater layoutInflater;
 	private PreferencesFragment mPreferencesFragment;
-
-	// private PreferenceFile mPreferenceFile;
 
 	public PreferenceAdapter(Context ctx, PreferencesFragment f) {
 		this.layoutInflater = (LayoutInflater) ctx
@@ -63,7 +59,7 @@ public class PreferenceAdapter extends BaseAdapter {
 			convertView = layoutInflater.inflate(R.layout.row_preference,
 					parent, false);
 			holder = new ViewHolder();
-			holder.thumb = (View) convertView.findViewById(R.id.item_thumb);
+			holder.background = convertView;
 			holder.name = (TextView) convertView.findViewById(R.id.item_name);
 			holder.value = (TextView) convertView.findViewById(R.id.item_value);
 			convertView.setTag(holder);
@@ -73,28 +69,8 @@ public class PreferenceAdapter extends BaseAdapter {
 
 		Entry<String, Object> item = mPreferencesFragment.preferenceFile
 				.getList().get(position);
-		Object obj = item.getValue();
-		int color = Color.BLACK;
-		if (obj instanceof String) {
-			color = 0xff33B5E5;
-		} else if (obj instanceof Integer) {
-			color = 0xff99CC00;
-		} else if (obj instanceof Long) {
-			color = 0xffFFBB33;
-		} else if (obj instanceof Float) {
-			color = 0xffFF8800;
-		} else if (obj instanceof Double) {
-			color = 0xff669900;
-		} else if (obj instanceof Boolean) {
-			color = 0xffAA66CC;
-		} else if (obj instanceof int[]) {
-			color = 0xffFF4444;
-		} else if (obj instanceof ArrayList) {
-			color = 0xffCC0000;
-		} else if (obj instanceof HashSet) {
-			color = 0xffcccccc;
-		}
-		holder.thumb.setBackgroundColor(color);
+		holder.background.setBackgroundResource(PreferenceType
+				.getDialogLayout(item.getValue()));
 		holder.name.setText(item.getKey());
 		holder.value.setText((item.getValue() == null ? null : item.getValue()
 				.toString()));
@@ -103,7 +79,7 @@ public class PreferenceAdapter extends BaseAdapter {
 	}
 
 	class ViewHolder {
-		private View thumb;
+		private View background;
 		private TextView name;
 		private TextView value;
 	}
