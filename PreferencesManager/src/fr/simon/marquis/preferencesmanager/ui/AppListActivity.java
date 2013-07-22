@@ -122,7 +122,6 @@ public class AppListActivity extends SherlockActivity {
 		super.onStart();
 	}
 
-
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getSupportMenuInflater().inflate(R.menu.app_list_activity, menu);

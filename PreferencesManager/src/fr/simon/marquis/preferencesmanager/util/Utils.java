@@ -193,15 +193,15 @@ public class Utils {
 	public static boolean hasHONEYCOMB() {
 		return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 	}
-	
-	
+
 	public static Files findXmlFiles(String packageName) {
 		String path = "data/data/" + packageName;
 		ArrayList<FileStat> files = App.getRoot().file.statList(path);
 		return findFiles(files, path, new Files());
 	}
 
-	public static Files findFiles(ArrayList<FileStat> files, String path, Files list) {
+	public static Files findFiles(ArrayList<FileStat> files, String path,
+			Files list) {
 		if (files == null)
 			return list;
 

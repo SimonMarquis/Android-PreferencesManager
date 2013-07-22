@@ -27,7 +27,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
-import android.widget.Switch;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnFragmentInteractionListener;
@@ -44,7 +43,7 @@ public class PreferencesActivity extends FragmentActivity implements
 
 	Files files;
 	String packageName;
-	
+
 	FindFilesTask findFilesTask;
 
 	@Override
@@ -52,12 +51,14 @@ public class PreferencesActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_preferences);
 
+		getActionBar().setDisplayHomeAsUpEnabled(true);
+
 		Bundle b = getIntent().getExtras();
 		if (b == null) {
 			finish();
 			return;
 		}
-		
+
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mLoadingView = (View) findViewById(R.id.loadingView);
 		mEmptyView = (View) findViewById(R.id.emptyView);
@@ -93,6 +94,9 @@ public class PreferencesActivity extends FragmentActivity implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case android.R.id.home:
+			finish();
+			break;
 		case R.id.action_fav:
 			Utils.setFavorite(packageName,
 					!Utils.isFavorite(packageName, this), this);
@@ -139,30 +143,29 @@ public class PreferencesActivity extends FragmentActivity implements
 	public void onFragmentInteraction(Uri uri) {
 
 	}
-	
+
 	public class FindFilesTask extends AsyncTask<Void, Void, Files> {
 		private String mPackageName;
-		
+
 		public FindFilesTask(String packageName) {
 			this.mPackageName = packageName;
 		}
-		
+
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
 		}
-		
+
 		@Override
 		protected Files doInBackground(Void... params) {
 			return Utils.findXmlFiles(mPackageName);
 		}
-		
+
 		@Override
 		protected void onPostExecute(Files result) {
 			updateFindFiles(result);
 			super.onPostExecute(result);
 		}
-		
 	}
 	
 	private void updateFindFiles(Files f){
@@ -182,9 +185,5 @@ public class PreferencesActivity extends FragmentActivity implements
 			mViewPager.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
 			mViewPager.setVisibility(View.VISIBLE);
 		}
-		
-		
-		
 	}
-
 }

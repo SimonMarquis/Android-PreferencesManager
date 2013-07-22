@@ -63,7 +63,7 @@ public class AppEntry {
 		isFavorite = Utils.isFavorite(mInfo.packageName, context);
 		mApkFile = new File(info.sourceDir);
 		loadLabels(context);
-		//Pre-load the icons for smooth scrolling
+		// Pre-load the icons for smooth scrolling
 		getIcon(context);
 	}
 
@@ -98,8 +98,6 @@ public class AppEntry {
 	public String toString() {
 		return mLabel;
 	}
-	
-	
 
 	public boolean isFavorite() {
 		return isFavorite;
@@ -107,7 +105,7 @@ public class AppEntry {
 
 	public void setFavorite(boolean isFavorite) {
 		this.isFavorite = isFavorite;
-		//IMPORTANT! also update the char used for sorting
+		// IMPORTANT! also update the char used for sorting
 		mSortingValue = (isFavorite ? " " : "") + mLabel;
 		headerChar = formatChar(mLabel);
 	}
@@ -125,8 +123,8 @@ public class AppEntry {
 				CharSequence label = mInfo.loadLabel(ctx.getPackageManager());
 				mLabel = label != null ? label.toString() : mInfo.packageName;
 			}
-			
-			//repalce false spaces O_o
+
+			// repalce false spaces O_o
 			mLabel = mLabel.replaceAll("\\s", " ");
 		}
 

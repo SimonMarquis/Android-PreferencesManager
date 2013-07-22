@@ -14,5 +14,7 @@
      limitations under the License.
 -->
 <resources>
-    <integer name="numColumns">2</integer>
+
+    <integer name="numColumns">3</integer>
+
 </resources>
