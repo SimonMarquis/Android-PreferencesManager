@@ -118,13 +118,8 @@ public class PreferencesActivity extends FragmentActivity implements
 		@Override
 		public Fragment getItem(int position) {
 			PreferencesFragment fragment = PreferencesFragment.newInstance(
-					null, null);
-			Bundle args = new Bundle();
-			args.putString(PreferencesFragment.ARG_NAME, files.get(position)
-					.getName());
-			args.putString(PreferencesFragment.ARG_PATH, files.get(position)
-					.getPath());
-			fragment.setArguments(args);
+					files.get(position).getName(), files.get(position)
+							.getPath(), packageName);
 			return fragment;
 		}
 
@@ -167,22 +162,27 @@ public class PreferencesActivity extends FragmentActivity implements
 			super.onPostExecute(result);
 		}
 	}
-	
-	private void updateFindFiles(Files f){
+
+	private void updateFindFiles(Files f) {
 		files = f;
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		mSectionsPagerAdapter = new SectionsPagerAdapter(
+				getSupportFragmentManager());
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-		
-		if(files == null || files.size() == 0){
-			mEmptyView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+
+		if (files == null || files.size() == 0) {
+			mEmptyView.startAnimation(AnimationUtils.loadAnimation(this,
+					android.R.anim.fade_in));
 			mEmptyView.setVisibility(View.VISIBLE);
-			mLoadingView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+			mLoadingView.startAnimation(AnimationUtils.loadAnimation(this,
+					android.R.anim.fade_out));
 			mLoadingView.setVisibility(View.GONE);
 		} else {
 			mEmptyView.setVisibility(View.GONE);
-//			mLoadingView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+			// mLoadingView.startAnimation(AnimationUtils.loadAnimation(this,
+			// android.R.anim.fade_out));
 			mLoadingView.setVisibility(View.GONE);
-			mViewPager.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+			mViewPager.startAnimation(AnimationUtils.loadAnimation(this,
+					android.R.anim.fade_in));
 			mViewPager.setVisibility(View.VISIBLE);
 		}
 	}

@@ -41,9 +41,11 @@ import fr.simon.marquis.preferencesmanager.util.Utils;
 public class PreferencesFragment extends Fragment {
 	public static final String ARG_NAME = "NAME";
 	public static final String ARG_PATH = "PATH";
+	public static final String ARG_PACKAGE_NAME = "PACKAGE_NAME";
 
 	private String mName;
 	private String mPath;
+	private String mPackageName;
 
 	public PreferenceFile preferenceFile;
 
@@ -53,11 +55,12 @@ public class PreferencesFragment extends Fragment {
 	private View loadingView, emptyView;
 
 	public static PreferencesFragment newInstance(String paramName,
-			String paramPath) {
+			String paramPath, String paramPackageName) {
 		PreferencesFragment fragment = new PreferencesFragment();
 		Bundle args = new Bundle();
 		args.putString(ARG_NAME, paramName);
 		args.putString(ARG_PATH, paramPath);
+		args.putString(ARG_PACKAGE_NAME, paramPackageName);
 		fragment.setArguments(args);
 		return fragment;
 	}
@@ -72,6 +75,7 @@ public class PreferencesFragment extends Fragment {
 		if (getArguments() != null) {
 			mName = getArguments().getString(ARG_NAME);
 			mPath = getArguments().getString(ARG_PATH);
+			mPackageName = getArguments().getString(ARG_PACKAGE_NAME);
 		}
 
 		setRetainInstance(true);
@@ -158,7 +162,7 @@ public class PreferencesFragment extends Fragment {
 			Object value, boolean editMode) {
 		preferenceFile.add(previousKey, newKey, value, editMode);
 		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
-		preferenceFile.save(mPath + "/" + mName, getActivity());
+		preferenceFile.save(mPath + "/" + mName, getActivity(), mPackageName);
 	}
 
 	public void onButtonPressed(Uri uri) {
