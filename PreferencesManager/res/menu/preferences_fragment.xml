@@ -44,5 +44,16 @@
             </group>
         </menu>
     </item>
-
-</menu>
+    <item
+        android:id="@+id/action_edit_file"
+        android:icon="@drawable/ic_action_document"
+        android:orderInCategory="3"
+        android:showAsAction="never"
+        android:title="@string/action_direct_edit"/>
+    <item
+        android:id="@+id/action_delete_file"
+        android:icon="@drawable/ic_action_trash"
+        android:orderInCategory="5"
+        android:showAsAction="never"
+        android:title="@string/action_delete_file"/>
+</menu>

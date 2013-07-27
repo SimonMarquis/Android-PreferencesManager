@@ -29,7 +29,11 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <string name="action_fav">Add to favorites</string>
+    <string name="action_save_file">Save the file</string>
+    <string name="action_new_file">Create a new file</string>
     <string name="action_unfav">Remove from favorites</string>
+    <string name="action_direct_edit">Edit the file</string>
+    <string name="action_delete_file">Delete the file</string>
     <string name="action_add">Add a preference</string>
     <string name="action_add_int">Integer</string>
     <string name="action_add_string">String</string>
@@ -38,6 +42,9 @@
     <string name="action_add_long">Long</string>
     <string name="action_add_stringset">StringSet</string>
     
+    
+    <string name="save_success">File saved</string>
+    <string name="save_fail">The xml file is not well formed…</string>
     
     <string name="hint_key">Key</string>
     <string name="hint_value">Value</string>
