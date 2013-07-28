@@ -13,12 +13,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <color name="blue">#33b5e5</color>
-    <color name="xml_tag">#3F7F7F</color>
-    <color name="xml_attribute_name">#7F007F</color>
-    <color name="xml_attribute_value">#2A00FF</color>
-    <color name="xml_comment">#3F5FBF</color>
-
-</resources>
+    <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/ic_action_save"
+        android:showAsAction="always"
+        android:title="@string/action_save_file"/>
+    
+</menu>

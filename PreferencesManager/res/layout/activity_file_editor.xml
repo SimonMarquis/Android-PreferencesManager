@@ -13,12 +13,17 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<resources>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
 
-    <color name="blue">#33b5e5</color>
-    <color name="xml_tag">#3F7F7F</color>
-    <color name="xml_attribute_name">#7F007F</color>
-    <color name="xml_attribute_value">#2A00FF</color>
-    <color name="xml_comment">#3F5FBF</color>
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_centerInParent="true"
+        android:inputType="textMultiLine|textNoSuggestions|none" />
 
-</resources>
+</RelativeLayout>
