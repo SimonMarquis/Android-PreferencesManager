@@ -21,30 +21,32 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.widget.SearchViewCompat;
-import android.support.v4.widget.SearchViewCompat.OnQueryTextListenerCompat;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
 import com.emilsjolander.components.stickylistheaders.StickyListHeadersListView;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class AppListActivity extends SherlockActivity {
-	private static final int REQUEST_CODE = 123456;
+public class AppListActivity extends ActionBarActivity implements OnQueryTextListener {
+	private static final int REQUEST_CODE = 123;
 	private StickyListHeadersListView listView;
 	private View loadingView;
 	private GetApplicationsTask task;
 
-	String curFilter;
+	private SearchView mSearchView;
+	private String mCurFilter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -124,33 +126,12 @@ public class AppListActivity extends SherlockActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.menu.app_list_activity, menu);
-		MenuItem itemSearch = menu.add("Search");
-		itemSearch.setIcon(android.R.drawable.ic_menu_search);
-		itemSearch.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		View searchView = SearchViewCompat.newSearchView(getSupportActionBar()
-				.getThemedContext());
-		if (searchView != null) {
-			SearchViewCompat.setOnQueryTextListener(searchView,
-					new OnQueryTextListenerCompat() {
-
-						@Override
-						public boolean onQueryTextChange(String newText) {
-							curFilter = !TextUtils.isEmpty(newText) ? newText
-									.trim() : null;
-							AppAdapter adapter = ((AppAdapter) listView
-									.getWrappedAdapter());
-							if (adapter == null) {
-								return false;
-							}
-
-							adapter.setFilter(curFilter);
-							adapter.getFilter().filter(curFilter);
-							return true;
-						}
-					});
-			itemSearch.setActionView(searchView);
-		}
+		getMenuInflater().inflate(R.menu.app_list_activity, menu);
+		
+		MenuItem searchItem = menu.findItem(R.id.menu_search);
+		mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+		mSearchView.setQueryHint(getString(R.string.action_search));
+		mSearchView.setOnQueryTextListener(this);
 		return super.onCreateOptionsMenu(menu);
 	}
 
@@ -213,6 +194,28 @@ public class AppListActivity extends SherlockActivity {
 			super.onCancelled();
 		}
 
+	}
+
+	@Override
+	public boolean onQueryTextChange(String newText) {
+		mCurFilter = !TextUtils.isEmpty(newText) ? newText
+				.trim() : null;
+		AppAdapter adapter = ((AppAdapter) listView
+				.getWrappedAdapter());
+		if (adapter == null) {
+			return false;
+		}
+		
+		adapter.setFilter(mCurFilter);
+		adapter.getFilter().filter(mCurFilter);
+		return true;
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String query) {
+		Utils.hideSoftKeyboard(this, mSearchView);
+		mSearchView.clearFocus();
+		return false;
 	}
 
 }

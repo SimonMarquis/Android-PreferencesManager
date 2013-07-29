@@ -19,10 +19,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,7 +32,7 @@ import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnFragmentInteractionListener;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class PreferencesActivity extends FragmentActivity implements
+public class PreferencesActivity extends ActionBarActivity implements
 		OnFragmentInteractionListener {
 
 	SectionsPagerAdapter mSectionsPagerAdapter;

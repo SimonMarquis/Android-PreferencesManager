@@ -68,6 +68,7 @@
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_update">Update</string>
  
+    <string name="action_search">Search an app</string>
     <string name="show_system_apps">Show system apps</string>
     <string name="hide_system_apps">Hide system apps</string>
     

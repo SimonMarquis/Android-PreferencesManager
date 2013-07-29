@@ -17,8 +17,10 @@ package fr.simon.marquis.preferencesmanager.model;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +29,16 @@ import java.util.Map.Entry;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
+
+import com.spazedog.lib.rootfw.container.FileStat;
+import com.spazedog.lib.rootfw.container.ProcessList;
+import com.spazedog.lib.rootfw.extender.Processes;
+
+import fr.simon.marquis.preferencesmanager.ui.App;
+import fr.simon.marquis.preferencesmanager.util.Utils;
 import fr.simon.marquis.preferencesmanager.util.XmlUtils;
 
 public class PreferenceFile {
@@ -41,6 +52,9 @@ public class PreferenceFile {
 	}
 
 	public static PreferenceFile fromXml(String xml) {
+		Log.e("", "fromXML");
+		Log.e("", xml);
+
 		PreferenceFile preferenceFile = new PreferenceFile();
 
 		// Check for empty files
@@ -49,7 +63,7 @@ public class PreferenceFile {
 
 		try {
 			InputStream in = new ByteArrayInputStream(xml.getBytes());
-			Map map = XmlUtils.readMapXml(in);
+			Map<String, Object> map = XmlUtils.readMapXml(in);
 			in.close();
 
 			if (map != null) {
@@ -61,7 +75,7 @@ public class PreferenceFile {
 		return preferenceFile;
 	}
 
-	public void setPreferences(Map map) {
+	public void setPreferences(Map<String, Object> map) {
 		mPreferences = map;
 		mList = new ArrayList<Entry<String, Object>>(mPreferences.entrySet());
 	}
@@ -81,7 +95,7 @@ public class PreferenceFile {
 	}
 
 	public List<Entry<String, Object>> getList() {
-		if(mList == null){
+		if (mList == null) {
 			mList = new ArrayList<Entry<String, Object>>();
 		}
 		return mList;
@@ -90,4 +104,79 @@ public class PreferenceFile {
 	public void setList(List<Entry<String, Object>> mList) {
 		this.mList = mList;
 	}
+
+	private void updateValue(String key, Object value) {
+		for (Entry<String, Object> entry : mList) {
+			if (entry.getKey().equals(key)) {
+				entry.setValue(value);
+				break;
+			}
+		}
+		mPreferences.put(key, value);
+	}
+
+	private void removeValue(String key) {
+		mPreferences.remove(key);
+		for (Entry<String, Object> entry : mList) {
+			if (entry.getKey().equals(key)) {
+				mList.remove(entry);
+				break;
+			}
+		}
+	}
+
+	private void createAndAddValue(String key, Object value) {
+		mList.add(0, new AbstractMap.SimpleEntry<String, Object>(key, value));
+		mPreferences.put(key, value);
+	}
+
+	public void add(String previousKey, String newKey, Object value,
+			boolean editMode) {
+		if (TextUtils.isEmpty(newKey)) {
+			return;
+		}
+
+		if (!editMode) {
+			if (mPreferences.containsKey(newKey)) {
+				updateValue(newKey, value);
+			} else {
+				createAndAddValue(newKey, value);
+			}
+		} else {
+			if (newKey.equals(previousKey)) {
+				updateValue(newKey, value);
+			} else {
+				removeValue(previousKey);
+
+				if (mPreferences.containsKey(newKey)) {
+					updateValue(newKey, value);
+				} else {
+					createAndAddValue(newKey, value);
+				}
+			}
+		}
+	}
+
+	public static void save(PreferenceFile prefFile, String mFile, Context ctx, String packageName) {
+		save(prefFile.toXml(), mFile, ctx, packageName);
+	}
+	
+	public static void save(String preferences, String mFile, Context ctx, String packageName) {
+		Utils.debugFile(mFile);
+		FileStat fs = App.getRoot().file.stat(mFile);
+		
+		java.io.File f = new java.io.File(ctx.getFilesDir(), "_temp");
+		try {
+			FileOutputStream outputStream = new FileOutputStream(f);
+			outputStream.write(preferences.getBytes());
+			outputStream.close();
+			App.getRoot().file.move(f.getAbsolutePath(), mFile);
+			App.getRoot().file.setPermission(mFile, "0660");
+			App.getRoot().file.setOwner(mFile, fs.user()+"", fs.group()+"");
+			App.getRoot().processes.kill(packageName);
+		} catch (Exception e) {
+		}
+		Utils.debugFile(mFile);
+	}
+
 }
