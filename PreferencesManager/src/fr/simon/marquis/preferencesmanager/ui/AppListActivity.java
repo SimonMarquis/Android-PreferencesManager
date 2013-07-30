@@ -137,9 +137,14 @@ public class AppListActivity extends ActionBarActivity implements OnQueryTextLis
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.findItem(R.id.show_system_apps).setTitle(
-				Utils.isShowSystemApps(this) ? R.string.hide_system_apps
-						: R.string.show_system_apps);
+		boolean show = Utils.isShowSystemApps(this);
+		menu.findItem(R.id.show_system_apps)
+				.setTitle(
+						show ? R.string.hide_system_apps
+								: R.string.show_system_apps)
+				.setIcon(
+						show ? R.drawable.ic_action_show
+								: R.drawable.ic_action_hide);
 		return super.onPrepareOptionsMenu(menu);
 	}
 

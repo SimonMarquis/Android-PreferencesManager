@@ -13,12 +13,13 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
         android:id="@+id/action_save"
-        android:icon="@drawable/ic_action_save"
-        android:showAsAction="always"
-        android:title="@string/action_save_file"/>
-    
+        android:icon="@drawable/ic_action_tick_disabled"
+        android:title="@string/action_save_file"
+        app:showAsAction="always"/>
+
 </menu>

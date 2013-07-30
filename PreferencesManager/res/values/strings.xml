@@ -30,10 +30,10 @@
 
     <string name="action_fav">Add to favorites</string>
     <string name="action_save_file">Save the file</string>
-    <string name="action_new_file">Create a new file</string>
+<!--     <string name="action_new_file">Create a new file</string> -->
     <string name="action_unfav">Remove from favorites</string>
     <string name="action_direct_edit">Edit the file</string>
-    <string name="action_delete_file">Delete the file</string>
+<!--     <string name="action_delete_file">Delete the file</string> -->
     <string name="action_add">Add a preference</string>
     <string name="action_add_int">Integer</string>
     <string name="action_add_string">String</string>

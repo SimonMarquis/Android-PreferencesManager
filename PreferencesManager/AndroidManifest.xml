@@ -47,7 +47,8 @@
             android:label="@string/title_activity_preferences"
             android:windowSoftInputMode="adjustNothing" />
         <activity
-            android:name="fr.simon.marquis.preferencesmanager.ui.FileEditorActivity" />
+            android:name="fr.simon.marquis.preferencesmanager.ui.FileEditorActivity"
+            android:windowSoftInputMode="stateUnchanged|adjustResize" />
     </application>
 
 </manifest>

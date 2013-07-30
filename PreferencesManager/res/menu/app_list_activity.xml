@@ -18,12 +18,13 @@
 
     <item
         android:id="@+id/show_system_apps"
+        android:icon="@drawable/ic_action_show"
         android:orderInCategory="1"
-        android:showAsAction="never"
-        android:title="@string/show_system_apps"/>
+        android:title="@string/show_system_apps"
+        app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/menu_search"
-        android:icon="@android:drawable/ic_menu_search"
+        android:icon="@drawable/ic_action_search"
         android:title="@string/action_search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"/>
