@@ -18,11 +18,13 @@ package fr.simon.marquis.preferencesmanager.ui;
 import java.util.Map.Entry;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +41,8 @@ import fr.simon.marquis.preferencesmanager.model.PreferenceType;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class PreferencesFragment extends Fragment {
+	public static final int CODE_EDIT_FILE = 666;
+	
 	public static final String ARG_NAME = "NAME";
 	public static final String ARG_PATH = "PATH";
 	public static final String ARG_PACKAGE_NAME = "PACKAGE_NAME";
@@ -97,14 +101,18 @@ public class PreferencesFragment extends Fragment {
 		gridView = (GridView) view.findViewById(R.id.gridView);
 
 		if (preferenceFile == null) {
-			ParsingTask task = new ParsingTask(mPath + "/" + mName);
-			if (Utils.hasHONEYCOMB()) {
-				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-			} else {
-				task.execute();
-			}
+			launchTask();
 		} else {
 			updateListView(preferenceFile, false);
+		}
+	}
+	
+	private void launchTask(){
+		ParsingTask task = new ParsingTask(mPath + "/" + mName);
+		if (Utils.hasHONEYCOMB()) {
+			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} else {
+			task.execute();
 		}
 	}
 
@@ -140,11 +148,34 @@ public class PreferencesFragment extends Fragment {
 		case R.id.action_add_stringset:
 			showPrefDialog(PreferenceType.STRINGSET);
 			return true;
+		case R.id.action_edit_file:
+			Intent intent = new Intent(getActivity(), FileEditorActivity.class);
+			intent.putExtra(ARG_NAME, mName);
+			intent.putExtra(ARG_PATH, mPath);
+			intent.putExtra(ARG_PACKAGE_NAME, mPackageName);
+			intent.putExtra("CONTENT", preferenceFile.toXml());
+			startActivityForResult(intent, CODE_EDIT_FILE);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    if (requestCode == CODE_EDIT_FILE && resultCode == ActionBarActivity.RESULT_OK){
+	    	loadingView.setVisibility(View.VISIBLE);
+			loadingView.startAnimation(AnimationUtils.loadAnimation(
+						getActivity(), android.R.anim.fade_in));
+			gridView.setVisibility(View.GONE);
+			gridView.startAnimation(AnimationUtils.loadAnimation(getActivity(),
+						android.R.anim.fade_out));
+	    	launchTask();
+	    }
+	                
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+	
 	private void showPrefDialog(PreferenceType type) {
 		showPrefDialog(type, false, null, null);
 	}
@@ -162,7 +193,7 @@ public class PreferencesFragment extends Fragment {
 			Object value, boolean editMode) {
 		preferenceFile.add(previousKey, newKey, value, editMode);
 		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
-		preferenceFile.save(mPath + "/" + mName, getActivity(), mPackageName);
+		PreferenceFile.save(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
 	}
 
 	public void onButtonPressed(Uri uri) {
@@ -191,6 +222,7 @@ public class PreferencesFragment extends Fragment {
 	public void updateListView(PreferenceFile p, boolean animate) {
 		preferenceFile = p;
 		loadingView.setVisibility(View.GONE);
+		gridView.setVisibility(View.VISIBLE);
 		if (animate) {
 			loadingView.startAnimation(AnimationUtils.loadAnimation(
 					getActivity(), android.R.anim.fade_out));
@@ -231,7 +263,6 @@ public class PreferencesFragment extends Fragment {
 
 		@Override
 		protected PreferenceFile doInBackground(Void... params) {
-			// Utils.debugFile(mFile);
 			return PreferenceFile.fromXml(App.getRoot().file.read(mFile)
 					.toString());
 		}

@@ -27,6 +27,8 @@
     <string name="title_section2">Section 2</string>
     <string name="title_section3">Section 3</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    
+    <string name="popup_edit_message">This file has been modified.\nWould you like to save the changes?</string>
 
     <string name="action_fav">Add to favorites</string>
     <string name="action_save_file">Save the file</string>
@@ -44,7 +46,7 @@
     
     
     <string name="save_success">File saved</string>
-    <string name="save_fail">The xml file is not well formed…</string>
+    <string name="save_fail">The xml file is not valid…</string>
     
     <string name="hint_key">Key</string>
     <string name="hint_value">Value</string>
@@ -74,4 +76,7 @@
     
     <string name="btn_backup">Backup</string>
     <string name="btn_restore">Restore</string>
+    
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

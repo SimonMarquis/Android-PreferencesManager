@@ -34,8 +34,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.spazedog.lib.rootfw.container.FileStat;
-import com.spazedog.lib.rootfw.container.ProcessList;
-import com.spazedog.lib.rootfw.extender.Processes;
 
 import fr.simon.marquis.preferencesmanager.ui.App;
 import fr.simon.marquis.preferencesmanager.util.Utils;
@@ -157,14 +155,18 @@ public class PreferenceFile {
 		}
 	}
 
-	public static void save(PreferenceFile prefFile, String mFile, Context ctx, String packageName) {
-		save(prefFile.toXml(), mFile, ctx, packageName);
+	public static boolean save(PreferenceFile prefFile, String mFile, Context ctx, String packageName) {
+		return save(prefFile.toXml(), mFile, ctx, packageName);
 	}
 	
-	public static void save(String preferences, String mFile, Context ctx, String packageName) {
+	public static boolean save(String preferences, String mFile, Context ctx, String packageName) {
 		Utils.debugFile(mFile);
-		FileStat fs = App.getRoot().file.stat(mFile);
 		
+		if(!isValid(preferences)){
+			return false;
+		}
+		
+		FileStat fs = App.getRoot().file.stat(mFile);
 		java.io.File f = new java.io.File(ctx.getFilesDir(), "_temp");
 		try {
 			FileOutputStream outputStream = new FileOutputStream(f);
@@ -175,8 +177,19 @@ public class PreferenceFile {
 			App.getRoot().file.setOwner(mFile, fs.user()+"", fs.group()+"");
 			App.getRoot().processes.kill(packageName);
 		} catch (Exception e) {
+			return false;
 		}
 		Utils.debugFile(mFile);
+		return true;
+	}
+	
+	private static boolean isValid(String xml) {
+		try {
+			XmlUtils.readMapXml(new ByteArrayInputStream(xml.getBytes()));
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
 	}
 
 }
