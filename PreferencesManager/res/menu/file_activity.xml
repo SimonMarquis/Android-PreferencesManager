@@ -17,6 +17,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
+        android:id="@+id/action_theme"
+        android:icon="@drawable/ic_action_picker"
+        android:title="@string/action_change_theme"
+        app:showAsAction="always">
+        <menu>
+            <group android:checkableBehavior="single" >
+                <item
+                    android:id="@+id/action_theme_eclipse"
+                    android:title="Eclipse"
+                    app:showAsAction="never"/>
+                <item
+                    android:id="@+id/action_theme_google"
+                    android:title="Google"
+                    app:showAsAction="never"/>
+                <item
+                    android:id="@+id/action_theme_roboticket"
+                    android:title="Roboticket"
+                    app:showAsAction="never"/>
+                <item
+                    android:id="@+id/action_theme_notepad"
+                    android:title="Notepad++"
+                    app:showAsAction="never"/>
+                <item
+                    android:id="@+id/action_theme_netbeans"
+                    android:title="Netbeans 6++"
+                    app:showAsAction="never"/>
+            </group>
+        </menu>
+    </item>
+    <item
         android:id="@+id/action_save"
         android:icon="@drawable/ic_action_tick_disabled"
         android:title="@string/action_save_file"
