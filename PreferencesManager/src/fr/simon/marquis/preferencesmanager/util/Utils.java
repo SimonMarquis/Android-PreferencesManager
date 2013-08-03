@@ -172,12 +172,12 @@ public class Utils {
 
 	public static boolean isShowSystemApps(Context ctx) {
 		return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
-				"showSystemApps", false);
+				"SHOW_SYSTEM_APPS", false);
 	}
 
 	public static void setShowSystemApps(Context ctx, boolean show) {
 		Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
-		e.putBoolean("showSystemApps", show);
+		e.putBoolean("SHOW_SYSTEM_APPS", show);
 		e.commit();
 	}
 

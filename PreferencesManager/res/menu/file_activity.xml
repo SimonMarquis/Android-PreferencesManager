@@ -17,6 +17,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
+        android:id="@+id/action_save"
+        android:icon="@drawable/ic_action_tick_disabled"
+        android:title="@string/action_save_file"
+        app:showAsAction="always"/>
+    <item
         android:id="@+id/action_theme"
         android:icon="@drawable/ic_action_picker"
         android:title="@string/action_change_theme"
@@ -25,31 +30,56 @@
             <group android:checkableBehavior="single" >
                 <item
                     android:id="@+id/action_theme_eclipse"
-                    android:title="Eclipse"
+                    android:title="@string/action_theme_eclipse"
                     app:showAsAction="never"/>
                 <item
                     android:id="@+id/action_theme_google"
-                    android:title="Google"
+                    android:title="@string/action_theme_google"
                     app:showAsAction="never"/>
                 <item
                     android:id="@+id/action_theme_roboticket"
-                    android:title="Roboticket"
+                    android:title="@string/action_theme_roboticket"
                     app:showAsAction="never"/>
                 <item
                     android:id="@+id/action_theme_notepad"
-                    android:title="Notepad++"
+                    android:title="@string/action_theme_notepad"
                     app:showAsAction="never"/>
                 <item
                     android:id="@+id/action_theme_netbeans"
-                    android:title="Netbeans 6++"
+                    android:title="@string/action_theme_netbeans"
                     app:showAsAction="never"/>
             </group>
         </menu>
     </item>
     <item
-        android:id="@+id/action_save"
-        android:icon="@drawable/ic_action_tick_disabled"
-        android:title="@string/action_save_file"
-        app:showAsAction="always"/>
+        android:id="@+id/action_size"
+        android:icon="@drawable/ic_action_edit"
+        android:title="@string/action_size"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group android:checkableBehavior="single" >
+                <item
+                    android:id="@+id/action_size_extra_small"
+                    android:title="@string/action_size_extra_small"
+                    app:showAsAction="never"/>
+                <item
+                    android:id="@+id/action_size_small"
+                    android:title="@string/action_size_small"
+                    app:showAsAction="never"/>
+                <item
+                    android:id="@+id/action_size_medium"
+                    android:title="@string/action_size_medium"
+                    app:showAsAction="never"/>
+                <item
+                    android:id="@+id/action_size_large"
+                    android:title="@string/action_size_large"
+                    app:showAsAction="never"/>
+                <item
+                    android:id="@+id/action_size_extra_large"
+                    android:title="@string/action_size_extra_large"
+                    app:showAsAction="never"/>
+            </group>
+        </menu>
+    </item>
 
 </menu>

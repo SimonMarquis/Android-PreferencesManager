@@ -1,5 +1,20 @@
 package fr.simon.marquis.preferencesmanager.ui;
 
+/*
+ * Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License. You may obtain a copy of
+ * the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ */
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,6 +32,7 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
@@ -26,11 +42,13 @@ import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.model.XmlColorTheme;
 import fr.simon.marquis.preferencesmanager.model.XmlColorTheme.ColorTagEnum;
 import fr.simon.marquis.preferencesmanager.model.XmlColorTheme.ColorThemeEnum;
+import fr.simon.marquis.preferencesmanager.model.XmlFontSize;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class FileEditorActivity extends ActionBarActivity implements
 		TextWatcher {
 
+	private XmlFontSize mXmlFontSize;
 	private ColorThemeEnum mColorTheme;
 	private XmlColorTheme mXmlColorTheme;
 
@@ -41,6 +59,7 @@ public class FileEditorActivity extends ActionBarActivity implements
 
 	private static final String KEY_HAS_CONTENT_CHANGED = "HAS_CONTENT_CHANGED";
 	private static final String KEY_COLOR_THEME = "KEY_COLOR_THEME";
+	private static final String KEY_FONT_SIZE = "KEY_FONT_SIZE";
 	private boolean mHasContentChanged;
 
 	Pattern TAG_START = Pattern.compile("</?[\\w-\\?]+",
@@ -78,11 +97,15 @@ public class FileEditorActivity extends ActionBarActivity implements
 			mColorTheme = ColorThemeEnum.valueOf(PreferenceManager
 					.getDefaultSharedPreferences(this).getString(
 							KEY_COLOR_THEME, ColorThemeEnum.ECLIPSE.name()));
+			setXmlFontSize(XmlFontSize.generateSize(PreferenceManager
+					.getDefaultSharedPreferences(this).getInt(KEY_FONT_SIZE,
+							XmlFontSize.MEDIUM.getSize())));
 		} else {
 			mHasContentChanged = arg0
 					.getBoolean(KEY_HAS_CONTENT_CHANGED, false);
 			mColorTheme = ColorThemeEnum.valueOf(arg0
 					.getString(KEY_COLOR_THEME));
+			setXmlFontSize(XmlFontSize.generateSize(arg0.getInt(KEY_FONT_SIZE)));
 		}
 		mXmlColorTheme = XmlColorTheme.createTheme(getResources(), mColorTheme);
 
@@ -112,6 +135,7 @@ public class FileEditorActivity extends ActionBarActivity implements
 	protected void onSaveInstanceState(Bundle outState) {
 		outState.putBoolean(KEY_HAS_CONTENT_CHANGED, mHasContentChanged);
 		outState.putString(KEY_COLOR_THEME, mColorTheme.name());
+		outState.putInt(KEY_FONT_SIZE, mXmlFontSize.getSize());
 		super.onSaveInstanceState(outState);
 	}
 
@@ -142,6 +166,17 @@ public class FileEditorActivity extends ActionBarActivity implements
 				mColorTheme == ColorThemeEnum.NOTEPAD);
 		menu.findItem(R.id.action_theme_netbeans).setChecked(
 				mColorTheme == ColorThemeEnum.NETBEANS);
+
+		menu.findItem(R.id.action_size_extra_small).setChecked(
+				mXmlFontSize == XmlFontSize.EXTRA_SMALL);
+		menu.findItem(R.id.action_size_small).setChecked(
+				mXmlFontSize == XmlFontSize.SMALL);
+		menu.findItem(R.id.action_size_medium).setChecked(
+				mXmlFontSize == XmlFontSize.MEDIUM);
+		menu.findItem(R.id.action_size_large).setChecked(
+				mXmlFontSize == XmlFontSize.LARGE);
+		menu.findItem(R.id.action_size_extra_large).setChecked(
+				mXmlFontSize == XmlFontSize.EXTRA_LARGE);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -179,10 +214,37 @@ public class FileEditorActivity extends ActionBarActivity implements
 		case R.id.action_theme_netbeans:
 			setXmlColorTheme(ColorThemeEnum.NETBEANS);
 			break;
+		case R.id.action_size_extra_small:
+			setXmlFontSize(XmlFontSize.EXTRA_SMALL);
+			break;
+		case R.id.action_size_small:
+			setXmlFontSize(XmlFontSize.SMALL);
+			break;
+		case R.id.action_size_medium:
+			setXmlFontSize(XmlFontSize.MEDIUM);
+			break;
+		case R.id.action_size_large:
+			setXmlFontSize(XmlFontSize.LARGE);
+			break;
+		case R.id.action_size_extra_large:
+			setXmlFontSize(XmlFontSize.EXTRA_LARGE);
+			break;
 		default:
 			break;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void setXmlFontSize(XmlFontSize size) {
+		if (mXmlFontSize != size) {
+			mXmlFontSize = size;
+			supportInvalidateOptionsMenu();
+			mEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP,
+					mXmlFontSize.getSize());
+
+			PreferenceManager.getDefaultSharedPreferences(this).edit()
+					.putInt(KEY_FONT_SIZE, mXmlFontSize.getSize()).commit();
+		}
 	}
 
 	private void setXmlColorTheme(ColorThemeEnum theme) {

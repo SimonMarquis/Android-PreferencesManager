@@ -44,7 +44,19 @@
     <string name="action_add_float">Float</string>
     <string name="action_add_long">Long</string>
     <string name="action_add_stringset">StringSet</string>
+
+    <string name="action_theme_eclipse">Eclipse</string>
+    <string name="action_theme_google">Google</string>
+    <string name="action_theme_roboticket">Roboticket</string>
+    <string name="action_theme_notepad">Notepad++</string>
+    <string name="action_theme_netbeans">Netbeans 6++</string>
     
+    <string name="action_size">Font size</string>
+    <string name="action_size_extra_small">Extra small</string>
+    <string name="action_size_small">Small</string>
+    <string name="action_size_medium">Medium</string>
+    <string name="action_size_large">Large</string>
+    <string name="action_size_extra_large">Extra large</string>
     
     <string name="save_success">File saved</string>
     <string name="save_fail">The xml file is not valid…</string>
