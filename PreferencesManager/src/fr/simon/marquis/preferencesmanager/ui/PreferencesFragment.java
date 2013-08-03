@@ -195,6 +195,12 @@ public class PreferencesFragment extends Fragment {
 		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
 		PreferenceFile.save(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
 	}
+	
+	public void deletePref(String key) {
+		preferenceFile.removeValue(key);
+		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
+		PreferenceFile.save(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
+	}
 
 	public void onButtonPressed(Uri uri) {
 		if (mListener != null) {
@@ -276,4 +282,5 @@ public class PreferencesFragment extends Fragment {
 		}
 
 	}
+
 }

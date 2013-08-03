@@ -113,7 +113,7 @@ public class PreferenceFile {
 		mPreferences.put(key, value);
 	}
 
-	private void removeValue(String key) {
+	public void removeValue(String key) {
 		mPreferences.remove(key);
 		for (Entry<String, Object> entry : mList) {
 			if (entry.getKey().equals(key)) {

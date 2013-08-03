@@ -15,8 +15,10 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -32,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceType;
@@ -50,7 +53,7 @@ public class PreferenceDialog extends DialogFragment {
 	private String mEditKey;
 	private Object mEditValue;
 
-	private Button mBtnOK, mBtnKO;
+	private Button mBtnOK, mBtnKO, mBtnSUPPR, mBtnAddEntrySet;
 
 	public static PreferenceDialog newInstance(PreferenceType type,
 			boolean editMode, String editKey, Object editValue) {
@@ -77,9 +80,12 @@ public class PreferenceDialog extends DialogFragment {
 				args.putString(KEY_EDIT_VALUE, (String) editValue);
 				break;
 			case STRINGSET:
-				// TODO: StringSet support
-				args.putStringArray(KEY_EDIT_VALUE,
-						(String[]) ((Set<String>) editValue).toArray());
+				Object[] objArray = ((Set<String>) editValue).toArray();
+				String[] stringArray = new String[objArray.length];
+				for (int i = 0; i < stringArray.length; i++) {
+					stringArray[i] = objArray[i].toString();
+				}
+				args.putStringArray(KEY_EDIT_VALUE, stringArray);
 				break;
 			case UNSUPPORTED:
 				break;
@@ -156,7 +162,10 @@ public class PreferenceDialog extends DialogFragment {
 				((EditText) mValue).setText(mEditValue.toString());
 				break;
 			case STRINGSET:
-				// TODO: StringSet support
+				String[] array = (String[]) mEditValue;
+				for (int i = 0; i < array.length; i++) {
+					addStringSetEntry(false, array[i]);
+				}
 				break;
 			case UNSUPPORTED:
 				break;
@@ -166,10 +175,41 @@ public class PreferenceDialog extends DialogFragment {
 			case BOOLEAN:
 				((CompoundButton) mValue).setChecked(true);
 				break;
+			case STRINGSET:
+				if (((LinearLayout) mValue).getChildCount() == 0) {
+					addStringSetEntry(false, null);
+				}
+				break;
 			default:
 				break;
 			}
 		}
+	}
+
+	private void addStringSetEntry(boolean changeFocus, String value) {
+		LayoutInflater inflater = (LayoutInflater) getActivity()
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LinearLayout layout = ((LinearLayout) mValue);
+		final LinearLayout item = (LinearLayout) inflater.inflate(
+				R.layout.row_stringset, null);
+		layout.addView(item);
+		EditText editText = (EditText) item.getChildAt(0);
+		item.getChildAt(1).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (((LinearLayout) mValue).getChildCount() > 1) {
+					((LinearLayout) mValue).removeView(item);
+				} else {
+					((EditText) ((ViewGroup) ((LinearLayout) mValue)
+							.getChildAt(0)).getChildAt(0)).setText(null);
+				}
+				validate();
+			}
+		});
+		if (changeFocus) {
+			editText.requestFocus();
+		}
+		editText.setText(value);
 	}
 
 	private void createValidator() {
@@ -199,10 +239,9 @@ public class PreferenceDialog extends DialogFragment {
 		case INT:
 			((EditText) mValue).addTextChangedListener(textWatcher);
 			break;
-		case BOOLEAN: // always valid
-			break;
+		case BOOLEAN:
 		case STRINGSET:
-			// TODO: StringSet support
+			// always valid
 			break;
 		case UNSUPPORTED:
 			break;
@@ -238,7 +277,35 @@ public class PreferenceDialog extends DialogFragment {
 				dismiss();
 			}
 		});
+		if (mEditMode) {
+			mBtnSUPPR = (Button) view.findViewById(R.id.btnSUPPR);
+			mBtnSUPPR.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					performSUPPR();
+					dismiss();
+				}
+			});
+		}
+		if (mPreferenceType == PreferenceType.STRINGSET) {
+			mBtnAddEntrySet = (Button) view
+					.findViewById(R.id.action_add_stringset_entry);
+			mBtnAddEntrySet.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					addStringSetEntry(true, null);
+				}
+			});
+		}
 		return view;
+	}
+
+	private void performSUPPR() {
+		PreferencesFragment fragment = (PreferencesFragment) getTargetFragment();
+		if (fragment == null) {
+			return;
+		}
+		fragment.deletePref(mEditKey);
 	}
 
 	private void performOK() {
@@ -269,8 +336,13 @@ public class PreferenceDialog extends DialogFragment {
 				value = Long.valueOf(((EditText) mValue).getText().toString());
 				break;
 			case STRINGSET:
-				// TODO: StringSet support
-				value = ((EditText) mValue).getText().toString();
+				Set<String> set = new HashSet<String>();
+				LinearLayout container = (LinearLayout) mValue;
+				for (int i = 0; i < container.getChildCount(); i++) {
+					set.add(((EditText) ((ViewGroup) container.getChildAt(i))
+							.getChildAt(0)).getText().toString());
+				}
+				value = set;
 				break;
 			case UNSUPPORTED:
 				break;
@@ -306,7 +378,7 @@ public class PreferenceDialog extends DialogFragment {
 				valueValid = true;
 				break;
 			case STRINGSET:
-				// TODO: StringSet support
+				valueValid = true;
 				break;
 			case UNSUPPORTED:
 				break;

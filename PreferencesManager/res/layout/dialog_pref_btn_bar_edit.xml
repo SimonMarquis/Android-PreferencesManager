@@ -28,6 +28,11 @@
             android:text="@string/dialog_cancel" />
 
         <Button
+            android:id="@+id/btnSUPPR"
+            style="@style/PreferenceDialogBtn"
+            android:text="@string/dialog_suppr" />
+
+        <Button
             android:id="@+id/btnOK"
             style="@style/PreferenceDialogBtn"
             android:text="@string/dialog_update" />

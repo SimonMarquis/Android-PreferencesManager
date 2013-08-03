@@ -25,12 +25,28 @@
         style="@style/EditTextKey" >
     </EditText>
 
-    <EditText
-        android:id="@+id/value"
-        style="@style/EditTextValue"
-        android:ems="10"
-        android:inputType="textMultiLine" >
-    </EditText>
+   <ScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1" >
+
+        <LinearLayout
+            android:id="@+id/value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/action_add_stringset_entry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn"
+        android:paddingLeft="4dp"
+        android:paddingRight="4dp"
+        android:text="@string/action_add_stringset_entry" />
 
     <include layout="@layout/dialog_pref_btn_bar_edit" />
 

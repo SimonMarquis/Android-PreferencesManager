@@ -44,6 +44,7 @@
     <string name="action_add_float">Float</string>
     <string name="action_add_long">Long</string>
     <string name="action_add_stringset">StringSet</string>
+    <string name="action_add_stringset_entry">Add an entry</string>
 
     <string name="action_theme_eclipse">Eclipse</string>
     <string name="action_theme_google">Google</string>
@@ -82,6 +83,7 @@
     <string name="dialog_add">Add</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_update">Update</string>
+    <string name="dialog_suppr">Delete</string>
  
     <string name="action_search">Search an app</string>
     <string name="show_system_apps">Show system apps</string>
