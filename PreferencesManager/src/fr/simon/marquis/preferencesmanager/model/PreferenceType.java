@@ -22,21 +22,21 @@ import fr.simon.marquis.preferencesmanager.R;
 public enum PreferenceType {
 	BOOLEAN(R.layout.dialog_pref_boolean_add,
 			R.layout.dialog_pref_boolean_edit, R.string.title_add_boolean,
-			R.string.title_edit_boolean, R.drawable.card_blueborder), STRING(
+			R.string.title_edit_boolean, R.drawable.card_purpleborder), STRING(
 			R.layout.dialog_pref_string_add, R.layout.dialog_pref_string_edit,
 			R.string.title_add_string, R.string.title_edit_string,
-			R.drawable.card_goldborder), INT(R.layout.dialog_pref_integer_add,
+			R.drawable.card_greenborder), INT(R.layout.dialog_pref_integer_add,
 			R.layout.dialog_pref_integer_edit, R.string.title_add_int,
-			R.string.title_edit_int, R.drawable.card_greenborder), FLOAT(
+			R.string.title_edit_int, R.drawable.card_redborder), FLOAT(
 			R.layout.dialog_pref_float_add, R.layout.dialog_pref_float_edit,
 			R.string.title_add_float, R.string.title_edit_float,
-			R.drawable.card_tealborder), LONG(R.layout.dialog_pref_integer_add,
+			R.drawable.card_blueborder), LONG(R.layout.dialog_pref_integer_add,
 			R.layout.dialog_pref_integer_edit, R.string.title_add_long,
-			R.string.title_edit_long, R.drawable.card_purpleborder), STRINGSET(
+			R.string.title_edit_long, R.drawable.card_tealborder), STRINGSET(
 			R.layout.dialog_pref_stringset_add,
 			R.layout.dialog_pref_stringset_edit, R.string.title_add_stringset,
-			R.string.title_edit_stringset, R.drawable.card_redborder), UNSUPPORTED(
-			0, 0, 0, 0, R.drawable.card_blueborder);
+			R.string.title_edit_stringset, R.drawable.card_goldborder), UNSUPPORTED(
+			0, 0, 0, 0, 0);
 
 	private int mDialogLayoutAdd;
 	private int mDialogLayoutEdit;
