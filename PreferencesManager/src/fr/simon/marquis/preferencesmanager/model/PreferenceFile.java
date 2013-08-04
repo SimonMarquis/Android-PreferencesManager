@@ -151,17 +151,17 @@ public class PreferenceFile {
 		}
 	}
 
-	public static boolean save(PreferenceFile prefFile, String mFile, Context ctx, String packageName) {
-		return save(prefFile.toXml(), mFile, ctx, packageName);
+	public static boolean saveFast(PreferenceFile prefFile, String mFile,
+			Context ctx, String packageName) {
+		return saveFast(prefFile.toXml(), mFile, ctx, packageName);
 	}
-	
-	public static boolean save(String preferences, String mFile, Context ctx, String packageName) {
-		Utils.debugFile(mFile);
-		
-		if(!isValid(preferences)){
+
+	public static boolean saveSlow(String preferences, String mFile,
+			Context ctx, String packageName) {
+		if (!isValid(preferences)) {
 			return false;
 		}
-		
+
 		FileStat fs = App.getRoot().file.stat(mFile);
 		java.io.File f = new java.io.File(ctx.getFilesDir(), "_temp");
 		try {
@@ -170,15 +170,38 @@ public class PreferenceFile {
 			outputStream.close();
 			App.getRoot().file.move(f.getAbsolutePath(), mFile);
 			App.getRoot().file.setPermission(mFile, "0660");
-			App.getRoot().file.setOwner(mFile, fs.user()+"", fs.group()+"");
+			App.getRoot().file.setOwner(mFile, fs.user() + "", fs.group() + "");
 			App.getRoot().processes.kill(packageName);
 		} catch (Exception e) {
 			return false;
 		}
-		Utils.debugFile(mFile);
 		return true;
 	}
-	
+
+	/**
+	 * Nicer way to save the preferences because we don't change permissions
+	 * 
+	 * @param preferences
+	 * @param mFile
+	 * @param ctx
+	 * @param packageName
+	 * @return
+	 */
+	public static boolean saveFast(String preferences, String mFile,
+			Context ctx, String packageName) {
+		if (!isValid(preferences)) {
+			return false;
+		}
+		try {
+			App.getRoot().file.write(mFile,
+					preferences.replace("'", "'\"'\"'"), false);
+			App.getRoot().processes.kill(packageName);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
 	private static boolean isValid(String xml) {
 		try {
 			XmlUtils.readMapXml(new ByteArrayInputStream(xml.getBytes()));

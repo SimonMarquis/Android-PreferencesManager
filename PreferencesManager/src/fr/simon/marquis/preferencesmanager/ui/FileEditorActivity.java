@@ -258,7 +258,7 @@ public class FileEditorActivity extends ActionBarActivity implements
 
 	private boolean save() {
 		String preferences = mEditText.getText().toString();
-		if (PreferenceFile.save(preferences, mPath + "/" + mName, this,
+		if (PreferenceFile.saveFast(preferences, mPath + "/" + mName, this,
 				mPackageName)) {
 			setResult(RESULT_OK);
 			Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT)

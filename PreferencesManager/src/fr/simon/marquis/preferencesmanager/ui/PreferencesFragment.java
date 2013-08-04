@@ -196,13 +196,13 @@ public class PreferencesFragment extends Fragment {
 			Object value, boolean editMode) {
 		preferenceFile.add(previousKey, newKey, value, editMode);
 		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
-		PreferenceFile.save(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
+		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
 	}
 	
 	public void deletePref(String key) {
 		preferenceFile.removeValue(key);
 		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
-		PreferenceFile.save(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
+		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
 	}
 
 	public void onButtonPressed(Uri uri) {
