@@ -276,9 +276,9 @@ public class FileEditorActivity extends ActionBarActivity implements
 
 	private void updateTitle() {
 		Spanned str = Html
-				.fromHtml(mName
-						+ (mHasContentChanged ? " <font color='#33b5e5'><b>&#9679;</b></font>"
-								: ""));
+				.fromHtml((mHasContentChanged ? "<font color='#33b5e5'><b>&#9679;</b></font> "
+						: "")
+						+ mName);
 		getActionBar().setTitle(Utils.applyCustomTypeFace(str, this));
 	}
 
@@ -290,7 +290,6 @@ public class FileEditorActivity extends ActionBarActivity implements
 	}
 
 	private Spannable highlightXMLText(Spannable source) {
-		long start = System.currentTimeMillis();
 		clearSpans(source);
 		generateSpan(source, TAG_START,
 				mXmlColorTheme.getColor(ColorTagEnum.TAG));

@@ -18,7 +18,7 @@
     android:id="@+id/text_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/ab_transparent_example"
+    android:background="@drawable/ab_transparent"
     android:textAppearance="?android:attr/textAppearanceMedium"
     android:textColor="#33b5e5"
     android:textStyle="bold"

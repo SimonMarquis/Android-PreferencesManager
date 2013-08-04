@@ -25,7 +25,7 @@
         android:id="@+id/action_theme"
         android:icon="@drawable/ic_action_picker"
         android:title="@string/action_change_theme"
-        app:showAsAction="always">
+        app:showAsAction="ifRoom">
         <menu>
             <group android:checkableBehavior="single" >
                 <item
