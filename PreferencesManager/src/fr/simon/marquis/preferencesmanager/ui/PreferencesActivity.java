@@ -63,7 +63,10 @@ public class PreferencesActivity extends ActionBarActivity implements
 		mLoadingView = (View) findViewById(R.id.loadingView);
 		mEmptyView = (View) findViewById(R.id.emptyView);
 
-		getActionBar().setTitle(b.getString("TITLE"));
+		getActionBar().setTitle(
+				Utils.applyCustomTypeFace(b.getString("TITLE"),
+						getAssets()));
+		
 		packageName = b.getString("PACKAGE_NAME");
 
 		if (!App.getRoot().connected()) {

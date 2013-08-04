@@ -32,8 +32,12 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.res.AssetManager;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -229,5 +233,15 @@ public class Utils {
 		InputMethodManager imm = (InputMethodManager) context
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+	}
+
+	public static SpannableString applyCustomTypeFace(CharSequence src,
+			AssetManager mngr) {
+		SpannableString span = new SpannableString(src);
+		span.setSpan(
+				new CustomTypefaceSpan("", Typeface.createFromAsset(mngr,
+						"fonts/RobotoSlab-Regular.ttf")), 0, span.length(),
+				Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+		return span;
 	}
 }

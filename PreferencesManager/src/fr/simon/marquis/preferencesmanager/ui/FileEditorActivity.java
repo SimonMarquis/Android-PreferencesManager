@@ -276,11 +276,11 @@ public class FileEditorActivity extends ActionBarActivity implements
 	}
 
 	private void updateTitle() {
-		getActionBar()
-				.setTitle(
-						Html.fromHtml(mName
-								+ (mHasContentChanged ? " <font color='#33b5e5'><b>&#9679;</b></font>"
-										: "")));
+		Spanned str = Html
+				.fromHtml(mName
+						+ (mHasContentChanged ? " <font color='#33b5e5'><b>&#9679;</b></font>"
+								: ""));
+		getActionBar().setTitle(Utils.applyCustomTypeFace(str, getAssets()));
 	}
 
 	private void clearSpans(Spannable source) {

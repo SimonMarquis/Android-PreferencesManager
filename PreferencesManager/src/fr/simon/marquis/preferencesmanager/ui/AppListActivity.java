@@ -39,7 +39,8 @@ import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class AppListActivity extends ActionBarActivity implements OnQueryTextListener {
+public class AppListActivity extends ActionBarActivity implements
+		OnQueryTextListener {
 	private static final int REQUEST_CODE = 123;
 	private StickyListHeadersListView listView;
 	private View loadingView;
@@ -54,7 +55,9 @@ public class AppListActivity extends ActionBarActivity implements OnQueryTextLis
 		setContentView(R.layout.activity_app_list);
 		loadingView = findViewById(R.id.loadingView);
 		listView = (StickyListHeadersListView) findViewById(R.id.listView);
-
+		getActionBar().setTitle(
+				Utils.applyCustomTypeFace(getString(R.string.app_name),
+						getAssets()));
 		startTask();
 	}
 
@@ -128,7 +131,7 @@ public class AppListActivity extends ActionBarActivity implements OnQueryTextLis
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.app_list_activity, menu);
-		
+
 		MenuItem searchItem = menu.findItem(R.id.menu_search);
 		mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 		mSearchView.setQueryHint(getString(R.string.action_search));
@@ -204,14 +207,12 @@ public class AppListActivity extends ActionBarActivity implements OnQueryTextLis
 
 	@Override
 	public boolean onQueryTextChange(String newText) {
-		mCurFilter = !TextUtils.isEmpty(newText) ? newText
-				.trim() : null;
-		AppAdapter adapter = ((AppAdapter) listView
-				.getWrappedAdapter());
+		mCurFilter = !TextUtils.isEmpty(newText) ? newText.trim() : null;
+		AppAdapter adapter = ((AppAdapter) listView.getWrappedAdapter());
 		if (adapter == null) {
 			return false;
 		}
-		
+
 		adapter.setFilter(mCurFilter);
 		adapter.getFilter().filter(mCurFilter);
 		return true;
