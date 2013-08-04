@@ -15,6 +15,9 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -34,6 +37,8 @@ import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class PreferencesActivity extends ActionBarActivity implements
 		OnFragmentInteractionListener {
+
+	private final static String KEY_FILES = "KEY_FILES";
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -71,9 +76,25 @@ public class PreferencesActivity extends ActionBarActivity implements
 		if (!App.getRoot().connected()) {
 			Utils.displayNoRoot(this).show();
 		} else {
-			findFilesTask = new FindFilesTask(packageName);
-			findFilesTask.execute();
+			if (savedInstanceState == null) {
+				findFilesTask = new FindFilesTask(packageName);
+				findFilesTask.execute();
+			} else {
+				try {
+					updateFindFiles(Files.fromJSON(new JSONArray(
+							savedInstanceState.getString(KEY_FILES))));
+				} catch (JSONException e) {
+					findFilesTask = new FindFilesTask(packageName);
+					findFilesTask.execute();
+				}
+			}
 		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		outState.putString(KEY_FILES, files.toJSON().toString());
+		super.onSaveInstanceState(outState);
 	}
 
 	@Override
@@ -181,8 +202,6 @@ public class PreferencesActivity extends ActionBarActivity implements
 			mLoadingView.setVisibility(View.GONE);
 		} else {
 			mEmptyView.setVisibility(View.GONE);
-			// mLoadingView.startAnimation(AnimationUtils.loadAnimation(this,
-			// android.R.anim.fade_out));
 			mLoadingView.setVisibility(View.GONE);
 			mViewPager.startAnimation(AnimationUtils.loadAnimation(this,
 					android.R.anim.fade_in));

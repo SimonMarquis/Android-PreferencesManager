@@ -57,7 +57,12 @@ public class AppListActivity extends ActionBarActivity implements
 		listView = (StickyListHeadersListView) findViewById(R.id.listView);
 		getActionBar().setTitle(
 				Utils.applyCustomTypeFace(getString(R.string.app_name), this));
-		startTask();
+		if (savedInstanceState == null || Utils.getPreviousApps() == null) {
+			startTask();
+		} else {
+			updateListView(Utils.getPreviousApps());
+		}
+
 	}
 
 	/**

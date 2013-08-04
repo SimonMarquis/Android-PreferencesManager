@@ -57,6 +57,10 @@ public class Utils {
 	private static ArrayList<AppEntry> applications;
 	private static HashSet<String> favorites;
 
+	public static ArrayList<AppEntry> getPreviousApps() {
+		return applications;
+	}
+
 	public static AlertDialog displayNoRoot(Context ctx) {
 		return new Builder(ctx)
 				.setIcon(R.drawable.ic_launcher)
