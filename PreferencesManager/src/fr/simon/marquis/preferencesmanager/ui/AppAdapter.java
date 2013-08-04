@@ -54,14 +54,16 @@ public class AppAdapter extends BaseAdapter implements
 	private View emptyView;
 	private final Object mLock = new Object();
 
-	public AppAdapter(Context ctx, ArrayList<AppEntry> applications, View emptyView) {
+	public AppAdapter(Context ctx, ArrayList<AppEntry> applications,
+			View emptyView) {
 		this.context = ctx;
 		this.applications = applications;
 		this.applicationsToDisplay = applications;
 		this.layoutInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.color = context.getResources().getColor(R.color.blue);
-		this.emptyView = emptyView;updateEmptyView();
+		this.emptyView = emptyView;
+		updateEmptyView();
 	}
 
 	@Override
@@ -72,17 +74,18 @@ public class AppAdapter extends BaseAdapter implements
 		updateEmptyView();
 		super.notifyDataSetChanged();
 	}
-	
-	private void updateEmptyView(){
-		if(isEmpty()){
-			if(emptyView.getVisibility() == View.GONE){
-				emptyView.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in));
+
+	private void updateEmptyView() {
+		if (isEmpty()) {
+			if (emptyView.getVisibility() == View.GONE) {
+				emptyView.startAnimation(AnimationUtils.loadAnimation(context,
+						android.R.anim.fade_in));
 			}
 			emptyView.setVisibility(View.VISIBLE);
 		} else {
 			emptyView.setVisibility(View.GONE);
 		}
-		
+
 	}
 
 	@Override

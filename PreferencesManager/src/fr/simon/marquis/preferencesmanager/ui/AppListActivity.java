@@ -104,10 +104,11 @@ public class AppListActivity extends ActionBarActivity implements
 		return false;
 	}
 
-	private void updateView(View view, boolean show, boolean animate){
+	private void updateView(View view, boolean show, boolean animate) {
 		view.setVisibility(show ? View.VISIBLE : View.GONE);
-		if(animate){
-			view.startAnimation(AnimationUtils.loadAnimation(this, show ? android.R.anim.fade_in : android.R.anim.fade_out));
+		if (animate) {
+			view.startAnimation(AnimationUtils.loadAnimation(this,
+					show ? android.R.anim.fade_in : android.R.anim.fade_out));
 		}
 	}
 
@@ -185,7 +186,7 @@ public class AppListActivity extends ActionBarActivity implements
 
 		@Override
 		protected void onPreExecute() {
-			Log.e("","start Task");
+			Log.e("", "start Task");
 			updateView(loadingView, true, true);
 			updateView(listView, false, false);
 			super.onPreExecute();
