@@ -31,7 +31,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.spazedog.lib.rootfw.container.FileStat;
 
@@ -50,9 +49,6 @@ public class PreferenceFile {
 	}
 
 	public static PreferenceFile fromXml(String xml) {
-		Log.e("", "fromXML");
-		Log.e("", xml);
-
 		PreferenceFile preferenceFile = new PreferenceFile();
 
 		// Check for empty files

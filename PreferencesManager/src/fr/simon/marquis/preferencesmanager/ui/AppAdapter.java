@@ -27,7 +27,6 @@ import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,7 +41,6 @@ import com.emilsjolander.components.stickylistheaders.StickyListHeadersAdapter;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.util.MyComparator;
-import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class AppAdapter extends BaseAdapter implements
 		StickyListHeadersAdapter, Filterable {
@@ -175,7 +173,6 @@ public class AppAdapter extends BaseAdapter implements
 			@Override
 			protected FilterResults performFiltering(CharSequence charSequence) {
 				FilterResults results = new FilterResults();
-				Log.e(Utils.TAG, "Test " + charSequence);
 				if (charSequence == null || charSequence.length() == 0) {
 					results.values = applications;
 					results.count = applications.size();
@@ -209,9 +206,10 @@ public class AppAdapter extends BaseAdapter implements
 			}
 		};
 	}
-	
+
 	@Override
 	public boolean isEmpty() {
-		return applicationsToDisplay != null && applicationsToDisplay.size() == 0;
+		return applicationsToDisplay != null
+				&& applicationsToDisplay.size() == 0;
 	}
 }

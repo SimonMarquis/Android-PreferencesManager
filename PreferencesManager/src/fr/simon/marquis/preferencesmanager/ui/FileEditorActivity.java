@@ -30,7 +30,6 @@ import android.text.Spannable;
 import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -291,7 +290,6 @@ public class FileEditorActivity extends ActionBarActivity implements
 	}
 
 	private Spannable highlightXMLText(Spannable source) {
-		Log.e(Utils.TAG, "Start to highlightXMLText");
 		long start = System.currentTimeMillis();
 		clearSpans(source);
 		generateSpan(source, TAG_START,
@@ -307,8 +305,6 @@ public class FileEditorActivity extends ActionBarActivity implements
 				mXmlColorTheme.getColor(ColorTagEnum.COMMENT));
 		generateSpan(source, COMMENT_END,
 				mXmlColorTheme.getColor(ColorTagEnum.COMMENT));
-		Log.e(Utils.TAG, (System.currentTimeMillis() - start)
-				+ "ms to highlightXMLText");
 		return source;
 	}
 

@@ -95,17 +95,12 @@ public class Utils {
 
 	public static void verifyFavorites(Context ctx) {
 		for (AppEntry a : applications) {
-			boolean b = isFavorite(a.getApplicationInfo().packageName, ctx);
-			if (b) {
-				Log.e("", a.getApplicationInfo().packageName + " " + b);
-			}
-			a.setFavorite(b);
+			a.setFavorite(isFavorite(a.getApplicationInfo().packageName, ctx));
 		}
 	}
 
 	public static void setFavorite(String packageName, boolean favorite,
 			Context ctx) {
-		Log.e(TAG, "setFavorite " + favorite + " " + packageName);
 
 		if (favorites == null) {
 			initFavorites(ctx);
@@ -169,7 +164,6 @@ public class Utils {
 				} catch (JSONException e) {
 					Log.e(TAG, "error parsing JSON", e);
 				}
-				Log.e(TAG, "Favorites are : " + favorites.toString());
 			}
 		}
 	}
