@@ -50,6 +50,7 @@ public class AppAdapter extends BaseAdapter implements
 	private ArrayList<AppEntry> applications;
 	private ArrayList<AppEntry> applicationsToDisplay;
 	private int color;
+	private final Object mLock = new Object();
 
 	public AppAdapter(Context ctx, ArrayList<AppEntry> applications) {
 		this.context = ctx;
@@ -62,7 +63,9 @@ public class AppAdapter extends BaseAdapter implements
 
 	@Override
 	public void notifyDataSetChanged() {
-		Collections.sort(applicationsToDisplay, new MyComparator());
+		synchronized (mLock) {
+			Collections.sort(applicationsToDisplay, new MyComparator());
+		}
 		super.notifyDataSetChanged();
 	}
 
@@ -174,25 +177,30 @@ public class AppAdapter extends BaseAdapter implements
 			protected FilterResults performFiltering(CharSequence charSequence) {
 				FilterResults results = new FilterResults();
 				if (charSequence == null || charSequence.length() == 0) {
-					results.values = applications;
-					results.count = applications.size();
+					synchronized (mLock) {
+						results.values = applications;
+						results.count = applications.size();
+					}
 				} else {
 					String prefixString = charSequence.toString()
 							.toLowerCase(Locale.getDefault()).trim();
 					ArrayList<AppEntry> filterResultsData = new ArrayList<AppEntry>();
-					for (AppEntry data : applications) {
-						Pattern p = Pattern.compile(prefixString,
-								Pattern.CASE_INSENSITIVE);
-						if (p.matcher(
-								data.getLabel()
-										.toLowerCase(Locale.getDefault())
-										.trim()).find()) {
-							filterResultsData.add(data);
+					synchronized (mLock) {
+						for (AppEntry data : applications) {
+							Pattern p = Pattern.compile(prefixString,
+									Pattern.CASE_INSENSITIVE);
+							if (p.matcher(
+									data.getLabel()
+											.toLowerCase(Locale.getDefault())
+											.trim()).find()) {
+								filterResultsData.add(data);
+							}
 						}
 					}
-
-					results.values = filterResultsData;
-					results.count = filterResultsData.size();
+					synchronized (mLock) {
+						results.values = filterResultsData;
+						results.count = filterResultsData.size();
+					}
 				}
 
 				return results;
