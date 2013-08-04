@@ -26,6 +26,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,7 +44,7 @@ public class AppListActivity extends ActionBarActivity implements
 		OnQueryTextListener {
 	private static final int REQUEST_CODE = 123;
 	private StickyListHeadersListView listView;
-	private View loadingView;
+	private View loadingView, emptyView;
 	private GetApplicationsTask task;
 
 	private SearchView mSearchView;
@@ -54,7 +55,28 @@ public class AppListActivity extends ActionBarActivity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_app_list);
 		loadingView = findViewById(R.id.loadingView);
+		emptyView = findViewById(R.id.emptyView);
 		listView = (StickyListHeadersListView) findViewById(R.id.listView);
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+					long arg3) {
+				if (!App.getRoot().connected()) {
+					Utils.displayNoRoot(AppListActivity.this).show();
+				} else {
+					AppEntry item = (AppEntry) ((AppAdapter) listView
+							.getWrappedAdapter()).getItem(arg2);
+
+					Intent i = new Intent(AppListActivity.this,
+							PreferencesActivity.class);
+					i.putExtra("TITLE", item.getLabel());
+					i.putExtra("PACKAGE_NAME",
+							item.getApplicationInfo().packageName);
+
+					startActivityForResult(i, REQUEST_CODE);
+				}
+			}
+		});
 		getActionBar().setTitle(
 				Utils.applyCustomTypeFace(getString(R.string.app_name), this));
 		if (savedInstanceState == null || Utils.getPreviousApps() == null) {
@@ -82,39 +104,17 @@ public class AppListActivity extends ActionBarActivity implements
 		return false;
 	}
 
-	private void toggleDisplay(boolean showList) {
-		loadingView.startAnimation(AnimationUtils.loadAnimation(this,
-				showList ? android.R.anim.fade_out : android.R.anim.fade_in));
-		loadingView.setVisibility(showList ? View.GONE : View.VISIBLE);
-		listView.startAnimation(AnimationUtils.loadAnimation(this,
-				showList ? android.R.anim.fade_in : android.R.anim.fade_out));
-		listView.setVisibility(showList ? View.VISIBLE : View.GONE);
+	private void updateView(View view, boolean show, boolean animate){
+		view.setVisibility(show ? View.VISIBLE : View.GONE);
+		if(animate){
+			view.startAnimation(AnimationUtils.loadAnimation(this, show ? android.R.anim.fade_in : android.R.anim.fade_out));
+		}
 	}
 
 	public void updateListView(ArrayList<AppEntry> apps) {
-		toggleDisplay(true);
-		listView.setAdapter(new AppAdapter(this, apps));
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-				if (!App.getRoot().connected()) {
-					Utils.displayNoRoot(AppListActivity.this).show();
-				} else {
-					AppEntry item = (AppEntry) ((AppAdapter) listView
-							.getWrappedAdapter()).getItem(arg2);
-
-					Intent i = new Intent(AppListActivity.this,
-							PreferencesActivity.class);
-					i.putExtra("TITLE", item.getLabel());
-					i.putExtra("PACKAGE_NAME",
-							item.getApplicationInfo().packageName);
-
-					startActivityForResult(i, REQUEST_CODE);
-				}
-			}
-		});
-		listView.setEmptyView(findViewById(R.id.emptyView));
+		listView.setAdapter(new AppAdapter(this, apps, emptyView));
+		updateView(loadingView, false, false);
+		updateView(listView, true, true);
 	}
 
 	@Override
@@ -185,7 +185,9 @@ public class AppListActivity extends ActionBarActivity implements
 
 		@Override
 		protected void onPreExecute() {
-			toggleDisplay(false);
+			Log.e("","start Task");
+			updateView(loadingView, true, true);
+			updateView(listView, false, false);
 			super.onPreExecute();
 		}
 

@@ -30,6 +30,7 @@ import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
@@ -50,15 +51,17 @@ public class AppAdapter extends BaseAdapter implements
 	private ArrayList<AppEntry> applications;
 	private ArrayList<AppEntry> applicationsToDisplay;
 	private int color;
+	private View emptyView;
 	private final Object mLock = new Object();
 
-	public AppAdapter(Context ctx, ArrayList<AppEntry> applications) {
+	public AppAdapter(Context ctx, ArrayList<AppEntry> applications, View emptyView) {
 		this.context = ctx;
 		this.applications = applications;
 		this.applicationsToDisplay = applications;
 		this.layoutInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.color = context.getResources().getColor(R.color.blue);
+		this.emptyView = emptyView;updateEmptyView();
 	}
 
 	@Override
@@ -66,7 +69,20 @@ public class AppAdapter extends BaseAdapter implements
 		synchronized (mLock) {
 			Collections.sort(applicationsToDisplay, new MyComparator());
 		}
+		updateEmptyView();
 		super.notifyDataSetChanged();
+	}
+	
+	private void updateEmptyView(){
+		if(isEmpty()){
+			if(emptyView.getVisibility() == View.GONE){
+				emptyView.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in));
+			}
+			emptyView.setVisibility(View.VISIBLE);
+		} else {
+			emptyView.setVisibility(View.GONE);
+		}
+		
 	}
 
 	@Override
