@@ -274,14 +274,11 @@ public class PreferencesFragment extends Fragment {
 		protected PreferenceFile doInBackground(Void... params) {
 			Data data = App.getRoot().file.read(mFile);
 			return PreferenceFile.fromXml(data == null ? null : data.toString());
-			//TODO NPE
 		}
 
 		@Override
 		protected void onPostExecute(PreferenceFile result) {
 			super.onPostExecute(result);
-			// App.getRoot().file.read(mPath + "/" + mName).toString();
-			// preferenceFile.toXml();
 			updateListView(result, true);
 		}
 

@@ -56,8 +56,7 @@ public class AppListActivity extends ActionBarActivity implements
 		loadingView = findViewById(R.id.loadingView);
 		listView = (StickyListHeadersListView) findViewById(R.id.listView);
 		getActionBar().setTitle(
-				Utils.applyCustomTypeFace(getString(R.string.app_name),
-						getAssets()));
+				Utils.applyCustomTypeFace(getString(R.string.app_name), this));
 		startTask();
 	}
 

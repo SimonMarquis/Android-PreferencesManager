@@ -64,9 +64,8 @@ public class PreferencesActivity extends ActionBarActivity implements
 		mEmptyView = (View) findViewById(R.id.emptyView);
 
 		getActionBar().setTitle(
-				Utils.applyCustomTypeFace(b.getString("TITLE"),
-						getAssets()));
-		
+				Utils.applyCustomTypeFace(b.getString("TITLE"), this));
+
 		packageName = b.getString("PACKAGE_NAME");
 
 		if (!App.getRoot().connected()) {
@@ -133,7 +132,8 @@ public class PreferencesActivity extends ActionBarActivity implements
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			return files.get(position).getName();
+			return Utils.applyCustomTypeFace(files.get(position).getName(),
+					PreferencesActivity.this);
 		}
 	}
 

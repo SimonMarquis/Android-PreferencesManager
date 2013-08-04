@@ -32,8 +32,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
-import android.graphics.Typeface;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.text.Spannable;
@@ -43,6 +41,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.roboto.RobotoTypefaceManager;
 import com.spazedog.lib.rootfw.container.FileStat;
 
 import fr.simon.marquis.preferencesmanager.R;
@@ -230,12 +229,14 @@ public class Utils {
 	}
 
 	public static SpannableString applyCustomTypeFace(CharSequence src,
-			AssetManager mngr) {
+			Context ctx) {
 		SpannableString span = new SpannableString(src);
+
 		span.setSpan(
-				new CustomTypefaceSpan("", Typeface.createFromAsset(mngr,
-						"fonts/RobotoSlab-Regular.ttf")), 0, span.length(),
-				Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+				new CustomTypefaceSpan("", RobotoTypefaceManager
+						.obtaintTypeface(ctx,
+								RobotoTypefaceManager.ROBOTOSLAB_REGULAR)), 0,
+				span.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		return span;
 	}
 }
