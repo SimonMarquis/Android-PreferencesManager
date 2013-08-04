@@ -16,22 +16,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/PreferenceDialogContainer" >
 
-    <TextView
+    <com.roboto.RobotoTextView
         android:id="@+id/title"
         style="@style/PreferenceDialogTitle" />
 
-    <EditText
+    <com.roboto.RobotoEditText
         android:id="@+id/key"
-        style="@style/EditTextKey" >
-    </EditText>
+        style="@style/EditTextKey" />
 
-    <EditText
+    <com.roboto.RobotoEditText
         android:id="@+id/value"
         style="@style/EditTextValue"
         android:ems="10"
         android:inputType="textMultiLine"
-        android:maxLines="5" >
-    </EditText>
+        android:maxLines="5" />
 
     <include layout="@layout/dialog_pref_btn_bar_edit" />
 

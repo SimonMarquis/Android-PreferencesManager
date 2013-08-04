@@ -64,7 +64,6 @@ public class AppAdapter extends BaseAdapter implements
 
 	@Override
 	public void notifyDataSetChanged() {
-		Log.e("", "notifyDataSetChanged");
 		Collections.sort(applicationsToDisplay, new MyComparator());
 		super.notifyDataSetChanged();
 	}
@@ -209,5 +208,10 @@ public class AppAdapter extends BaseAdapter implements
 				notifyDataSetChanged();
 			}
 		};
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		return applicationsToDisplay != null && applicationsToDisplay.size() == 0;
 	}
 }

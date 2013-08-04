@@ -14,18 +14,18 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/PreferenceDialogContainer" >
 
-    <TextView
+    <com.roboto.RobotoTextView
         android:id="@+id/title"
         style="@style/PreferenceDialogTitle" />
 
-    <EditText
+    <com.roboto.RobotoEditText
         android:id="@+id/key"
-        style="@style/EditTextKey" >
-    </EditText>
+        style="@style/EditTextKey" />
 
-   <ScrollView
+    <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
@@ -39,14 +39,15 @@
         </LinearLayout>
     </ScrollView>
 
-    <Button
+    <com.roboto.RobotoButton
         android:id="@+id/action_add_stringset_entry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/btn"
         android:paddingLeft="4dp"
         android:paddingRight="4dp"
-        android:text="@string/action_add_stringset_entry" />
+        android:text="@string/action_add_stringset_entry"
+        app:typeface="robotoslab_regular" />
 
     <include layout="@layout/dialog_pref_btn_bar_edit" />
 

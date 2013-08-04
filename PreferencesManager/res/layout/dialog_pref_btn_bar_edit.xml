@@ -22,17 +22,17 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal" >
 
-        <Button
+        <com.roboto.RobotoButton
             android:id="@+id/btnKO"
             style="@style/PreferenceDialogBtn"
             android:text="@string/dialog_cancel" />
 
-        <Button
+        <com.roboto.RobotoButton
             android:id="@+id/btnSUPPR"
             style="@style/PreferenceDialogBtn"
             android:text="@string/dialog_suppr" />
 
-        <Button
+        <com.roboto.RobotoButton
             android:id="@+id/btnOK"
             style="@style/PreferenceDialogBtn"
             android:text="@string/dialog_update" />

@@ -21,7 +21,6 @@ import java.util.regex.Pattern;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
@@ -115,8 +114,6 @@ public class FileEditorActivity extends ActionBarActivity implements
 		highlightXMLText(mEditText.getText());
 
 		mEditText.clearFocus();
-		mEditText.setTypeface(Typeface.createFromAsset(getAssets(),
-				"fonts/RobotoSlab-Regular.ttf"));
 	}
 
 	@Override

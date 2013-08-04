@@ -103,6 +103,7 @@ public class AppListActivity extends ActionBarActivity implements OnQueryTextLis
 				startActivityForResult(i, REQUEST_CODE);
 			}
 		});
+		listView.setEmptyView(findViewById(R.id.emptyView));
 	}
 
 	@Override

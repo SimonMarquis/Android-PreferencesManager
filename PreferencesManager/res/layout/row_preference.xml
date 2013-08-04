@@ -14,39 +14,44 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/item_background"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:gravity="center_vertical"
+    android:layout_height="wrap_content"
     android:orientation="vertical" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/abc_list_selector_holo_light"
-        android:gravity="center_vertical"
         android:orientation="vertical" >
 
-        <TextView
+        <com.roboto.RobotoTextView
             android:id="@+id/item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="2dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
             android:ellipsize="marquee"
             android:lines="1"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            app:typeface="robotoslab_regular" />
 
-        <TextView
+        <com.roboto.RobotoTextView
             android:id="@+id/item_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="2dp"
             android:ellipsize="marquee"
             android:lines="1"
-            android:paddingLeft="4dp"
-            android:paddingRight="4dp"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@android:color/tertiary_text_light" />
+            android:textColor="@android:color/tertiary_text_light"
+            app:typeface="robotoslab_light" />
     </LinearLayout>
 
 </LinearLayout>

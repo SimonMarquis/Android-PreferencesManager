@@ -44,7 +44,8 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">10dp</item>
-        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="typeface">robotoslab_light</item>
     </style>
     
     <style name="PreferenceDialogBtn">
@@ -53,6 +54,7 @@
         <item name="android:layout_margin">4dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:background">@drawable/btn</item>
+        <item name="typeface">robotoslab_regular</item>
     </style>
 
     <style name="EditTextKey">
@@ -67,6 +69,7 @@
         <item name="android:gravity">center</item>
         <item name="android:hint">@string/hint_key</item>
         <item name="android:inputType">textNoSuggestions</item>
+        <item name="typeface">robotoslab_regular</item>
     </style>
 
     <style name="EditTextValue">
@@ -79,6 +82,7 @@
         <item name="android:ems">10</item>
         <item name="android:gravity">center</item>
         <item name="android:hint">@string/hint_value</item>
+        <item name="typeface">robotoslab_regular</item>
     </style>
 
 </resources>

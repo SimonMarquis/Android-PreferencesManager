@@ -24,7 +24,7 @@
         android:id="@+id/key"
         style="@style/EditTextKey" />
 
-    <ToggleButton
+    <Switch
         android:id="@+id/value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -36,6 +36,6 @@
         android:textOff="false"
         android:textOn="true" />
 
-    <include layout="@layout/dialog_pref_btn_bar_add" />
+    <include layout="@layout/dialog_pref_btn_bar_edit" />
 
 </LinearLayout>

@@ -16,22 +16,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/PreferenceDialogContainer" >
 
-    <TextView
+    <com.roboto.RobotoTextView
         android:id="@+id/title"
         style="@style/PreferenceDialogTitle" />
 
-    <EditText
+    <com.roboto.RobotoEditText
         android:id="@+id/key"
-        style="@style/EditTextKey" >
-    </EditText>
+        style="@style/EditTextKey" />
 
-    <Switch
+    <ToggleButton
         android:id="@+id/value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_marginBottom="20dp"
         android:layout_marginTop="5dp"
         android:checked="true"
         android:textOff="false"
