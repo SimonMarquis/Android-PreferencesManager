@@ -73,20 +73,16 @@ public class PreferencesActivity extends ActionBarActivity implements
 
 		packageName = b.getString("PACKAGE_NAME");
 
-		if (!App.getRoot().connected()) {
-			Utils.displayNoRoot(this).show();
+		if (savedInstanceState == null) {
+			findFilesTask = new FindFilesTask(packageName);
+			findFilesTask.execute();
 		} else {
-			if (savedInstanceState == null) {
+			try {
+				updateFindFiles(Files.fromJSON(new JSONArray(savedInstanceState
+						.getString(KEY_FILES))));
+			} catch (JSONException e) {
 				findFilesTask = new FindFilesTask(packageName);
 				findFilesTask.execute();
-			} else {
-				try {
-					updateFindFiles(Files.fromJSON(new JSONArray(
-							savedInstanceState.getString(KEY_FILES))));
-				} catch (JSONException e) {
-					findFilesTask = new FindFilesTask(packageName);
-					findFilesTask.execute();
-				}
 			}
 		}
 	}

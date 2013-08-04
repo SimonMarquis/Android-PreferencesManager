@@ -98,16 +98,20 @@ public class AppListActivity extends ActionBarActivity implements
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
-				AppEntry item = (AppEntry) ((AppAdapter) listView
-						.getWrappedAdapter()).getItem(arg2);
+				if (!App.getRoot().connected()) {
+					Utils.displayNoRoot(AppListActivity.this).show();
+				} else {
+					AppEntry item = (AppEntry) ((AppAdapter) listView
+							.getWrappedAdapter()).getItem(arg2);
 
-				Intent i = new Intent(AppListActivity.this,
-						PreferencesActivity.class);
-				i.putExtra("TITLE", item.getLabel());
-				i.putExtra("PACKAGE_NAME",
-						item.getApplicationInfo().packageName);
+					Intent i = new Intent(AppListActivity.this,
+							PreferencesActivity.class);
+					i.putExtra("TITLE", item.getLabel());
+					i.putExtra("PACKAGE_NAME",
+							item.getApplicationInfo().packageName);
 
-				startActivityForResult(i, REQUEST_CODE);
+					startActivityForResult(i, REQUEST_CODE);
+				}
 			}
 		});
 		listView.setEmptyView(findViewById(R.id.emptyView));

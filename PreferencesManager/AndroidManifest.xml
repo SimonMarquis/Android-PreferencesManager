@@ -41,11 +41,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="fr.simon.marquis.preferencesmanager.MainActivity"
-            android:label="@string/title_activity_main" />
-        <activity
             android:name="fr.simon.marquis.preferencesmanager.ui.PreferencesActivity"
-            android:label="@string/title_activity_preferences"
             android:windowSoftInputMode="adjustNothing" />
         <activity
             android:name="fr.simon.marquis.preferencesmanager.ui.FileEditorActivity"

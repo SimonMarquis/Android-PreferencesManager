@@ -23,8 +23,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.text.Editable;
-import android.text.Html;
-import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -248,9 +246,9 @@ public class PreferenceDialog extends DialogFragment {
 		}
 	}
 
-	private Spanned generateTitle() {
-		return Html.fromHtml(getString(mEditMode ? mPreferenceType
-				.getDialogTitleEdit() : mPreferenceType.getDialogTitleAdd()));
+	private String generateTitle() {
+		return getString(mEditMode ? mPreferenceType.getDialogTitleEdit()
+				: mPreferenceType.getDialogTitleAdd());
 	}
 
 	private View buildView() {

@@ -63,7 +63,7 @@ public class Utils {
 
 	public static AlertDialog displayNoRoot(Context ctx) {
 		return new Builder(ctx)
-				.setIcon(R.drawable.ic_launcher)
+				.setIcon(R.drawable.ic_action_emo_evil)
 				.setTitle(R.string.no_root_title)
 				.setMessage(R.string.no_root_message)
 				.setPositiveButton(R.string.no_root_button,
