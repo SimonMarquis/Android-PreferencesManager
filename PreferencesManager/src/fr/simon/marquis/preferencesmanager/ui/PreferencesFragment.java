@@ -35,6 +35,9 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
+
+import com.spazedog.lib.rootfw.container.Data;
+
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.model.PreferenceType;
@@ -269,8 +272,9 @@ public class PreferencesFragment extends Fragment {
 
 		@Override
 		protected PreferenceFile doInBackground(Void... params) {
-			return PreferenceFile.fromXml(App.getRoot().file.read(mFile)
-					.toString());
+			Data data = App.getRoot().file.read(mFile);
+			return PreferenceFile.fromXml(data == null ? null : data.toString());
+			//TODO NPE
 		}
 
 		@Override

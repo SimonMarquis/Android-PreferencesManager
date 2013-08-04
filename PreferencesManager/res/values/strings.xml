@@ -89,10 +89,11 @@
     <string name="show_system_apps">Show system apps</string>
     <string name="hide_system_apps">Hide system apps</string>
 
-    <string name="empty_preference_file">No preferences for this file</string>
-    <string name="empty_preference_application">No preference files for this app</string>
+    <string name="empty_preference_file">No preference for this file</string>
+    <string name="empty_preference_application">No preference file for this app</string>
     <string name="empty_apps">No apps found</string>
     <string name="loading_apps">Loading your apps</string>
+    <string name="loading_preference_application">Searching for preference files</string>
     
     <string name="btn_backup">Backup</string>
     <string name="btn_restore">Restore</string>
