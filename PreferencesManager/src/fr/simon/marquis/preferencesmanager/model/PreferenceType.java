@@ -36,7 +36,7 @@ public enum PreferenceType {
 			R.layout.dialog_pref_stringset_add,
 			R.layout.dialog_pref_stringset_edit, R.string.title_add_stringset,
 			R.string.title_edit_stringset, R.drawable.card_goldborder), UNSUPPORTED(
-			0, 0, 0, 0, 0);
+			0, 0, 0, 0, R.drawable.card_yellowborder);
 
 	private int mDialogLayoutAdd;
 	private int mDialogLayoutEdit;

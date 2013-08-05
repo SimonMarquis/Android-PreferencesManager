@@ -16,7 +16,7 @@
 <resources>
 
     <string name="app_name">Preferences Manager</string>
-    <string name="no_root_title">Error detected</string>
+    <string name="no_root_title">Problem detected</string>
     <string name="no_root_message">"Your device isn't rooted!\nIn order to run this app, your device needs to be rooted."</string>
     <string name="no_root_button">Continue</string>
     <string name="action_settings">Settings</string>
@@ -84,7 +84,9 @@
     <string name="empty_preference_application">No preference file for this app</string>
     <string name="empty_apps">No apps found</string>
     <string name="loading_apps">Loading your apps</string>
-    <string name="loading_preference_application">Searching for preference files</string>
+    <string name="loading_preference_application">Scanning preference files</string>
+
+    <string name="preferece_unsupported">This preference isn\'t supported…</string>
     
     <string name="yes">Yes</string>
     <string name="no">No</string>

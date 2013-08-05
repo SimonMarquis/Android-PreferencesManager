@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
@@ -45,7 +46,7 @@ import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class PreferencesFragment extends Fragment {
 	public static final int CODE_EDIT_FILE = 666;
-	
+
 	public static final String ARG_NAME = "NAME";
 	public static final String ARG_PATH = "PATH";
 	public static final String ARG_PACKAGE_NAME = "PACKAGE_NAME";
@@ -109,8 +110,8 @@ public class PreferencesFragment extends Fragment {
 			updateListView(preferenceFile, false);
 		}
 	}
-	
-	private void launchTask(){
+
+	private void launchTask() {
 		ParsingTask task = new ParsingTask(mPath + "/" + mName);
 		if (Utils.hasHONEYCOMB()) {
 			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -166,19 +167,20 @@ public class PreferencesFragment extends Fragment {
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    if (requestCode == CODE_EDIT_FILE && resultCode == ActionBarActivity.RESULT_OK){
-	    	loadingView.setVisibility(View.VISIBLE);
+		if (requestCode == CODE_EDIT_FILE
+				&& resultCode == ActionBarActivity.RESULT_OK) {
+			loadingView.setVisibility(View.VISIBLE);
 			loadingView.startAnimation(AnimationUtils.loadAnimation(
-						getActivity(), android.R.anim.fade_in));
+					getActivity(), android.R.anim.fade_in));
 			gridView.setVisibility(View.GONE);
 			gridView.startAnimation(AnimationUtils.loadAnimation(getActivity(),
-						android.R.anim.fade_out));
-	    	launchTask();
-	    }
-	                
+					android.R.anim.fade_out));
+			launchTask();
+		}
+
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
+
 	private void showPrefDialog(PreferenceType type) {
 		showPrefDialog(type, false, null, null);
 	}
@@ -196,13 +198,15 @@ public class PreferencesFragment extends Fragment {
 			Object value, boolean editMode) {
 		preferenceFile.add(previousKey, newKey, value, editMode);
 		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
-		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
+		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName,
+				getActivity(), mPackageName);
 	}
-	
+
 	public void deletePref(String key) {
 		preferenceFile.removeValue(key);
 		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
-		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
+		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName,
+				getActivity(), mPackageName);
 	}
 
 	public void onButtonPressed(Uri uri) {
@@ -247,8 +251,14 @@ public class PreferencesFragment extends Fragment {
 
 				Entry<String, Object> item = (Entry<String, Object>) gridView
 						.getAdapter().getItem(arg2);
-				showPrefDialog(PreferenceType.fromObject(item.getValue()),
-						true, item.getKey(), item.getValue());
+				PreferenceType type = PreferenceType.fromObject(item.getValue());
+				if (type == PreferenceType.UNSUPPORTED) {
+					Toast.makeText(getActivity(),
+							R.string.preferece_unsupported, Toast.LENGTH_SHORT)
+							.show();
+				} else {
+					showPrefDialog(type, true, item.getKey(), item.getValue());
+				}
 			}
 		});
 	}
@@ -273,7 +283,8 @@ public class PreferencesFragment extends Fragment {
 		@Override
 		protected PreferenceFile doInBackground(Void... params) {
 			Data data = App.getRoot().file.read(mFile);
-			return PreferenceFile.fromXml(data == null ? null : data.toString());
+			return PreferenceFile
+					.fromXml(data == null ? null : data.toString());
 		}
 
 		@Override
