@@ -34,7 +34,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
-            android:ellipsize="marquee"
+            android:ellipsize="end"
             android:lines="1"
             android:textAppearance="?android:attr/textAppearanceMedium"
             app:typeface="robotoslab_regular" />
@@ -47,7 +47,7 @@
             android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginTop="2dp"
-            android:ellipsize="marquee"
+            android:ellipsize="end"
             android:lines="1"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/tertiary_text_light"
