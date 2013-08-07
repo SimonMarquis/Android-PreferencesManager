@@ -62,7 +62,8 @@ public class AppListActivity extends ActionBarActivity implements
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				if (!App.getRoot().connected()) {
-					Utils.displayNoRoot(AppListActivity.this).show();
+					Utils.displayNoRoot(AppListActivity.this,
+							getSupportFragmentManager());
 				} else {
 					AppEntry item = (AppEntry) ((AppAdapter) listView
 							.getWrappedAdapter()).getItem(arg2);
@@ -85,6 +86,9 @@ public class AppListActivity extends ActionBarActivity implements
 			updateListView(Utils.getPreviousApps());
 		}
 
+		if (savedInstanceState == null && !App.getRoot().connected()) {
+			Utils.displayNoRoot(this, getSupportFragmentManager());
+		}
 	}
 
 	/**
@@ -127,14 +131,6 @@ public class AppListActivity extends ActionBarActivity implements
 						.notifyDataSetChanged();
 			}
 		}
-	}
-
-	@Override
-	protected void onStart() {
-		if (!App.getRoot().connected()) {
-			Utils.displayNoRoot(AppListActivity.this).show();
-		}
-		super.onStart();
 	}
 
 	@Override

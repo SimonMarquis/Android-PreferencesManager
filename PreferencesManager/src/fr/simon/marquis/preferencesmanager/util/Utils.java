@@ -23,17 +23,15 @@ import java.util.List;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -44,11 +42,11 @@ import android.view.inputmethod.InputMethodManager;
 import com.roboto.RobotoTypefaceManager;
 import com.spazedog.lib.rootfw.container.FileStat;
 
-import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.model.File;
 import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.ui.App;
+import fr.simon.marquis.preferencesmanager.ui.RootDialog;
 
 public class Utils {
 
@@ -61,18 +59,10 @@ public class Utils {
 		return applications;
 	}
 
-	public static AlertDialog displayNoRoot(Context ctx) {
-		return new Builder(ctx)
-				.setIcon(R.drawable.ic_action_emo_evil)
-				.setTitle(R.string.no_root_title)
-				.setMessage(R.string.no_root_message)
-				.setPositiveButton(R.string.no_root_button,
-						new OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog,
-									int which) {
-							}
-						}).create();
+	public static void displayNoRoot(Context ctx,
+			FragmentManager fragmentManager) {
+		DialogFragment newFragment = RootDialog.newInstance();
+		newFragment.show(fragmentManager, "RootDialog");
 	}
 
 	public static ArrayList<AppEntry> getApplications(Context ctx) {
