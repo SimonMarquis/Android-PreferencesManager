@@ -26,7 +26,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -62,8 +61,15 @@ public class AppListActivity extends ActionBarActivity implements
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				if (!App.getRoot().connected()) {
-					Utils.displayNoRoot(AppListActivity.this,
-							getSupportFragmentManager());
+					new Thread(new Runnable() {
+						@Override
+						public void run() {
+							if (!App.getRootForce().connected()) {
+								Utils.displayNoRoot(AppListActivity.this,
+										getSupportFragmentManager());
+							}
+						}
+					}).start();
 				} else {
 					AppEntry item = (AppEntry) ((AppAdapter) listView
 							.getWrappedAdapter()).getItem(arg2);
@@ -86,9 +92,18 @@ public class AppListActivity extends ActionBarActivity implements
 			updateListView(Utils.getPreviousApps());
 		}
 
-		if (savedInstanceState == null && !App.getRoot().connected()) {
-			Utils.displayNoRoot(this, getSupportFragmentManager());
+		if (savedInstanceState == null) {
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					if (!App.getRoot().connected()) {
+						Utils.displayNoRoot(AppListActivity.this,
+								getSupportFragmentManager());
+					}
+				}
+			}).start();
 		}
+
 	}
 
 	/**
@@ -182,7 +197,6 @@ public class AppListActivity extends ActionBarActivity implements
 
 		@Override
 		protected void onPreExecute() {
-			Log.e("", "start Task");
 			updateView(loadingView, true, true);
 			updateView(listView, false, false);
 			super.onPreExecute();

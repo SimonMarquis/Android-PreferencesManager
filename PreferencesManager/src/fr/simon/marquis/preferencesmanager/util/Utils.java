@@ -32,6 +32,7 @@ import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -61,8 +62,10 @@ public class Utils {
 
 	public static void displayNoRoot(Context ctx,
 			FragmentManager fragmentManager) {
+		FragmentTransaction tr = fragmentManager.beginTransaction();
 		DialogFragment newFragment = RootDialog.newInstance();
-		newFragment.show(fragmentManager, "RootDialog");
+		tr.add(newFragment, "RootDialog");
+		tr.commitAllowingStateLoss();
 	}
 
 	public static ArrayList<AppEntry> getApplications(Context ctx) {

@@ -32,4 +32,16 @@ public class App extends Application {
 			root = new RootFW();
 		return root;
 	}
+
+	public static RootFW getRootForce() {
+		if (root == null) {
+			root = new RootFW();
+			return root;
+		} else {
+			if (!root.connected()) {
+				root = new RootFW();
+			}
+		}
+		return root;
+	}
 }
