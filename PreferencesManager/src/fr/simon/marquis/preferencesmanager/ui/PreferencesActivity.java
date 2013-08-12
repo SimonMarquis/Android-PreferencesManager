@@ -68,10 +68,12 @@ public class PreferencesActivity extends ActionBarActivity implements
 		mLoadingView = (View) findViewById(R.id.loadingView);
 		mEmptyView = (View) findViewById(R.id.emptyView);
 
+		packageName = b.getString("PACKAGE_NAME");
+
 		getActionBar().setTitle(
 				Utils.applyCustomTypeFace(b.getString("TITLE"), this));
-
-		packageName = b.getString("PACKAGE_NAME");
+		getActionBar()
+				.setSubtitle(Utils.applyCustomTypeFace(packageName, this));
 
 		if (savedInstanceState == null) {
 			findFilesTask = new FindFilesTask(packageName);
