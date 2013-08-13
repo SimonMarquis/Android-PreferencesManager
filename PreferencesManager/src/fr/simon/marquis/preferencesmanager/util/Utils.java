@@ -28,6 +28,7 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
@@ -235,5 +236,17 @@ public class Utils {
 								RobotoTypefaceManager.ROBOTOSLAB_REGULAR)), 0,
 				span.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		return span;
+	}
+
+	public static Drawable findDrawable(String packageName, Context ctx) {
+		if (TextUtils.isEmpty(packageName)) {
+			return null;
+		}
+		for (AppEntry app : applications) {
+			if (packageName.equals(app.getApplicationInfo().packageName)) {
+				return app.getIcon(ctx);
+			}
+		}
+		return null;
 	}
 }

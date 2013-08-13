@@ -74,6 +74,7 @@ public class PreferencesActivity extends ActionBarActivity implements
 				Utils.applyCustomTypeFace(b.getString("TITLE"), this));
 		getActionBar()
 				.setSubtitle(Utils.applyCustomTypeFace(packageName, this));
+		getActionBar().setIcon(Utils.findDrawable(packageName, this));
 
 		if (savedInstanceState == null) {
 			findFilesTask = new FindFilesTask(packageName);
