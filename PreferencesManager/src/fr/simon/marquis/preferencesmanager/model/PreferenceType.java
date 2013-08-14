@@ -30,13 +30,13 @@ public enum PreferenceType {
 			R.string.title_edit_int, R.drawable.card_redborder), FLOAT(
 			R.layout.dialog_pref_float_add, R.layout.dialog_pref_float_edit,
 			R.string.title_add_float, R.string.title_edit_float,
-			R.drawable.card_blueborder), LONG(R.layout.dialog_pref_integer_add,
+			R.drawable.card_navyborder), LONG(R.layout.dialog_pref_integer_add,
 			R.layout.dialog_pref_integer_edit, R.string.title_add_long,
 			R.string.title_edit_long, R.drawable.card_tealborder), STRINGSET(
 			R.layout.dialog_pref_stringset_add,
 			R.layout.dialog_pref_stringset_edit, R.string.title_add_stringset,
 			R.string.title_edit_stringset, R.drawable.card_goldborder), UNSUPPORTED(
-			0, 0, 0, 0, R.drawable.card_yellowborder);
+			0, 0, 0, 0, R.drawable.card_unknown);
 
 	private int mDialogLayoutAdd;
 	private int mDialogLayoutEdit;
