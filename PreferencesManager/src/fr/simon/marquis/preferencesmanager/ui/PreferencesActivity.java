@@ -18,6 +18,7 @@ package fr.simon.marquis.preferencesmanager.ui;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -74,7 +75,10 @@ public class PreferencesActivity extends ActionBarActivity implements
 				Utils.applyCustomTypeFace(b.getString("TITLE"), this));
 		getActionBar()
 				.setSubtitle(Utils.applyCustomTypeFace(packageName, this));
-		getActionBar().setIcon(Utils.findDrawable(packageName, this));
+		Drawable drawable = Utils.findDrawable(packageName, this);
+		if (drawable != null) {
+			getActionBar().setIcon(drawable);
+		}
 
 		if (savedInstanceState == null) {
 			findFilesTask = new FindFilesTask(packageName);
