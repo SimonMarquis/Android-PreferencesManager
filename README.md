@@ -1,7 +1,8 @@
-# ![Android-PreferencesManager](https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/PreferencesManager/res/drawable-hdpi/ic_launcher.png "Android-PreferencesManager logo")  Android-PreferencesManager
+# Android-PreferencesManager
 
 #### Android project to manage Preferences
 
+![Android-PreferencesManager](https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/Feature%20graphic%20-%20resized.png "Android-PreferencesManager") 
 
 <a href="http://play.google.com/store/apps/details?id=#">
   <img alt="PreferencesManager on Google Play" src="http://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
