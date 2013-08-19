@@ -77,7 +77,7 @@ public class PreferencesActivity extends ActionBarActivity implements
 				.setSubtitle(Utils.applyCustomTypeFace(packageName, this));
 		Drawable drawable = Utils.findDrawable(packageName, this);
 		if (drawable != null) {
-			getActionBar().setIcon(drawable);
+			getSupportActionBar().setIcon(drawable);
 		}
 
 		if (savedInstanceState == null) {

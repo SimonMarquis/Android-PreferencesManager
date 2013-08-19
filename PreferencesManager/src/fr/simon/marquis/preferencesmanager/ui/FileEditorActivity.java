@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
@@ -87,6 +88,11 @@ public class FileEditorActivity extends ActionBarActivity implements
 		mName = b.getString(PreferencesFragment.ARG_NAME);
 		mPath = b.getString(PreferencesFragment.ARG_PATH);
 		mPackageName = b.getString(PreferencesFragment.ARG_PACKAGE_NAME);
+
+		Drawable drawable = Utils.findDrawable(mPackageName, this);
+		if (drawable != null) {
+			getSupportActionBar().setIcon(drawable);
+		}
 
 		mEditText = (EditText) findViewById(R.id.editText);
 
