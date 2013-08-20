@@ -4,10 +4,14 @@
 
 ![Android-PreferencesManager](https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/Feature%20graphic%20-%20resized.png "Android-PreferencesManager") 
 
-<a href="http://play.google.com/store/apps/details?id=#">
-  <img alt="PreferencesManager on Google Play" src="http://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
-</a>
+## Screenshots
 
+![Screenshot][screen1]
+![Screenshot][screen2]
+![Screenshot][screen3]
+![Screenshot][screen4]
+![Screenshot][screen5]
+![Screenshot][screen6]
 
 ## Pull requests welcome
 
@@ -47,3 +51,10 @@ If you want to start to create a new feature or have any other questions regardi
  [1]: http://www.simon-marquis.fr
  [2]: https://github.com/SpazeDog
  [3]: https://github.com/SpazeDog/rootfw
+ 
+ [screen1]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/1%20-%20resized.png "List of applications"
+ [screen2]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/2%20-%20resized.png "List of preferences"
+ [screen3]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/3%20-%20resized.png "Inline edition of preferences"
+ [screen4]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/4%20-%20resized.png "Add a preference"
+ [screen5]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/5%20-%20resized.png "Add a String preference"
+ [screen6]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/6%20-%20resized.png "Edit a Boolean value"
