@@ -1,8 +1,15 @@
-# Android-PreferencesManager
-
-#### Android project to manage Preferences
-
 ![Android-PreferencesManager](https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/Feature%20graphic%20-%20resized.png "Android-PreferencesManager") 
+#### Preferences Manager is an **Open Source** application that allows you to seamlessly edit application's preferences.
+This application requires a rooted phone! Without **root access**, it can't do anything.
+
+Android provides several options for developers to save application data. The most frequent solution is the **Shared Preferences** framework. It's a simple way to store private primitive data in key-value pairs.
+Unfortunately, this method is not very secure... It consists in a simple XML file stored in the private folder, specific to the app. But in the case of a rooted device, theses files can be read, edited and even deleted.
+
+Preferences Manager allows you to edit these preferences in a simple and easy way.
+You can for instance increase your highscores, modify your progression, or just debug your application preferences.
+
+*Disclaimer : I take no responsibility for any fault or damage caused by any procedures within this application. Do only use it if you really know what you are doing. I don't assume any liability if you brick your device or any application. If an application does not work properly anymore, you can clear its data from the Settings app.
+You may not use the application for any illegal or unauthorized purpose!*
 
 ## Screenshots
 
@@ -13,15 +20,13 @@
 ![Screenshot][screen5]
 ![Screenshot][screen6]
 
-## Pull requests welcome
+## Pull requests
 
 Feel free to contribute to PreferencesManager.
 
 Either you found a bug or have created a new and awesome feature, just create a pull request.
 
 If you want to start to create a new feature or have any other questions regarding PreferencesManager, [file an issue](https://github.com/SimonMarquis/Android-PreferencesManager/issues/new).
-
-
 
 ## Developed By
 
