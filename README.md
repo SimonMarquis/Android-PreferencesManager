@@ -13,7 +13,7 @@ You may not use the application for any illegal or unauthorized purpose!*
 
 ## Beta testing
 
-If you want to opt-in to the Beta program, you need to join this **[Google+ Community](https://plus.google.com/communities/104334312286385552495)**.
+If you want to opt-in to the Beta program, you need to join this **[Google+ Community](https://plus.google.com/u/0/communities/112244514442534711821)**.
 
 Test it, have fun, and please submit any feedback you have!
 
