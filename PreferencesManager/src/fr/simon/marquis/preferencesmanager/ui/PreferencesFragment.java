@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,9 +34,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.spazedog.lib.rootfw.container.Data;
 
@@ -61,6 +63,7 @@ public class PreferencesFragment extends Fragment {
 
 	private GridView gridView;
 	private View loadingView, emptyView;
+	private TextView emptyViewText;
 
 	public static PreferencesFragment newInstance(String paramName,
 			String paramPath, String paramPackageName) {
@@ -102,6 +105,7 @@ public class PreferencesFragment extends Fragment {
 		super.onViewCreated(view, savedInstanceState);
 		loadingView = (View) view.findViewById(R.id.loadingView);
 		emptyView = (View) view.findViewById(R.id.emptyView);
+		emptyViewText = (TextView) view.findViewById(R.id.emptyViewText);
 		gridView = (GridView) view.findViewById(R.id.gridView);
 
 		if (preferenceFile == null) {
@@ -128,6 +132,14 @@ public class PreferencesFragment extends Fragment {
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
+		menu.findItem(R.id.action_add).setEnabled(
+				preferenceFile != null
+						&& preferenceFile.isValidPreferenceFile());
+		menu.findItem(R.id.action_add)
+				.setIcon(
+						preferenceFile != null
+								&& preferenceFile.isValidPreferenceFile() ? R.drawable.ic_action_add
+								: R.drawable.ic_action_add_disabled);
 		super.onPrepareOptionsMenu(menu);
 	}
 
@@ -153,11 +165,13 @@ public class PreferencesFragment extends Fragment {
 			showPrefDialog(PreferenceType.STRINGSET);
 			return true;
 		case R.id.action_edit_file:
+			if (preferenceFile == null) {
+				getActivity().finish();
+			}
 			Intent intent = new Intent(getActivity(), FileEditorActivity.class);
 			intent.putExtra(ARG_NAME, mName);
 			intent.putExtra(ARG_PATH, mPath);
 			intent.putExtra(ARG_PACKAGE_NAME, mPackageName);
-			intent.putExtra("CONTENT", preferenceFile.toXml());
 			startActivityForResult(intent, CODE_EDIT_FILE);
 			return true;
 		default:
@@ -196,6 +210,9 @@ public class PreferencesFragment extends Fragment {
 
 	public void addPrefKeyValue(String previousKey, String newKey,
 			Object value, boolean editMode) {
+		if (preferenceFile == null) {
+			return;
+		}
 		preferenceFile.add(previousKey, newKey, value, editMode);
 		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
 		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName,
@@ -203,6 +220,9 @@ public class PreferencesFragment extends Fragment {
 	}
 
 	public void deletePref(String key) {
+		if (preferenceFile == null) {
+			return;
+		}
 		preferenceFile.removeValue(key);
 		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
 		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName,
@@ -233,7 +253,14 @@ public class PreferencesFragment extends Fragment {
 	}
 
 	public void updateListView(PreferenceFile p, boolean animate) {
+		if (p == null) {
+			getActivity().finish();
+			return;
+		}
 		preferenceFile = p;
+		emptyViewText
+				.setText(preferenceFile.isValidPreferenceFile() ? R.string.empty_preference_file_valid
+						: R.string.empty_preference_file_invalid);
 		loadingView.setVisibility(View.GONE);
 		gridView.setVisibility(View.VISIBLE);
 		if (animate) {
@@ -261,6 +288,7 @@ public class PreferencesFragment extends Fragment {
 				}
 			}
 		});
+		getActivity().supportInvalidateOptionsMenu();
 	}
 
 	public interface OnFragmentInteractionListener {
@@ -282,7 +310,9 @@ public class PreferencesFragment extends Fragment {
 
 		@Override
 		protected PreferenceFile doInBackground(Void... params) {
+			Log.e(Utils.TAG, System.currentTimeMillis() + "\t read start");
 			Data data = App.getRoot().file.read(mFile);
+			Log.e(Utils.TAG, System.currentTimeMillis() + "\t read end");
 			return PreferenceFile
 					.fromXml(data == null ? null : data.toString());
 		}
