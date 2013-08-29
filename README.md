@@ -1,23 +1,38 @@
-# Android-PreferencesManager
-
-#### Android project to manage Preferences
-
 ![Android-PreferencesManager](https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/Feature%20graphic%20-%20resized.png "Android-PreferencesManager") 
+#### Preferences Manager is an Open Source application that allows you to seamlessly edit application's preferences.
+This application requires a rooted phone! Without **root access**, it can't do anything.
 
-<a href="http://play.google.com/store/apps/details?id=#">
-  <img alt="PreferencesManager on Google Play" src="http://developer.android.com/images/brand/en_generic_rgb_wo_60.png" />
-</a>
+Android provides several options for developers to save application data. The most frequent solution is the **Shared Preferences** framework. It's a simple way to store private primitive data in key-value pairs.
+Unfortunately, this method is not very secure... It consists in a simple XML file stored in the private folder, specific to the app. But in the case of a rooted device, theses files can be read, edited and even deleted.
 
+Preferences Manager allows you to edit these preferences in a simple and easy way.
+You can for instance increase your highscores, modify your progression, or just debug your application preferences.
 
-## Pull requests welcome
+*Disclaimer : I take no responsibility for any fault or damage caused by any procedures within this application. Do only use it if you really know what you are doing. I don't assume any liability if you brick your device or any application. If an application does not work properly anymore, you can clear its data from the Settings app.
+You may not use the application for any illegal or unauthorized purpose!*
+
+## Beta testing
+
+If you want to opt-in to the Beta program, you need to join this **[Google+ Community](https://plus.google.com/u/0/communities/112244514442534711821)**.
+
+Test it, have fun, and please submit any feedback you have!
+
+## Screenshots
+
+![Screenshot][screen1]
+![Screenshot][screen2]
+![Screenshot][screen3]
+![Screenshot][screen4]
+![Screenshot][screen5]
+![Screenshot][screen6]
+
+## Pull requests
 
 Feel free to contribute to PreferencesManager.
 
 Either you found a bug or have created a new and awesome feature, just create a pull request.
 
 If you want to start to create a new feature or have any other questions regarding PreferencesManager, [file an issue](https://github.com/SimonMarquis/Android-PreferencesManager/issues/new).
-
-
 
 ## Developed By
 
@@ -47,3 +62,10 @@ If you want to start to create a new feature or have any other questions regardi
  [1]: http://www.simon-marquis.fr
  [2]: https://github.com/SpazeDog
  [3]: https://github.com/SpazeDog/rootfw
+ 
+ [screen1]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/1%20-%20resized.png "List of applications"
+ [screen2]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/2%20-%20resized.png "List of preferences"
+ [screen3]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/3%20-%20resized.png "Inline edition of preferences"
+ [screen4]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/4%20-%20resized.png "Add a preference"
+ [screen5]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/5%20-%20resized.png "Add a String preference"
+ [screen6]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/6%20-%20resized.png "Edit a Boolean value"
