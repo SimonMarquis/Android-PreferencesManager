@@ -21,6 +21,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
@@ -175,6 +180,9 @@ public class AppListActivity extends ActionBarActivity implements
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.show_popop:
+			showPopup(false);
+			break;
 		case R.id.show_system_apps:
 			Utils.setShowSystemApps(this, !Utils.isShowSystemApps(this));
 			boolean launched = startTask();
@@ -244,6 +252,22 @@ public class AppListActivity extends ActionBarActivity implements
 		Utils.hideSoftKeyboard(this, mSearchView);
 		mSearchView.clearFocus();
 		return false;
+	}
+
+	@Override
+	public void onBackPressed() {
+		if (PreferenceManager.getDefaultSharedPreferences(this).contains(
+				"about")) {
+			super.onBackPressed();
+		} else {
+			showPopup(true);
+		}
+
+	}
+
+	private void showPopup(boolean exit) {
+		AboutDialog newFragment = AboutDialog.newInstance(exit);
+		newFragment.show(getSupportFragmentManager(), "about");
 	}
 
 }

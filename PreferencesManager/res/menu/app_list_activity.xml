@@ -28,5 +28,11 @@
         android:title="@string/action_search"
         app:actionViewClass="android.support.v7.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"/>
+    <item
+        android:id="@+id/show_popop"
+        android:icon="@drawable/ic_action_show"
+        android:orderInCategory="2"
+        android:title="@string/show_popup"
+        app:showAsAction="ifRoom"/>
 
 </menu>
