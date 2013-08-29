@@ -31,14 +31,17 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.spazedog.lib.rootfw.container.FileStat;
 
 import fr.simon.marquis.preferencesmanager.ui.App;
+import fr.simon.marquis.preferencesmanager.util.Utils;
 import fr.simon.marquis.preferencesmanager.util.XmlUtils;
 
 public class PreferenceFile {
 
+	private boolean isValidPreferenceFile = true;
 	private Map<String, Object> mPreferences;
 	private List<Entry<String, Object>> mList;
 
@@ -47,12 +50,14 @@ public class PreferenceFile {
 		mPreferences = new HashMap<String, Object>();
 	}
 
+	@SuppressWarnings("unchecked")
 	public static PreferenceFile fromXml(String xml) {
 		PreferenceFile preferenceFile = new PreferenceFile();
 
 		// Check for empty files
-		if (TextUtils.isEmpty(xml) || xml.trim().isEmpty())
+		if (TextUtils.isEmpty(xml) || xml.trim().isEmpty()) {
 			return preferenceFile;
+		}
 
 		try {
 			InputStream in = new ByteArrayInputStream(xml.getBytes());
@@ -61,10 +66,13 @@ public class PreferenceFile {
 
 			if (map != null) {
 				preferenceFile.setPreferences(map);
+				return preferenceFile;
 			}
 		} catch (XmlPullParserException e) {
 		} catch (IOException e) {
 		}
+
+		preferenceFile.isValidPreferenceFile = false;
 		return preferenceFile;
 	}
 
@@ -208,6 +216,14 @@ public class PreferenceFile {
 			return false;
 		}
 		return true;
+	}
+
+	public boolean isValidPreferenceFile() {
+		return isValidPreferenceFile;
+	}
+
+	public void setPreferenceFile(boolean isValidPreferenceFile) {
+		this.isValidPreferenceFile = isValidPreferenceFile;
 	}
 
 }
