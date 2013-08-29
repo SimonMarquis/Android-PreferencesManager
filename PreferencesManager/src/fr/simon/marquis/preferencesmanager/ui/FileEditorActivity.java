@@ -167,8 +167,8 @@ public class FileEditorActivity extends ActionBarActivity implements
 		menu.findItem(R.id.action_save)
 				.setEnabled(mHasContentChanged)
 				.setIcon(
-						mHasContentChanged ? R.drawable.ic_action_tick
-								: R.drawable.ic_action_tick_disabled);
+						mHasContentChanged ? R.drawable.ic_action_save
+								: R.drawable.ic_action_save_disabled);
 
 		menu.findItem(R.id.action_theme_eclipse).setChecked(
 				mColorTheme == ColorThemeEnum.ECLIPSE);

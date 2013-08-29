@@ -18,7 +18,7 @@
 
     <item
         android:id="@+id/action_save"
-        android:icon="@drawable/ic_action_tick_disabled"
+        android:icon="@drawable/ic_action_save_disabled"
         android:title="@string/action_save_file"
         app:showAsAction="always"/>
     <item
@@ -53,7 +53,7 @@
     </item>
     <item
         android:id="@+id/action_size"
-        android:icon="@drawable/ic_action_edit"
+        android:icon="@drawable/ic_action_font_bigger"
         android:title="@string/action_size"
         app:showAsAction="ifRoom">
         <menu>

@@ -30,7 +30,7 @@
         app:showAsAction="ifRoom|collapseActionView"/>
     <item
         android:id="@+id/show_popop"
-        android:icon="@drawable/ic_action_show"
+        android:icon="@drawable/ic_action_info"
         android:orderInCategory="2"
         android:title="@string/show_popup"
         app:showAsAction="ifRoom"/>
