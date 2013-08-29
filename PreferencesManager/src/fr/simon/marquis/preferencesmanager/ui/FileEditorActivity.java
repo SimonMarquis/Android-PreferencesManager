@@ -18,6 +18,8 @@ package fr.simon.marquis.preferencesmanager.ui;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.spazedog.lib.rootfw.container.Data;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -59,7 +61,9 @@ public class FileEditorActivity extends ActionBarActivity implements
 	private static final String KEY_HAS_CONTENT_CHANGED = "HAS_CONTENT_CHANGED";
 	private static final String KEY_COLOR_THEME = "KEY_COLOR_THEME";
 	private static final String KEY_FONT_SIZE = "KEY_FONT_SIZE";
+	private static final String KEY_NEDD_UPDATE_ON_ACTIVITY_FINISH = "NEDD_UPDATE_ON_ACTIVITY_FINISH";
 	private boolean mHasContentChanged;
+	private boolean mNeedUpdateOnActivityFinish = false;
 
 	Pattern TAG_START = Pattern.compile("</?[\\w-\\?]+",
 			Pattern.CASE_INSENSITIVE);
@@ -97,7 +101,8 @@ public class FileEditorActivity extends ActionBarActivity implements
 		mEditText = (EditText) findViewById(R.id.editText);
 
 		if (arg0 == null) {
-			mEditText.setText(b.getString("CONTENT"));
+			Data data = App.getRoot().file.read(mPath + "/" + mName);
+			mEditText.setText(data == null ? null : data.toString());
 			mColorTheme = ColorThemeEnum.valueOf(PreferenceManager
 					.getDefaultSharedPreferences(this).getString(
 							KEY_COLOR_THEME, ColorThemeEnum.ECLIPSE.name()));
@@ -107,6 +112,11 @@ public class FileEditorActivity extends ActionBarActivity implements
 		} else {
 			mHasContentChanged = arg0
 					.getBoolean(KEY_HAS_CONTENT_CHANGED, false);
+			mNeedUpdateOnActivityFinish = arg0.getBoolean(
+					KEY_NEDD_UPDATE_ON_ACTIVITY_FINISH, false);
+			if (mNeedUpdateOnActivityFinish) {
+				setResult(RESULT_OK);
+			}
 			mColorTheme = ColorThemeEnum.valueOf(arg0
 					.getString(KEY_COLOR_THEME));
 			setXmlFontSize(XmlFontSize.generateSize(arg0.getInt(KEY_FONT_SIZE)));
@@ -138,6 +148,8 @@ public class FileEditorActivity extends ActionBarActivity implements
 		outState.putBoolean(KEY_HAS_CONTENT_CHANGED, mHasContentChanged);
 		outState.putString(KEY_COLOR_THEME, mColorTheme.name());
 		outState.putInt(KEY_FONT_SIZE, mXmlFontSize.getSize());
+		outState.putBoolean(KEY_NEDD_UPDATE_ON_ACTIVITY_FINISH,
+				mNeedUpdateOnActivityFinish);
 		super.onSaveInstanceState(outState);
 	}
 
@@ -266,6 +278,7 @@ public class FileEditorActivity extends ActionBarActivity implements
 		String preferences = mEditText.getText().toString();
 		if (PreferenceFile.saveFast(preferences, mPath + "/" + mName, this,
 				mPackageName)) {
+			mNeedUpdateOnActivityFinish = true;
 			setResult(RESULT_OK);
 			Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT)
 					.show();
