@@ -225,6 +225,7 @@ public class AppAdapter extends BaseAdapter implements
 				return results;
 			}
 
+			@SuppressWarnings("unchecked")
 			@Override
 			protected void publishResults(CharSequence charSequence,
 					FilterResults filterResults) {

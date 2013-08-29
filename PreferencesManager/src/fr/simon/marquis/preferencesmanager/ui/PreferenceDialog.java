@@ -53,6 +53,7 @@ public class PreferenceDialog extends DialogFragment {
 
 	private Button mBtnOK, mBtnKO, mBtnSUPPR, mBtnAddEntrySet;
 
+	@SuppressWarnings("unchecked")
 	public static PreferenceDialog newInstance(PreferenceType type,
 			boolean editMode, String editKey, Object editValue) {
 		PreferenceDialog frag = new PreferenceDialog();

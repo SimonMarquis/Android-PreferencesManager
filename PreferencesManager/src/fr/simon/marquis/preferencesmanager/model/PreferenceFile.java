@@ -31,12 +31,10 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import android.content.Context;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.spazedog.lib.rootfw.container.FileStat;
 
 import fr.simon.marquis.preferencesmanager.ui.App;
-import fr.simon.marquis.preferencesmanager.util.Utils;
 import fr.simon.marquis.preferencesmanager.util.XmlUtils;
 
 public class PreferenceFile {

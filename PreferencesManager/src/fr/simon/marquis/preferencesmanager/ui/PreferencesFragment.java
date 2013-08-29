@@ -272,6 +272,7 @@ public class PreferencesFragment extends Fragment {
 		gridView.setAdapter(new PreferenceAdapter(getActivity(), this));
 		gridView.setEmptyView(emptyView);
 		gridView.setOnItemClickListener(new OnItemClickListener() {
+			@SuppressWarnings("unchecked")
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
