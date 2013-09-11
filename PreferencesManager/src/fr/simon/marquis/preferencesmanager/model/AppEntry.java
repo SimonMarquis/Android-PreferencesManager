@@ -22,6 +22,7 @@ import fr.simon.marquis.preferencesmanager.util.Utils;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 
 public class AppEntry {
 
@@ -141,11 +142,27 @@ public class AppEntry {
 	 * @return
 	 */
 	private char formatChar(String s) {
-		if (isFavorite)
+		if (isFavorite) {
 			return '☆';
-		char c = Character.toUpperCase(s.charAt(0));
-		if (c >= '0' && c <= '9')
+		}
+
+		if (TextUtils.isEmpty(s)) {
 			return '#';
+		}
+
+		char c = Character.toUpperCase(s.charAt(0));
+
+		// Number
+		if (c >= '0' && c <= '9') {
+			return '#';
+		}
+
+		// Letter
+		if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') {
+			return c;
+		}
+
+		// Accented letter
 		switch (c) {
 		case 'À':
 		case 'Á':
@@ -158,9 +175,10 @@ public class AppEntry {
 		case 'Ê':
 		case 'Ë':
 			return 'E';
-		default:
-			return c;
 		}
+
+		// Everthing else
+		return '#';
 	}
 
 	public char getHeaderChar() {
