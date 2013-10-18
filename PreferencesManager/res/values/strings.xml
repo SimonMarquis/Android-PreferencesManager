@@ -19,7 +19,7 @@
     <string name="app_name_and_version" translatable="false"><![CDATA[
     <b>Preferences Manager</b>&nbsp;<font color="#888888">v%1$s</font>
     ]]></string>
-    <string name="about_body" translatable="false"><![CDATA[
+    <string name="about_body"><![CDATA[
         Preferences Manager is an Open Source application that allows you to seamlessly edit application\'s preferences. If you want more informations about it, follow these links:<br><br>
         <b>&bull;&nbsp;&nbsp;<a href="https://plus.google.com/u/0/communities/112244514442534711821">Google+ Community</a></b> <i>Share your features requests, bugs, ...</i><br>
         <b>&bull;&nbsp;&nbsp;<a href="http://simonmarquis.github.io/Android-PreferencesManager/">Github Pages</a></b> <i>Description of the project</i><br>
