@@ -16,7 +16,7 @@
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="fr.simon.marquis.preferencesmanager"
-    android:versionCode="12"
+    android:versionCode="13"
     android:versionName="1.2" >
 
     <uses-sdk
