@@ -30,8 +30,10 @@ import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
+import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -39,6 +41,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
@@ -114,6 +117,7 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 		emptyView = (View) view.findViewById(R.id.emptyView);
 		emptyViewText = (TextView) view.findViewById(R.id.emptyViewText);
 		gridView = (GridView) view.findViewById(R.id.gridView);
+		gridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
 
 		if (preferenceFile == null) {
 			launchTask();
@@ -317,6 +321,53 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 					showPrefDialog(type, true, item.getKey(), item.getValue());
 				}
 			}
+		});
+		gridView.setMultiChoiceModeListener(new MultiChoiceModeListener() {
+
+			@Override
+			public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+				((PreferenceAdapter) gridView.getAdapter()).itemCheckedStateChanged(position, checked);
+				mode.setTitle(Html.fromHtml("<b>" + gridView.getCheckedItemCount() + "</b>"));
+			}
+
+			@Override
+			public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+				switch (item.getItemId()) {
+				case R.id.action_delete:
+					((PreferenceAdapter) gridView.getAdapter()).deleteSelection(getActivity());
+					PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
+					((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
+					mode.finish();
+					return true;
+				case R.id.action_select_all:
+					boolean check = gridView.getCheckedItemCount() != gridView.getCount();
+					for (int i = 0; i < gridView.getCount(); i++) {
+						gridView.setItemChecked(i, check);
+					}
+					return true;
+				default:
+					return false;
+				}
+			}
+
+			@Override
+			public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+				MenuInflater inflater = mode.getMenuInflater();
+				inflater.inflate(R.menu.cab, menu);
+				return true;
+			}
+
+			@Override
+			public void onDestroyActionMode(ActionMode mode) {
+				((PreferenceAdapter) gridView.getAdapter()).resetSelection();
+				getActivity().supportInvalidateOptionsMenu();
+			}
+
+			@Override
+			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+				return false;
+			}
+
 		});
 		getActivity().supportInvalidateOptionsMenu();
 	}

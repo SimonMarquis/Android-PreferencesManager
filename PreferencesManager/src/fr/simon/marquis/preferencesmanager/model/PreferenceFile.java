@@ -105,6 +105,11 @@ public class PreferenceFile {
 
 	public void setList(List<Entry<String, Object>> mList) {
 		this.mList = mList;
+		this.mPreferences = new HashMap<String, Object>();
+		for (Entry<String, Object> entry : mList) {
+			mPreferences.put(entry.getKey(), entry.getValue());
+		}
+
 		updateSort();
 	}
 

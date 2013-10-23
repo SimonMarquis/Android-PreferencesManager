@@ -16,19 +16,23 @@
 package fr.simon.marquis.preferencesmanager.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import android.content.Context;
 import android.text.TextUtils;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Filter;
 import android.widget.Filterable;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceType;
@@ -42,11 +46,13 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
 	private int color;
 	private final Object mLock = new Object();
 	private List<Entry<String, Object>> mListToDisplay;
+	private Map<Entry<String, Object>, Boolean> mCheckedPositions;
 
 	public PreferenceAdapter(Context ctx, PreferencesFragment f) {
 		this.layoutInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.mPreferencesFragment = f;
 		this.color = ctx.getResources().getColor(R.color.blue);
+		this.mCheckedPositions = new HashMap<Entry<String, Object>, Boolean>();
 		this.mListToDisplay = mPreferencesFragment.preferenceFile.getList();
 	}
 
@@ -74,15 +80,19 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
 			holder.background = convertView;
 			holder.name = (TextView) convertView.findViewById(R.id.item_name);
 			holder.value = (TextView) convertView.findViewById(R.id.item_value);
+			holder.selector = (LinearLayout) convertView.findViewById(R.id.item_selector);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
 		Entry<String, Object> item = mListToDisplay.get(position);
+		Boolean checked = mCheckedPositions.get(item);
 		holder.background.setBackgroundResource(PreferenceType.getDialogLayout(item.getValue()));
 		holder.name.setText(Utils.createSpannable(pattern, color, item.getKey()));
 		holder.value.setText((item.getValue() == null ? null : Utils.createSpannable(pattern, color, item.getValue().toString())));
+		holder.selector.setBackgroundResource((checked != null && checked.booleanValue()) ? R.drawable.abc_list_pressed_holo_light
+				: R.drawable.abc_list_selector_holo_light);
 
 		return convertView;
 	}
@@ -91,6 +101,7 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
 		private View background;
 		private TextView name;
 		private TextView value;
+		private LinearLayout selector;
 	}
 
 	public void setFilter(String filter) {
@@ -140,5 +151,35 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
 				notifyDataSetChanged();
 			}
 		};
+	}
+
+	public void resetSelection() {
+		mCheckedPositions.clear();
+		notifyDataSetChanged();
+	}
+
+	public void itemCheckedStateChanged(int position, boolean checked) {
+		mCheckedPositions.put(mListToDisplay.get(position), checked);
+		super.notifyDataSetChanged();
+	}
+
+	public void deleteSelection(Context ctx) {
+		ArrayList<Entry<String, Object>> temp = new ArrayList<Entry<String, Object>>();
+		for (Entry<String, Object> item : mListToDisplay) {
+			if (!mCheckedPositions.containsKey(item) || !mCheckedPositions.get(item).booleanValue()) {
+				mCheckedPositions.remove(item);
+				temp.add(item);
+			}
+		}
+		mPreferencesFragment.preferenceFile.setList(temp);
+		mListToDisplay = temp;
+	}
+
+	public void setSelection(SparseBooleanArray checkedItemPositions) {
+		mCheckedPositions.clear();
+		for (int i = 0; i < checkedItemPositions.size(); i++) {
+			mCheckedPositions.put(mListToDisplay.get(checkedItemPositions.keyAt(i)), checkedItemPositions.valueAt(i));
+		}
+		super.notifyDataSetChanged();
 	}
 }
