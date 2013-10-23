@@ -135,8 +135,7 @@ public class PreferenceFile {
 		updateSort();
 	}
 
-	public void add(String previousKey, String newKey, Object value,
-			boolean editMode) {
+	public void add(String previousKey, String newKey, Object value, boolean editMode) {
 		if (TextUtils.isEmpty(newKey)) {
 			return;
 		}
@@ -162,13 +161,11 @@ public class PreferenceFile {
 		}
 	}
 
-	public static boolean saveFast(PreferenceFile prefFile, String mFile,
-			Context ctx, String packageName) {
+	public static boolean saveFast(PreferenceFile prefFile, String mFile, Context ctx, String packageName) {
 		return saveFast(prefFile.toXml(), mFile, ctx, packageName);
 	}
 
-	public static boolean saveSlow(String preferences, String mFile,
-			Context ctx, String packageName) {
+	public static boolean saveSlow(String preferences, String mFile, Context ctx, String packageName) {
 		if (!isValid(preferences)) {
 			return false;
 		}
@@ -198,14 +195,12 @@ public class PreferenceFile {
 	 * @param packageName
 	 * @return
 	 */
-	public static boolean saveFast(String preferences, String mFile,
-			Context ctx, String packageName) {
+	public static boolean saveFast(String preferences, String mFile, Context ctx, String packageName) {
 		if (!isValid(preferences)) {
 			return false;
 		}
 		try {
-			App.getRoot().file.write(mFile,
-					preferences.replace("'", "'\"'\"'"), false);
+			App.getRoot().file.write(mFile, preferences.replace("'", "'\"'\"'"), false);
 			App.getRoot().processes.kill(packageName);
 		} catch (Exception e) {
 			return false;
@@ -229,8 +224,8 @@ public class PreferenceFile {
 	public void setPreferenceFile(boolean isValidPreferenceFile) {
 		this.isValidPreferenceFile = isValidPreferenceFile;
 	}
-	
-	public void updateSort(){
+
+	public void updateSort() {
 		Collections.sort(getList(), new PreferenceComparator(PreferencesActivity.preferenceSortType));
 	}
 

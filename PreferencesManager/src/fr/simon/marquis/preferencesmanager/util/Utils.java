@@ -61,8 +61,7 @@ public class Utils {
 		return applications;
 	}
 
-	public static void displayNoRoot(Context ctx,
-			FragmentManager fragmentManager) {
+	public static void displayNoRoot(Context ctx, FragmentManager fragmentManager) {
 		FragmentTransaction tr = fragmentManager.beginTransaction();
 		DialogFragment newFragment = RootDialog.newInstance();
 		tr.add(newFragment, "RootDialog");
@@ -71,10 +70,8 @@ public class Utils {
 
 	public static ArrayList<AppEntry> getApplications(Context ctx) {
 		boolean showSystemApps = isShowSystemApps(ctx);
-		List<ApplicationInfo> appsInfo = ctx.getPackageManager()
-				.getInstalledApplications(
-						PackageManager.GET_UNINSTALLED_PACKAGES
-								| PackageManager.GET_DISABLED_COMPONENTS);
+		List<ApplicationInfo> appsInfo = ctx.getPackageManager().getInstalledApplications(
+				PackageManager.GET_UNINSTALLED_PACKAGES | PackageManager.GET_DISABLED_COMPONENTS);
 		if (appsInfo == null)
 			appsInfo = new ArrayList<ApplicationInfo>();
 
@@ -96,8 +93,7 @@ public class Utils {
 		}
 	}
 
-	public static void setFavorite(String packageName, boolean favorite,
-			Context ctx) {
+	public static void setFavorite(String packageName, boolean favorite, Context ctx) {
 
 		if (favorites == null) {
 			initFavorites(ctx);
@@ -127,8 +123,7 @@ public class Utils {
 		updateApplicationInfo(packageName, favorite);
 	}
 
-	private static void updateApplicationInfo(String packageName,
-			boolean favorite) {
+	private static void updateApplicationInfo(String packageName, boolean favorite) {
 		for (AppEntry a : applications) {
 			if (a.getApplicationInfo().packageName.equals(packageName)) {
 				a.setFavorite(favorite);
@@ -148,13 +143,11 @@ public class Utils {
 		if (favorites == null) {
 			favorites = new HashSet<String>();
 
-			SharedPreferences sp = PreferenceManager
-					.getDefaultSharedPreferences(ctx);
+			SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
 
 			if (sp.contains(FAVORITES_KEY)) {
 				try {
-					JSONArray array = new JSONArray(sp.getString(FAVORITES_KEY,
-							"[]"));
+					JSONArray array = new JSONArray(sp.getString(FAVORITES_KEY, "[]"));
 					for (int i = 0; i < array.length(); i++) {
 						favorites.add(array.optString(i));
 					}
@@ -166,8 +159,7 @@ public class Utils {
 	}
 
 	public static boolean isShowSystemApps(Context ctx) {
-		return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(
-				"SHOW_SYSTEM_APPS", false);
+		return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean("SHOW_SYSTEM_APPS", false);
 	}
 
 	public static void setShowSystemApps(Context ctx, boolean show) {
@@ -178,13 +170,9 @@ public class Utils {
 
 	public static void debugFile(String file) {
 		FileStat fileStat = App.getRoot().file.stat(file);
-		Log.d(Utils.TAG,
-				file + " [ `" + fileStat.access() + "` , `" + fileStat.link()
-						+ "` , `" + fileStat.mm() + "` , `" + fileStat.name()
-						+ "` , `" + fileStat.permission() + "` , `"
-						+ fileStat.type() + "` , `" + fileStat.group()
-						+ "` , `" + fileStat.size() + "` , `" + fileStat.user()
-						+ "` ]");
+		Log.d(Utils.TAG, file + " [ `" + fileStat.access() + "` , `" + fileStat.link() + "` , `" + fileStat.mm() + "` , `" + fileStat.name()
+				+ "` , `" + fileStat.permission() + "` , `" + fileStat.type() + "` , `" + fileStat.group() + "` , `" + fileStat.size() + "` , `"
+				+ fileStat.user() + "` ]");
 	}
 
 	public static boolean hasHONEYCOMB() {
@@ -197,8 +185,7 @@ public class Utils {
 		return findFiles(files, path, new Files());
 	}
 
-	public static Files findFiles(ArrayList<FileStat> files, String path,
-			Files list) {
+	public static Files findFiles(ArrayList<FileStat> files, String path, Files list) {
 		if (files == null)
 			return list;
 
@@ -221,19 +208,14 @@ public class Utils {
 	}
 
 	public static void hideSoftKeyboard(Context context, View view) {
-		InputMethodManager imm = (InputMethodManager) context
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
+		InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 	}
 
-	public static SpannableString applyCustomTypeFace(CharSequence src,
-			Context ctx) {
+	public static SpannableString applyCustomTypeFace(CharSequence src, Context ctx) {
 		SpannableString span = new SpannableString(src);
 
-		span.setSpan(
-				new CustomTypefaceSpan("", RobotoTypefaceManager
-						.obtaintTypeface(ctx,
-								RobotoTypefaceManager.ROBOTOSLAB_REGULAR)), 0,
+		span.setSpan(new CustomTypefaceSpan("", RobotoTypefaceManager.obtaintTypeface(ctx, RobotoTypefaceManager.ROBOTOSLAB_REGULAR)), 0,
 				span.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 		return span;
 	}

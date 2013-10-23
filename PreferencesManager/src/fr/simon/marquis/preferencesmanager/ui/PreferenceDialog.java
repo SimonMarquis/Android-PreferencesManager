@@ -54,8 +54,7 @@ public class PreferenceDialog extends DialogFragment {
 	private Button mBtnOK, mBtnKO, mBtnSUPPR, mBtnAddEntrySet;
 
 	@SuppressWarnings("unchecked")
-	public static PreferenceDialog newInstance(PreferenceType type,
-			boolean editMode, String editKey, Object editValue) {
+	public static PreferenceDialog newInstance(PreferenceType type, boolean editMode, String editKey, Object editValue) {
 		PreferenceDialog frag = new PreferenceDialog();
 		Bundle args = new Bundle();
 		args.putString(KEY_TYPE, type.name());
@@ -130,8 +129,7 @@ public class PreferenceDialog extends DialogFragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		// remove the background of the regular Dialog
 		getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(0));
 
@@ -186,11 +184,9 @@ public class PreferenceDialog extends DialogFragment {
 	}
 
 	private void addStringSetEntry(boolean changeFocus, String value) {
-		LayoutInflater inflater = (LayoutInflater) getActivity()
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		LinearLayout layout = ((LinearLayout) mValue);
-		final LinearLayout item = (LinearLayout) inflater.inflate(
-				R.layout.row_stringset, null);
+		final LinearLayout item = (LinearLayout) inflater.inflate(R.layout.row_stringset, null);
 		layout.addView(item);
 		EditText editText = (EditText) item.getChildAt(0);
 		item.getChildAt(1).setOnClickListener(new OnClickListener() {
@@ -199,8 +195,7 @@ public class PreferenceDialog extends DialogFragment {
 				if (((LinearLayout) mValue).getChildCount() > 1) {
 					((LinearLayout) mValue).removeView(item);
 				} else {
-					((EditText) ((ViewGroup) ((LinearLayout) mValue)
-							.getChildAt(0)).getChildAt(0)).setText(null);
+					((EditText) ((ViewGroup) ((LinearLayout) mValue).getChildAt(0)).getChildAt(0)).setText(null);
 				}
 				validate();
 			}
@@ -214,13 +209,11 @@ public class PreferenceDialog extends DialogFragment {
 	private void createValidator() {
 		TextWatcher textWatcher = new TextWatcher() {
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before,
-					int count) {
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
 			}
 
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count,
-					int after) {
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 			}
 
 			@Override
@@ -248,8 +241,7 @@ public class PreferenceDialog extends DialogFragment {
 	}
 
 	private String generateTitle() {
-		return getString(mEditMode ? mPreferenceType.getDialogTitleEdit()
-				: mPreferenceType.getDialogTitleAdd());
+		return getString(mEditMode ? mPreferenceType.getDialogTitleEdit() : mPreferenceType.getDialogTitleAdd());
 	}
 
 	private View buildView() {
@@ -287,8 +279,7 @@ public class PreferenceDialog extends DialogFragment {
 			});
 		}
 		if (mPreferenceType == PreferenceType.STRINGSET) {
-			mBtnAddEntrySet = (Button) view
-					.findViewById(R.id.action_add_stringset_entry);
+			mBtnAddEntrySet = (Button) view.findViewById(R.id.action_add_stringset_entry);
 			mBtnAddEntrySet.setOnClickListener(new OnClickListener() {
 				@Override
 				public void onClick(View v) {
@@ -322,8 +313,7 @@ public class PreferenceDialog extends DialogFragment {
 				value = ((CompoundButton) mValue).isChecked();
 				break;
 			case INT:
-				value = Integer.valueOf(((EditText) mValue).getText()
-						.toString());
+				value = Integer.valueOf(((EditText) mValue).getText().toString());
 				break;
 			case STRING:
 				value = ((EditText) mValue).getText().toString();
@@ -338,8 +328,7 @@ public class PreferenceDialog extends DialogFragment {
 				Set<String> set = new HashSet<String>();
 				LinearLayout container = (LinearLayout) mValue;
 				for (int i = 0; i < container.getChildCount(); i++) {
-					set.add(((EditText) ((ViewGroup) container.getChildAt(i))
-							.getChildAt(0)).getText().toString());
+					set.add(((EditText) ((ViewGroup) container.getChildAt(i)).getChildAt(0)).getText().toString());
 				}
 				value = set;
 				break;
@@ -360,8 +349,7 @@ public class PreferenceDialog extends DialogFragment {
 				valueValid = true;
 				break;
 			case FLOAT:
-				Float f = Float.parseFloat(((EditText) mValue).getText()
-						.toString().trim());
+				Float f = Float.parseFloat(((EditText) mValue).getText().toString().trim());
 				valueValid = !Float.isInfinite(f) && !Float.isNaN(f);
 				break;
 			case LONG:
@@ -369,8 +357,7 @@ public class PreferenceDialog extends DialogFragment {
 				valueValid = true;
 				break;
 			case INT:
-				Integer.parseInt(((EditText) mValue).getText().toString()
-						.trim());
+				Integer.parseInt(((EditText) mValue).getText().toString().trim());
 				valueValid = true;
 				break;
 			case STRING:

@@ -32,8 +32,7 @@ public class PreferenceAdapter extends BaseAdapter {
 	private PreferencesFragment mPreferencesFragment;
 
 	public PreferenceAdapter(Context ctx, PreferencesFragment f) {
-		this.layoutInflater = (LayoutInflater) ctx
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.layoutInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.mPreferencesFragment = f;
 	}
 
@@ -56,8 +55,7 @@ public class PreferenceAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = layoutInflater.inflate(R.layout.row_preference,
-					parent, false);
+			convertView = layoutInflater.inflate(R.layout.row_preference, parent, false);
 			holder = new ViewHolder();
 			holder.background = convertView;
 			holder.name = (TextView) convertView.findViewById(R.id.item_name);
@@ -67,13 +65,10 @@ public class PreferenceAdapter extends BaseAdapter {
 			holder = (ViewHolder) convertView.getTag();
 		}
 
-		Entry<String, Object> item = mPreferencesFragment.preferenceFile
-				.getList().get(position);
-		holder.background.setBackgroundResource(PreferenceType
-				.getDialogLayout(item.getValue()));
+		Entry<String, Object> item = mPreferencesFragment.preferenceFile.getList().get(position);
+		holder.background.setBackgroundResource(PreferenceType.getDialogLayout(item.getValue()));
 		holder.name.setText(item.getKey());
-		holder.value.setText((item.getValue() == null ? null : item.getValue()
-				.toString()));
+		holder.value.setText((item.getValue() == null ? null : item.getValue().toString()));
 
 		return convertView;
 	}

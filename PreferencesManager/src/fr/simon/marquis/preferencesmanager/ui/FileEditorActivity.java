@@ -46,8 +46,7 @@ import fr.simon.marquis.preferencesmanager.model.XmlColorTheme.ColorThemeEnum;
 import fr.simon.marquis.preferencesmanager.model.XmlFontSize;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class FileEditorActivity extends ActionBarActivity implements
-		TextWatcher {
+public class FileEditorActivity extends ActionBarActivity implements TextWatcher {
 
 	private XmlFontSize mXmlFontSize;
 	private ColorThemeEnum mColorTheme;
@@ -65,8 +64,7 @@ public class FileEditorActivity extends ActionBarActivity implements
 	private boolean mHasContentChanged;
 	private boolean mNeedUpdateOnActivityFinish = false;
 
-	Pattern TAG_START = Pattern.compile("</?[\\w-\\?]+",
-			Pattern.CASE_INSENSITIVE);
+	Pattern TAG_START = Pattern.compile("</?[\\w-\\?]+", Pattern.CASE_INSENSITIVE);
 	Pattern TAG_END = Pattern.compile("\\??/?>");
 	Pattern TAG_ATTRIBUTE_NAME = Pattern.compile("\\s(\\w*)\\=");
 	Pattern TAG_ATTRIBUTE_VALUE = Pattern.compile("[a-z\\-]*\\=(\"[^\"]*\")");
@@ -103,22 +101,17 @@ public class FileEditorActivity extends ActionBarActivity implements
 		if (arg0 == null) {
 			Data data = App.getRoot().file.read(mPath + "/" + mName);
 			mEditText.setText(data == null ? null : data.toString());
-			mColorTheme = ColorThemeEnum.valueOf(PreferenceManager
-					.getDefaultSharedPreferences(this).getString(
-							KEY_COLOR_THEME, ColorThemeEnum.ECLIPSE.name()));
-			setXmlFontSize(XmlFontSize.generateSize(PreferenceManager
-					.getDefaultSharedPreferences(this).getInt(KEY_FONT_SIZE,
-							XmlFontSize.MEDIUM.getSize())));
+			mColorTheme = ColorThemeEnum.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString(KEY_COLOR_THEME,
+					ColorThemeEnum.ECLIPSE.name()));
+			setXmlFontSize(XmlFontSize.generateSize(PreferenceManager.getDefaultSharedPreferences(this).getInt(KEY_FONT_SIZE,
+					XmlFontSize.MEDIUM.getSize())));
 		} else {
-			mHasContentChanged = arg0
-					.getBoolean(KEY_HAS_CONTENT_CHANGED, false);
-			mNeedUpdateOnActivityFinish = arg0.getBoolean(
-					KEY_NEDD_UPDATE_ON_ACTIVITY_FINISH, false);
+			mHasContentChanged = arg0.getBoolean(KEY_HAS_CONTENT_CHANGED, false);
+			mNeedUpdateOnActivityFinish = arg0.getBoolean(KEY_NEDD_UPDATE_ON_ACTIVITY_FINISH, false);
 			if (mNeedUpdateOnActivityFinish) {
 				setResult(RESULT_OK);
 			}
-			mColorTheme = ColorThemeEnum.valueOf(arg0
-					.getString(KEY_COLOR_THEME));
+			mColorTheme = ColorThemeEnum.valueOf(arg0.getString(KEY_COLOR_THEME));
 			setXmlFontSize(XmlFontSize.generateSize(arg0.getInt(KEY_FONT_SIZE)));
 		}
 		mXmlColorTheme = XmlColorTheme.createTheme(getResources(), mColorTheme);
@@ -148,8 +141,7 @@ public class FileEditorActivity extends ActionBarActivity implements
 		outState.putBoolean(KEY_HAS_CONTENT_CHANGED, mHasContentChanged);
 		outState.putString(KEY_COLOR_THEME, mColorTheme.name());
 		outState.putInt(KEY_FONT_SIZE, mXmlFontSize.getSize());
-		outState.putBoolean(KEY_NEDD_UPDATE_ON_ACTIVITY_FINISH,
-				mNeedUpdateOnActivityFinish);
+		outState.putBoolean(KEY_NEDD_UPDATE_ON_ACTIVITY_FINISH, mNeedUpdateOnActivityFinish);
 		super.onSaveInstanceState(outState);
 	}
 
@@ -164,33 +156,20 @@ public class FileEditorActivity extends ActionBarActivity implements
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
-		menu.findItem(R.id.action_save)
-				.setEnabled(mHasContentChanged)
-				.setIcon(
-						mHasContentChanged ? R.drawable.ic_action_save
-								: R.drawable.ic_action_save_disabled);
+		menu.findItem(R.id.action_save).setEnabled(mHasContentChanged)
+				.setIcon(mHasContentChanged ? R.drawable.ic_action_save : R.drawable.ic_action_save_disabled);
 
-		menu.findItem(R.id.action_theme_eclipse).setChecked(
-				mColorTheme == ColorThemeEnum.ECLIPSE);
-		menu.findItem(R.id.action_theme_google).setChecked(
-				mColorTheme == ColorThemeEnum.GOOGLE);
-		menu.findItem(R.id.action_theme_roboticket).setChecked(
-				mColorTheme == ColorThemeEnum.ROBOTICKET);
-		menu.findItem(R.id.action_theme_notepad).setChecked(
-				mColorTheme == ColorThemeEnum.NOTEPAD);
-		menu.findItem(R.id.action_theme_netbeans).setChecked(
-				mColorTheme == ColorThemeEnum.NETBEANS);
+		menu.findItem(R.id.action_theme_eclipse).setChecked(mColorTheme == ColorThemeEnum.ECLIPSE);
+		menu.findItem(R.id.action_theme_google).setChecked(mColorTheme == ColorThemeEnum.GOOGLE);
+		menu.findItem(R.id.action_theme_roboticket).setChecked(mColorTheme == ColorThemeEnum.ROBOTICKET);
+		menu.findItem(R.id.action_theme_notepad).setChecked(mColorTheme == ColorThemeEnum.NOTEPAD);
+		menu.findItem(R.id.action_theme_netbeans).setChecked(mColorTheme == ColorThemeEnum.NETBEANS);
 
-		menu.findItem(R.id.action_size_extra_small).setChecked(
-				mXmlFontSize == XmlFontSize.EXTRA_SMALL);
-		menu.findItem(R.id.action_size_small).setChecked(
-				mXmlFontSize == XmlFontSize.SMALL);
-		menu.findItem(R.id.action_size_medium).setChecked(
-				mXmlFontSize == XmlFontSize.MEDIUM);
-		menu.findItem(R.id.action_size_large).setChecked(
-				mXmlFontSize == XmlFontSize.LARGE);
-		menu.findItem(R.id.action_size_extra_large).setChecked(
-				mXmlFontSize == XmlFontSize.EXTRA_LARGE);
+		menu.findItem(R.id.action_size_extra_small).setChecked(mXmlFontSize == XmlFontSize.EXTRA_SMALL);
+		menu.findItem(R.id.action_size_small).setChecked(mXmlFontSize == XmlFontSize.SMALL);
+		menu.findItem(R.id.action_size_medium).setChecked(mXmlFontSize == XmlFontSize.MEDIUM);
+		menu.findItem(R.id.action_size_large).setChecked(mXmlFontSize == XmlFontSize.LARGE);
+		menu.findItem(R.id.action_size_extra_large).setChecked(mXmlFontSize == XmlFontSize.EXTRA_LARGE);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -253,35 +232,29 @@ public class FileEditorActivity extends ActionBarActivity implements
 		if (mXmlFontSize != size) {
 			mXmlFontSize = size;
 			supportInvalidateOptionsMenu();
-			mEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP,
-					mXmlFontSize.getSize());
+			mEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP, mXmlFontSize.getSize());
 
-			PreferenceManager.getDefaultSharedPreferences(this).edit()
-					.putInt(KEY_FONT_SIZE, mXmlFontSize.getSize()).commit();
+			PreferenceManager.getDefaultSharedPreferences(this).edit().putInt(KEY_FONT_SIZE, mXmlFontSize.getSize()).commit();
 		}
 	}
 
 	private void setXmlColorTheme(ColorThemeEnum theme) {
 		if (mColorTheme != theme) {
 			mColorTheme = theme;
-			mXmlColorTheme = XmlColorTheme.createTheme(getResources(),
-					mColorTheme);
+			mXmlColorTheme = XmlColorTheme.createTheme(getResources(), mColorTheme);
 			supportInvalidateOptionsMenu();
 			highlightXMLText(mEditText.getText());
 
-			PreferenceManager.getDefaultSharedPreferences(this).edit()
-					.putString(KEY_COLOR_THEME, mColorTheme.name()).commit();
+			PreferenceManager.getDefaultSharedPreferences(this).edit().putString(KEY_COLOR_THEME, mColorTheme.name()).commit();
 		}
 	}
 
 	private boolean save() {
 		String preferences = mEditText.getText().toString();
-		if (PreferenceFile.saveFast(preferences, mPath + "/" + mName, this,
-				mPackageName)) {
+		if (PreferenceFile.saveFast(preferences, mPath + "/" + mName, this, mPackageName)) {
 			mNeedUpdateOnActivityFinish = true;
 			setResult(RESULT_OK);
-			Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT)
-					.show();
+			Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
 			Utils.hideSoftKeyboard(this, mEditText);
 			mHasContentChanged = false;
 			updateTitle();
@@ -294,35 +267,25 @@ public class FileEditorActivity extends ActionBarActivity implements
 	}
 
 	private void updateTitle() {
-		Spanned str = Html
-				.fromHtml((mHasContentChanged ? "<font color='#33b5e5'><b>&#9679;</b></font> "
-						: "")
-						+ mName);
+		Spanned str = Html.fromHtml((mHasContentChanged ? "<font color='#33b5e5'><b>&#9679;</b></font> " : "") + mName);
 		getActionBar().setTitle(Utils.applyCustomTypeFace(str, this));
 	}
 
 	private void clearSpans(Spannable source) {
-		Object[] toRemoveSpans = source.getSpans(0, source.length(),
-				ForegroundColorSpan.class);
+		Object[] toRemoveSpans = source.getSpans(0, source.length(), ForegroundColorSpan.class);
 		for (int i = 0; i < toRemoveSpans.length; i++)
 			source.removeSpan(toRemoveSpans[i]);
 	}
 
 	private Spannable highlightXMLText(Spannable source) {
 		clearSpans(source);
-		generateSpan(source, TAG_START,
-				mXmlColorTheme.getColor(ColorTagEnum.TAG));
+		generateSpan(source, TAG_START, mXmlColorTheme.getColor(ColorTagEnum.TAG));
 		generateSpan(source, TAG_END, mXmlColorTheme.getColor(ColorTagEnum.TAG));
-		generateSpan(source, TAG_ATTRIBUTE_VALUE,
-				mXmlColorTheme.getColor(ColorTagEnum.ATTR_VALUE));
-		generateSpan(source, TAG_ATTRIBUTE_VALUE_2,
-				mXmlColorTheme.getColor(ColorTagEnum.ATTR_VALUE));
-		generateSpan(source, TAG_ATTRIBUTE_NAME,
-				mXmlColorTheme.getColor(ColorTagEnum.ATTR_NAME));
-		generateSpan(source, COMMENT_START,
-				mXmlColorTheme.getColor(ColorTagEnum.COMMENT));
-		generateSpan(source, COMMENT_END,
-				mXmlColorTheme.getColor(ColorTagEnum.COMMENT));
+		generateSpan(source, TAG_ATTRIBUTE_VALUE, mXmlColorTheme.getColor(ColorTagEnum.ATTR_VALUE));
+		generateSpan(source, TAG_ATTRIBUTE_VALUE_2, mXmlColorTheme.getColor(ColorTagEnum.ATTR_VALUE));
+		generateSpan(source, TAG_ATTRIBUTE_NAME, mXmlColorTheme.getColor(ColorTagEnum.ATTR_NAME));
+		generateSpan(source, COMMENT_START, mXmlColorTheme.getColor(ColorTagEnum.COMMENT));
+		generateSpan(source, COMMENT_END, mXmlColorTheme.getColor(ColorTagEnum.COMMENT));
 		return source;
 	}
 
@@ -334,8 +297,7 @@ public class FileEditorActivity extends ActionBarActivity implements
 			start = matcher.start();
 			end = matcher.end();
 			if (start != end) {
-				source.setSpan(new ForegroundColorSpan(color), matcher.start(),
-						matcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+				source.setSpan(new ForegroundColorSpan(color), matcher.start(), matcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 			}
 		}
 	}
@@ -345,8 +307,7 @@ public class FileEditorActivity extends ActionBarActivity implements
 	}
 
 	@Override
-	public void beforeTextChanged(CharSequence s, int start, int count,
-			int after) {
+	public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 	}
 
 	@Override
@@ -360,9 +321,7 @@ public class FileEditorActivity extends ActionBarActivity implements
 	}
 
 	private void showSavePopup() {
-		new AlertDialog.Builder(this).setTitle(mName)
-				.setMessage(R.string.popup_edit_message)
-				.setIcon(R.drawable.ic_action_edit)
+		new AlertDialog.Builder(this).setTitle(mName).setMessage(R.string.popup_edit_message).setIcon(R.drawable.ic_action_edit)
 				.setNegativeButton(R.string.no, new OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {

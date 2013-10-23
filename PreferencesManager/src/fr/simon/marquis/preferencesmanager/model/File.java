@@ -30,8 +30,7 @@ public class File {
 	}
 
 	public static File fromJSON(JSONObject jsonObject) {
-		return new File(jsonObject.optString("NAME"),
-				jsonObject.optString("PATH"));
+		return new File(jsonObject.optString("NAME"), jsonObject.optString("PATH"));
 	}
 
 	public JSONObject toJSON() {

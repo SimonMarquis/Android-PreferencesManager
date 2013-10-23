@@ -86,8 +86,7 @@ public class AppEntry {
 				mIcon = mInfo.loadIcon(ctx.getPackageManager());
 				return mIcon;
 			} else {
-				return ctx.getResources().getDrawable(
-						android.R.drawable.sym_def_app_icon);
+				return ctx.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
 			}
 		} else {
 			return mIcon;

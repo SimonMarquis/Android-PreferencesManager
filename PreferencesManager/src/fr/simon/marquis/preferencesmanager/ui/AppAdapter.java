@@ -43,8 +43,7 @@ import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.util.MyComparator;
 
-public class AppAdapter extends BaseAdapter implements
-		StickyListHeadersAdapter, Filterable {
+public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter, Filterable {
 	private LayoutInflater layoutInflater;
 	private Context context;
 	private Pattern pattern;
@@ -54,13 +53,11 @@ public class AppAdapter extends BaseAdapter implements
 	private View emptyView;
 	private final Object mLock = new Object();
 
-	public AppAdapter(Context ctx, ArrayList<AppEntry> applications,
-			View emptyView) {
+	public AppAdapter(Context ctx, ArrayList<AppEntry> applications, View emptyView) {
 		this.context = ctx;
 		this.applications = applications;
 		this.applicationsToDisplay = applications;
-		this.layoutInflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.color = context.getResources().getColor(R.color.blue);
 		this.emptyView = emptyView;
 		updateEmptyView();
@@ -78,8 +75,7 @@ public class AppAdapter extends BaseAdapter implements
 	private void updateEmptyView() {
 		if (isEmpty()) {
 			if (emptyView.getVisibility() == View.GONE) {
-				emptyView.startAnimation(AnimationUtils.loadAnimation(context,
-						android.R.anim.fade_in));
+				emptyView.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in));
 			}
 			emptyView.setVisibility(View.VISIBLE);
 		} else {
@@ -92,13 +88,10 @@ public class AppAdapter extends BaseAdapter implements
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
 		if (convertView == null) {
-			convertView = layoutInflater.inflate(R.layout.row_application,
-					parent, false);
+			convertView = layoutInflater.inflate(R.layout.row_application, parent, false);
 			holder = new ViewHolder();
-			holder.textView = (TextView) convertView
-					.findViewById(R.id.item_text);
-			holder.imageView = (ImageView) convertView
-					.findViewById(R.id.item_image);
+			holder.textView = (TextView) convertView.findViewById(R.id.item_text);
+			holder.imageView = (ImageView) convertView.findViewById(R.id.item_image);
 			convertView.setTag(holder);
 		} else {
 			holder = (ViewHolder) convertView.getTag();
@@ -122,15 +115,13 @@ public class AppAdapter extends BaseAdapter implements
 		HeaderViewHolder holder;
 		if (convertView == null) {
 			holder = new HeaderViewHolder();
-			convertView = layoutInflater.inflate(R.layout.row_header, parent,
-					false);
+			convertView = layoutInflater.inflate(R.layout.row_header, parent, false);
 			holder.text = (TextView) convertView.findViewById(R.id.text_header);
 			convertView.setTag(holder);
 		} else {
 			holder = (HeaderViewHolder) convertView.getTag();
 		}
-		String headerText = String.valueOf(applicationsToDisplay.get(position)
-				.getHeaderChar());
+		String headerText = String.valueOf(applicationsToDisplay.get(position).getHeaderChar());
 		holder.text.setText(headerText);
 		return convertView;
 	}
@@ -164,12 +155,9 @@ public class AppAdapter extends BaseAdapter implements
 		final Matcher matcher = pattern.matcher(s);
 		while (matcher.find()) {
 			final ForegroundColorSpan span = new ForegroundColorSpan(color);
-			final StyleSpan span2 = new StyleSpan(
-					android.graphics.Typeface.BOLD);
-			spannable.setSpan(span2, matcher.start(), matcher.end(),
-					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-			spannable.setSpan(span, matcher.start(), matcher.end(),
-					Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			final StyleSpan span2 = new StyleSpan(android.graphics.Typeface.BOLD);
+			spannable.setSpan(span2, matcher.start(), matcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			spannable.setSpan(span, matcher.start(), matcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 		}
 		return spannable;
 	}
@@ -201,17 +189,12 @@ public class AppAdapter extends BaseAdapter implements
 						results.count = applications.size();
 					}
 				} else {
-					String prefixString = charSequence.toString()
-							.toLowerCase(Locale.getDefault()).trim();
+					String prefixString = charSequence.toString().toLowerCase(Locale.getDefault()).trim();
 					ArrayList<AppEntry> filterResultsData = new ArrayList<AppEntry>();
 					synchronized (mLock) {
 						for (AppEntry data : applications) {
-							Pattern p = Pattern.compile(prefixString,
-									Pattern.CASE_INSENSITIVE);
-							if (p.matcher(
-									data.getLabel()
-											.toLowerCase(Locale.getDefault())
-											.trim()).find()) {
+							Pattern p = Pattern.compile(prefixString, Pattern.CASE_INSENSITIVE);
+							if (p.matcher(data.getLabel().toLowerCase(Locale.getDefault()).trim()).find()) {
 								filterResultsData.add(data);
 							}
 						}
@@ -227,8 +210,7 @@ public class AppAdapter extends BaseAdapter implements
 
 			@SuppressWarnings("unchecked")
 			@Override
-			protected void publishResults(CharSequence charSequence,
-					FilterResults filterResults) {
+			protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
 				applicationsToDisplay = (ArrayList<AppEntry>) filterResults.values;
 				notifyDataSetChanged();
 			}
@@ -237,7 +219,6 @@ public class AppAdapter extends BaseAdapter implements
 
 	@Override
 	public boolean isEmpty() {
-		return applicationsToDisplay != null
-				&& applicationsToDisplay.size() == 0;
+		return applicationsToDisplay != null && applicationsToDisplay.size() == 0;
 	}
 }

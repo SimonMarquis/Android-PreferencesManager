@@ -37,8 +37,7 @@ import java.nio.charset.UnsupportedCharsetException;
  * specific XML files being written with it.
  */
 public class FastXmlSerializer implements XmlSerializer {
-	private static final String ESCAPE_TABLE[] = new String[] { null, null,
-			null, null, null, null, null, null, // 0-7
+	private static final String ESCAPE_TABLE[] = new String[] { null, null, null, null, null, null, null, null, // 0-7
 			null, null, null, null, null, null, null, null, // 8-15
 			null, null, null, null, null, null, null, null, // 16-23
 			null, null, null, null, null, null, null, null, // 24-31
@@ -135,8 +134,7 @@ public class FastXmlSerializer implements XmlSerializer {
 			append(string, lastPos, pos - lastPos);
 	}
 
-	private void escapeAndAppendString(char[] buf, int start, int len)
-			throws IOException {
+	private void escapeAndAppendString(char[] buf, int start, int len) throws IOException {
 		final char NE = (char) ESCAPE_TABLE.length;
 		final String[] escapes = ESCAPE_TABLE;
 		int end = start + len;
@@ -158,8 +156,7 @@ public class FastXmlSerializer implements XmlSerializer {
 			append(buf, lastPos, pos - lastPos);
 	}
 
-	public XmlSerializer attribute(String namespace, String name, String value)
-			throws IOException, IllegalArgumentException, IllegalStateException {
+	public XmlSerializer attribute(String namespace, String name, String value) throws IOException, IllegalArgumentException, IllegalStateException {
 		append(' ');
 		if (namespace != null) {
 			append(namespace);
@@ -173,28 +170,23 @@ public class FastXmlSerializer implements XmlSerializer {
 		return this;
 	}
 
-	public void cdsect(String text) throws IOException,
-			IllegalArgumentException, IllegalStateException {
+	public void cdsect(String text) throws IOException, IllegalArgumentException, IllegalStateException {
 		throw new UnsupportedOperationException();
 	}
 
-	public void comment(String text) throws IOException,
-			IllegalArgumentException, IllegalStateException {
+	public void comment(String text) throws IOException, IllegalArgumentException, IllegalStateException {
 		throw new UnsupportedOperationException();
 	}
 
-	public void docdecl(String text) throws IOException,
-			IllegalArgumentException, IllegalStateException {
+	public void docdecl(String text) throws IOException, IllegalArgumentException, IllegalStateException {
 		throw new UnsupportedOperationException();
 	}
 
-	public void endDocument() throws IOException, IllegalArgumentException,
-			IllegalStateException {
+	public void endDocument() throws IOException, IllegalArgumentException, IllegalStateException {
 		flush();
 	}
 
-	public XmlSerializer endTag(String namespace, String name)
-			throws IOException, IllegalArgumentException, IllegalStateException {
+	public XmlSerializer endTag(String namespace, String name) throws IOException, IllegalArgumentException, IllegalStateException {
 		if (mInTag) {
 			append(" />\n");
 		} else {
@@ -210,8 +202,7 @@ public class FastXmlSerializer implements XmlSerializer {
 		return this;
 	}
 
-	public void entityRef(String text) throws IOException,
-			IllegalArgumentException, IllegalStateException {
+	public void entityRef(String text) throws IOException, IllegalArgumentException, IllegalStateException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -266,8 +257,7 @@ public class FastXmlSerializer implements XmlSerializer {
 		throw new UnsupportedOperationException();
 	}
 
-	public String getPrefix(String namespace, boolean generatePrefix)
-			throws IllegalArgumentException {
+	public String getPrefix(String namespace, boolean generatePrefix) throws IllegalArgumentException {
 		throw new UnsupportedOperationException();
 	}
 
@@ -275,68 +265,55 @@ public class FastXmlSerializer implements XmlSerializer {
 		throw new UnsupportedOperationException();
 	}
 
-	public void ignorableWhitespace(String text) throws IOException,
-			IllegalArgumentException, IllegalStateException {
+	public void ignorableWhitespace(String text) throws IOException, IllegalArgumentException, IllegalStateException {
 		throw new UnsupportedOperationException();
 	}
 
-	public void processingInstruction(String text) throws IOException,
-			IllegalArgumentException, IllegalStateException {
+	public void processingInstruction(String text) throws IOException, IllegalArgumentException, IllegalStateException {
 		throw new UnsupportedOperationException();
 	}
 
-	public void setFeature(String name, boolean state)
-			throws IllegalArgumentException, IllegalStateException {
+	public void setFeature(String name, boolean state) throws IllegalArgumentException, IllegalStateException {
 		if (name.equals("http://xmlpull.org/v1/doc/features.html#indent-output")) {
 			return;
 		}
 		throw new UnsupportedOperationException();
 	}
 
-	public void setOutput(OutputStream os, String encoding) throws IOException,
-			IllegalArgumentException, IllegalStateException {
+	public void setOutput(OutputStream os, String encoding) throws IOException, IllegalArgumentException, IllegalStateException {
 		if (os == null)
 			throw new IllegalArgumentException();
 		if (true) {
 			try {
 				mCharset = Charset.forName(encoding).newEncoder();
 			} catch (IllegalCharsetNameException e) {
-				throw (UnsupportedEncodingException) (new UnsupportedEncodingException(
-						encoding).initCause(e));
+				throw (UnsupportedEncodingException) (new UnsupportedEncodingException(encoding).initCause(e));
 			} catch (UnsupportedCharsetException e) {
-				throw (UnsupportedEncodingException) (new UnsupportedEncodingException(
-						encoding).initCause(e));
+				throw (UnsupportedEncodingException) (new UnsupportedEncodingException(encoding).initCause(e));
 			}
 			mOutputStream = os;
 		} else {
-			setOutput(encoding == null ? new OutputStreamWriter(os)
-					: new OutputStreamWriter(os, encoding));
+			setOutput(encoding == null ? new OutputStreamWriter(os) : new OutputStreamWriter(os, encoding));
 		}
 	}
 
-	public void setOutput(Writer writer) throws IOException,
-			IllegalArgumentException, IllegalStateException {
+	public void setOutput(Writer writer) throws IOException, IllegalArgumentException, IllegalStateException {
 		mWriter = writer;
 	}
 
-	public void setPrefix(String prefix, String namespace) throws IOException,
-			IllegalArgumentException, IllegalStateException {
+	public void setPrefix(String prefix, String namespace) throws IOException, IllegalArgumentException, IllegalStateException {
 		throw new UnsupportedOperationException();
 	}
 
-	public void setProperty(String name, Object value)
-			throws IllegalArgumentException, IllegalStateException {
+	public void setProperty(String name, Object value) throws IllegalArgumentException, IllegalStateException {
 		throw new UnsupportedOperationException();
 	}
 
-	public void startDocument(String encoding, Boolean standalone)
-			throws IOException, IllegalArgumentException, IllegalStateException {
-		append("<?xml version='1.0' encoding='utf-8' standalone='"
-				+ (standalone ? "yes" : "no") + "' ?>\n");
+	public void startDocument(String encoding, Boolean standalone) throws IOException, IllegalArgumentException, IllegalStateException {
+		append("<?xml version='1.0' encoding='utf-8' standalone='" + (standalone ? "yes" : "no") + "' ?>\n");
 	}
 
-	public XmlSerializer startTag(String namespace, String name)
-			throws IOException, IllegalArgumentException, IllegalStateException {
+	public XmlSerializer startTag(String namespace, String name) throws IOException, IllegalArgumentException, IllegalStateException {
 		if (mInTag) {
 			append(">\n");
 		}
@@ -350,8 +327,7 @@ public class FastXmlSerializer implements XmlSerializer {
 		return this;
 	}
 
-	public XmlSerializer text(char[] buf, int start, int len)
-			throws IOException, IllegalArgumentException, IllegalStateException {
+	public XmlSerializer text(char[] buf, int start, int len) throws IOException, IllegalArgumentException, IllegalStateException {
 		if (mInTag) {
 			append(">");
 			mInTag = false;
@@ -360,8 +336,7 @@ public class FastXmlSerializer implements XmlSerializer {
 		return this;
 	}
 
-	public XmlSerializer text(String text) throws IOException,
-			IllegalArgumentException, IllegalStateException {
+	public XmlSerializer text(String text) throws IOException, IllegalArgumentException, IllegalStateException {
 		if (mInTag) {
 			append(">");
 			mInTag = false;

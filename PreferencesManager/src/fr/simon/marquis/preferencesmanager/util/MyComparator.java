@@ -30,7 +30,6 @@ public class MyComparator implements Comparator<AppEntry> {
 
 	@Override
 	public int compare(AppEntry obj1, AppEntry obj2) {
-		return sCollator
-				.compare(obj1.getSortingValue(), obj2.getSortingValue());
+		return sCollator.compare(obj1.getSortingValue(), obj2.getSortingValue());
 	}
 }

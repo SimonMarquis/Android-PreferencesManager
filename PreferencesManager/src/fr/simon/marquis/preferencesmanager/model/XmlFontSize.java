@@ -16,7 +16,7 @@ package fr.simon.marquis.preferencesmanager.model;
  * the License.
  */
 public enum XmlFontSize {
-//	EXTRA_SMALL(12), SMALL(14), MEDIUM(16), LARGE(18), EXTRA_LARGE(22);
+	// EXTRA_SMALL(12), SMALL(14), MEDIUM(16), LARGE(18), EXTRA_LARGE(22);
 	EXTRA_SMALL(10), SMALL(13), MEDIUM(16), LARGE(20), EXTRA_LARGE(24);
 
 	private int mSize;

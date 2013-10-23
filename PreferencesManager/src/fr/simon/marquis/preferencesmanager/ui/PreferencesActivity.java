@@ -38,12 +38,11 @@ import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnFragmentInteractionListener;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class PreferencesActivity extends ActionBarActivity implements
-		OnFragmentInteractionListener {
+public class PreferencesActivity extends ActionBarActivity implements OnFragmentInteractionListener {
 
 	private final static String KEY_FILES = "KEY_FILES";
 	public final static String KEY_SORT_TYPE = "KEY_SORT_TYPE";
-	
+
 	public static PreferenceSortType preferenceSortType = PreferenceSortType.TYPE_AND_ALPHANUMERIC;
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
@@ -69,7 +68,7 @@ public class PreferencesActivity extends ActionBarActivity implements
 			finish();
 			return;
 		}
-		
+
 		int index = PreferenceManager.getDefaultSharedPreferences(this).getInt(KEY_SORT_TYPE, 0);
 		preferenceSortType = PreferenceSortType.values()[index];
 
@@ -79,10 +78,8 @@ public class PreferencesActivity extends ActionBarActivity implements
 
 		packageName = b.getString("PACKAGE_NAME");
 
-		getActionBar().setTitle(
-				Utils.applyCustomTypeFace(b.getString("TITLE"), this));
-		getActionBar()
-				.setSubtitle(Utils.applyCustomTypeFace(packageName, this));
+		getActionBar().setTitle(Utils.applyCustomTypeFace(b.getString("TITLE"), this));
+		getActionBar().setSubtitle(Utils.applyCustomTypeFace(packageName, this));
 		Drawable drawable = Utils.findDrawable(packageName, this);
 		if (drawable != null) {
 			getSupportActionBar().setIcon(drawable);
@@ -93,8 +90,7 @@ public class PreferencesActivity extends ActionBarActivity implements
 			findFilesTask.execute();
 		} else {
 			try {
-				updateFindFiles(Files.fromJSON(new JSONArray(savedInstanceState
-						.getString(KEY_FILES))));
+				updateFindFiles(Files.fromJSON(new JSONArray(savedInstanceState.getString(KEY_FILES))));
 			} catch (JSONException e) {
 				findFilesTask = new FindFilesTask(packageName);
 				findFilesTask.execute();
@@ -117,10 +113,7 @@ public class PreferencesActivity extends ActionBarActivity implements
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean fav = Utils.isFavorite(packageName, this);
-		menu.findItem(R.id.action_fav)
-				.setIcon(
-						fav ? R.drawable.ic_action_star_10
-								: R.drawable.ic_action_star_0)
+		menu.findItem(R.id.action_fav).setIcon(fav ? R.drawable.ic_action_star_10 : R.drawable.ic_action_star_0)
 				.setTitle(fav ? R.string.action_unfav : R.string.action_fav);
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -132,8 +125,7 @@ public class PreferencesActivity extends ActionBarActivity implements
 			finish();
 			break;
 		case R.id.action_fav:
-			Utils.setFavorite(packageName,
-					!Utils.isFavorite(packageName, this), this);
+			Utils.setFavorite(packageName, !Utils.isFavorite(packageName, this), this);
 			supportInvalidateOptionsMenu();
 			break;
 
@@ -151,9 +143,7 @@ public class PreferencesActivity extends ActionBarActivity implements
 
 		@Override
 		public Fragment getItem(int position) {
-			PreferencesFragment fragment = PreferencesFragment.newInstance(
-					files.get(position).getName(), files.get(position)
-							.getPath(), packageName);
+			PreferencesFragment fragment = PreferencesFragment.newInstance(files.get(position).getName(), files.get(position).getPath(), packageName);
 			return fragment;
 		}
 
@@ -164,8 +154,7 @@ public class PreferencesActivity extends ActionBarActivity implements
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			return Utils.applyCustomTypeFace(files.get(position).getName(),
-					PreferencesActivity.this);
+			return Utils.applyCustomTypeFace(files.get(position).getName(), PreferencesActivity.this);
 		}
 	}
 
@@ -200,22 +189,18 @@ public class PreferencesActivity extends ActionBarActivity implements
 
 	private void updateFindFiles(Files f) {
 		files = f;
-		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 		mViewPager.setAdapter(mSectionsPagerAdapter);
 
 		if (files == null || files.size() == 0) {
-			mEmptyView.startAnimation(AnimationUtils.loadAnimation(this,
-					android.R.anim.fade_in));
+			mEmptyView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
 			mEmptyView.setVisibility(View.VISIBLE);
-			mLoadingView.startAnimation(AnimationUtils.loadAnimation(this,
-					android.R.anim.fade_out));
+			mLoadingView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
 			mLoadingView.setVisibility(View.GONE);
 		} else {
 			mEmptyView.setVisibility(View.GONE);
 			mLoadingView.setVisibility(View.GONE);
-			mViewPager.startAnimation(AnimationUtils.loadAnimation(this,
-					android.R.anim.fade_in));
+			mViewPager.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
 			mViewPager.setVisibility(View.VISIBLE);
 		}
 	}

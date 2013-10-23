@@ -40,8 +40,7 @@ import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class AppListActivity extends ActionBarActivity implements
-		OnQueryTextListener {
+public class AppListActivity extends ActionBarActivity implements OnQueryTextListener {
 	private static final int REQUEST_CODE = 123;
 	private StickyListHeadersListView listView;
 	private View loadingView, emptyView;
@@ -59,34 +58,28 @@ public class AppListActivity extends ActionBarActivity implements
 		listView = (StickyListHeadersListView) findViewById(R.id.listView);
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 				if (!App.getRoot().connected()) {
 					new Thread(new Runnable() {
 						@Override
 						public void run() {
 							if (!App.getRootForce().connected()) {
-								Utils.displayNoRoot(AppListActivity.this,
-										getSupportFragmentManager());
+								Utils.displayNoRoot(AppListActivity.this, getSupportFragmentManager());
 							}
 						}
 					}).start();
 				} else {
-					AppEntry item = (AppEntry) ((AppAdapter) listView
-							.getWrappedAdapter()).getItem(arg2);
+					AppEntry item = (AppEntry) ((AppAdapter) listView.getWrappedAdapter()).getItem(arg2);
 
-					Intent i = new Intent(AppListActivity.this,
-							PreferencesActivity.class);
+					Intent i = new Intent(AppListActivity.this, PreferencesActivity.class);
 					i.putExtra("TITLE", item.getLabel());
-					i.putExtra("PACKAGE_NAME",
-							item.getApplicationInfo().packageName);
+					i.putExtra("PACKAGE_NAME", item.getApplicationInfo().packageName);
 
 					startActivityForResult(i, REQUEST_CODE);
 				}
 			}
 		});
-		getActionBar().setTitle(
-				Utils.applyCustomTypeFace(getString(R.string.app_name), this));
+		getActionBar().setTitle(Utils.applyCustomTypeFace(getString(R.string.app_name), this));
 		if (savedInstanceState == null || Utils.getPreviousApps() == null) {
 			startTask();
 		} else {
@@ -98,8 +91,7 @@ public class AppListActivity extends ActionBarActivity implements
 				@Override
 				public void run() {
 					if (!App.getRoot().connected()) {
-						Utils.displayNoRoot(AppListActivity.this,
-								getSupportFragmentManager());
+						Utils.displayNoRoot(AppListActivity.this, getSupportFragmentManager());
 					}
 				}
 			}).start();
@@ -114,8 +106,7 @@ public class AppListActivity extends ActionBarActivity implements
 		if (task == null || task.isCancelled()) {
 			task = new GetApplicationsTask(this);
 			if (Utils.hasHONEYCOMB()) {
-				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR,
-						(Void[]) null);
+				task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
 			} else {
 				task.execute();
 			}
@@ -127,8 +118,7 @@ public class AppListActivity extends ActionBarActivity implements
 	private void updateView(View view, boolean show, boolean animate) {
 		view.setVisibility(show ? View.VISIBLE : View.GONE);
 		if (animate) {
-			view.startAnimation(AnimationUtils.loadAnimation(this,
-					show ? android.R.anim.fade_in : android.R.anim.fade_out));
+			view.startAnimation(AnimationUtils.loadAnimation(this, show ? android.R.anim.fade_in : android.R.anim.fade_out));
 		}
 	}
 
@@ -143,8 +133,7 @@ public class AppListActivity extends ActionBarActivity implements
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == REQUEST_CODE) {
 			if (listView != null && listView.getWrappedAdapter() != null) {
-				((AppAdapter) listView.getWrappedAdapter())
-						.notifyDataSetChanged();
+				((AppAdapter) listView.getWrappedAdapter()).notifyDataSetChanged();
 			}
 		}
 	}
@@ -163,13 +152,8 @@ public class AppListActivity extends ActionBarActivity implements
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {
 		boolean show = Utils.isShowSystemApps(this);
-		menu.findItem(R.id.show_system_apps)
-				.setTitle(
-						show ? R.string.hide_system_apps
-								: R.string.show_system_apps)
-				.setIcon(
-						show ? R.drawable.ic_action_show
-								: R.drawable.ic_action_hide);
+		menu.findItem(R.id.show_system_apps).setTitle(show ? R.string.hide_system_apps : R.string.show_system_apps)
+				.setIcon(show ? R.drawable.ic_action_show : R.drawable.ic_action_hide);
 		return super.onPrepareOptionsMenu(menu);
 	}
 
@@ -191,8 +175,7 @@ public class AppListActivity extends ActionBarActivity implements
 		return super.onOptionsItemSelected(item);
 	}
 
-	public class GetApplicationsTask extends
-			AsyncTask<Void, Void, ArrayList<AppEntry>> {
+	public class GetApplicationsTask extends AsyncTask<Void, Void, ArrayList<AppEntry>> {
 		private Context mContext;
 
 		public GetApplicationsTask(Context ctx) {
@@ -252,8 +235,7 @@ public class AppListActivity extends ActionBarActivity implements
 
 	@Override
 	public void onBackPressed() {
-		if (PreferenceManager.getDefaultSharedPreferences(this).contains(
-				"about")) {
+		if (PreferenceManager.getDefaultSharedPreferences(this).contains("about")) {
 			super.onBackPressed();
 		} else {
 			showPopup(true);
