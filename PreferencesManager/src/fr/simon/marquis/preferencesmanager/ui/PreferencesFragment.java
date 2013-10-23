@@ -25,7 +25,12 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnQueryTextListener;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -48,7 +53,7 @@ import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
 import fr.simon.marquis.preferencesmanager.model.PreferenceType;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class PreferencesFragment extends Fragment {
+public class PreferencesFragment extends Fragment implements OnQueryTextListener {
 	public static final int CODE_EDIT_FILE = 666;
 
 	public static final String ARG_NAME = "NAME";
@@ -58,6 +63,9 @@ public class PreferencesFragment extends Fragment {
 	private String mName;
 	private String mPath;
 	private String mPackageName;
+
+	private SearchView mSearchView;
+	private String mCurFilter;
 
 	public PreferenceFile preferenceFile;
 
@@ -126,6 +134,29 @@ public class PreferencesFragment extends Fragment {
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.preferences_fragment, menu);
+
+		MenuItem searchItem = menu.findItem(R.id.menu_search);
+		mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+		mSearchView.setQueryHint(getString(R.string.action_search_preference));
+		mSearchView.setOnQueryTextListener(this);
+		MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
+			@Override
+			public boolean onMenuItemActionExpand(MenuItem arg0) {
+				return true;
+			}
+
+			@Override
+			public boolean onMenuItemActionCollapse(MenuItem arg0) {
+				mCurFilter = null;
+				PreferenceAdapter adapter = ((PreferenceAdapter) gridView.getAdapter());
+				if (adapter == null) {
+					return true;
+				}
+				adapter.setFilter(mCurFilter);
+				adapter.getFilter().filter(mCurFilter);
+				return true;
+			}
+		});
 		super.onCreateOptionsMenu(menu, inflater);
 	}
 
@@ -222,7 +253,8 @@ public class PreferencesFragment extends Fragment {
 			return;
 		}
 		preferenceFile.add(previousKey, newKey, value, editMode);
-		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
+
+		((PreferenceAdapter) gridView.getAdapter()).getFilter().filter(mCurFilter);
 		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
 	}
 
@@ -231,7 +263,7 @@ public class PreferencesFragment extends Fragment {
 			return;
 		}
 		preferenceFile.removeValue(key);
-		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
+		((PreferenceAdapter) gridView.getAdapter()).getFilter().filter(mCurFilter);
 		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
 	}
 
@@ -320,6 +352,26 @@ public class PreferencesFragment extends Fragment {
 			updateListView(result, true);
 		}
 
+	}
+
+	@Override
+	public boolean onQueryTextChange(String newText) {
+		mCurFilter = !TextUtils.isEmpty(newText) ? newText.trim() : null;
+		PreferenceAdapter adapter = ((PreferenceAdapter) gridView.getAdapter());
+		if (adapter == null) {
+			return false;
+		}
+
+		adapter.setFilter(mCurFilter);
+		adapter.getFilter().filter(mCurFilter);
+		return true;
+	}
+
+	@Override
+	public boolean onQueryTextSubmit(String arg0) {
+		Utils.hideSoftKeyboard(getActivity(), mSearchView);
+		mSearchView.clearFocus();
+		return false;
 	}
 
 }

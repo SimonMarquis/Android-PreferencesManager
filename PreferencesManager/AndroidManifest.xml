@@ -43,7 +43,7 @@
         </activity>
         <activity
             android:name="fr.simon.marquis.preferencesmanager.ui.PreferencesActivity"
-            android:windowSoftInputMode="adjustNothing" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="fr.simon.marquis.preferencesmanager.ui.FileEditorActivity"
             android:windowSoftInputMode="stateUnchanged|adjustResize" />

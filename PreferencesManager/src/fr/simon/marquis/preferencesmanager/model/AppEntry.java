@@ -17,12 +17,11 @@ package fr.simon.marquis.preferencesmanager.model;
 
 import java.io.File;
 
-import fr.simon.marquis.preferencesmanager.util.Utils;
-
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class AppEntry {
 

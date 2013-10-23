@@ -18,8 +18,6 @@ package fr.simon.marquis.preferencesmanager.ui;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.spazedog.lib.rootfw.container.Data;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
@@ -38,6 +36,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.spazedog.lib.rootfw.container.Data;
+
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.model.XmlColorTheme;

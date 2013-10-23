@@ -19,6 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,7 +38,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -230,5 +236,27 @@ public class Utils {
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * Highlight text
+	 * 
+	 * @param color
+	 * 
+	 * @param s
+	 * @return
+	 */
+	public static SpannableStringBuilder createSpannable(Pattern pattern, int color, String s) {
+		final SpannableStringBuilder spannable = new SpannableStringBuilder(s);
+		if (pattern == null)
+			return spannable;
+		final Matcher matcher = pattern.matcher(s);
+		while (matcher.find()) {
+			final ForegroundColorSpan span = new ForegroundColorSpan(color);
+			final StyleSpan span2 = new StyleSpan(android.graphics.Typeface.BOLD);
+			spannable.setSpan(span2, matcher.start(), matcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+			spannable.setSpan(span, matcher.start(), matcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+		}
+		return spannable;
 	}
 }
