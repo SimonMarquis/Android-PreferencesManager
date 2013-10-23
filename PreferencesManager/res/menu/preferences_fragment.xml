@@ -17,11 +17,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto" >
 
     <item
+        android:id="@+id/menu_search"
+        android:icon="@drawable/ic_action_search"
+        android:title="@string/action_search_preference"
+        app:actionViewClass="android.support.v7.widget.SearchView"
+        app:showAsAction="always|collapseActionView"/>
+    <item
+        android:id="@+id/action_sort"
+        android:icon="@drawable/ic_action_sort_1"
+        android:orderInCategory="1"
+        android:title="@string/action_sort"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group android:checkableBehavior="single" >
+                <item
+                    android:id="@+id/action_sort_alpha"
+                    android:icon="@drawable/ic_action_sort_2"
+                    android:title="@string/action_sort_alpha"
+                    app:showAsAction="never"/>
+                <item
+                    android:id="@+id/action_sort_type"
+                    android:icon="@drawable/ic_action_tags"
+                    android:title="@string/action_sort_type"
+                    app:showAsAction="never"/>
+            </group>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/action_edit_file"
+        android:icon="@drawable/ic_action_edit"
+        android:orderInCategory="2"
+        android:title="@string/action_direct_edit"
+        app:showAsAction="ifRoom"/>
+    <item
         android:id="@+id/action_add"
         android:icon="@drawable/ic_action_add"
-        android:orderInCategory="2"
+        android:orderInCategory="3"
         android:title="@string/action_add"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
         <menu>
             <group>
                 <item
@@ -45,11 +78,5 @@
             </group>
         </menu>
     </item>
-    <item
-        android:id="@+id/action_edit_file"
-        android:icon="@drawable/ic_action_edit"
-        android:orderInCategory="3"
-        android:title="@string/action_direct_edit"
-        app:showAsAction="ifRoom"/>
 
 </menu>

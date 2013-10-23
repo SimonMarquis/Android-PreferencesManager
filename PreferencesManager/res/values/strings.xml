@@ -106,4 +106,9 @@
     
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    
+    <string name="action_sort">Sort</string>
+    <string name="action_sort_alpha">Alphanumeric</string>
+    <string name="action_sort_type">Type</string>
+    <string name="action_search_preference">Search a preference</string>
 </resources>

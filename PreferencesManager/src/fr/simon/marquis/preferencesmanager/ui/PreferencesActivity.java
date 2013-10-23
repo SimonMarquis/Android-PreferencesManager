@@ -22,6 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -33,6 +34,7 @@ import android.view.View;
 import android.view.animation.AnimationUtils;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.Files;
+import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnFragmentInteractionListener;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
@@ -40,6 +42,9 @@ public class PreferencesActivity extends ActionBarActivity implements
 		OnFragmentInteractionListener {
 
 	private final static String KEY_FILES = "KEY_FILES";
+	public final static String KEY_SORT_TYPE = "KEY_SORT_TYPE";
+	
+	public static PreferenceSortType preferenceSortType = PreferenceSortType.TYPE_AND_ALPHANUMERIC;
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 
@@ -64,6 +69,9 @@ public class PreferencesActivity extends ActionBarActivity implements
 			finish();
 			return;
 		}
+		
+		int index = PreferenceManager.getDefaultSharedPreferences(this).getInt(KEY_SORT_TYPE, 0);
+		preferenceSortType = PreferenceSortType.values()[index];
 
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mLoadingView = (View) findViewById(R.id.loadingView);

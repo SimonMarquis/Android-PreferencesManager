@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,6 +36,7 @@ import android.text.TextUtils;
 import com.spazedog.lib.rootfw.container.FileStat;
 
 import fr.simon.marquis.preferencesmanager.ui.App;
+import fr.simon.marquis.preferencesmanager.ui.PreferencesActivity;
 import fr.simon.marquis.preferencesmanager.util.XmlUtils;
 
 public class PreferenceFile {
@@ -77,6 +79,7 @@ public class PreferenceFile {
 	public void setPreferences(Map<String, Object> map) {
 		mPreferences = map;
 		mList = new ArrayList<Entry<String, Object>>(mPreferences.entrySet());
+		updateSort();
 	}
 
 	public Map<String, Object> getPreferences() {
@@ -102,6 +105,7 @@ public class PreferenceFile {
 
 	public void setList(List<Entry<String, Object>> mList) {
 		this.mList = mList;
+		updateSort();
 	}
 
 	private void updateValue(String key, Object value) {
@@ -112,6 +116,7 @@ public class PreferenceFile {
 			}
 		}
 		mPreferences.put(key, value);
+		updateSort();
 	}
 
 	public void removeValue(String key) {
@@ -127,6 +132,7 @@ public class PreferenceFile {
 	private void createAndAddValue(String key, Object value) {
 		mList.add(0, new AbstractMap.SimpleEntry<String, Object>(key, value));
 		mPreferences.put(key, value);
+		updateSort();
 	}
 
 	public void add(String previousKey, String newKey, Object value,
@@ -222,6 +228,10 @@ public class PreferenceFile {
 
 	public void setPreferenceFile(boolean isValidPreferenceFile) {
 		this.isValidPreferenceFile = isValidPreferenceFile;
+	}
+	
+	public void updateSort(){
+		Collections.sort(getList(), new PreferenceComparator(PreferencesActivity.preferenceSortType));
 	}
 
 }

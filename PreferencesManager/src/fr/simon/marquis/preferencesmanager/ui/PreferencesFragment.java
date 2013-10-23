@@ -22,6 +22,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
@@ -43,6 +44,7 @@ import com.spazedog.lib.rootfw.container.Data;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
+import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
 import fr.simon.marquis.preferencesmanager.model.PreferenceType;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
@@ -65,8 +67,7 @@ public class PreferencesFragment extends Fragment {
 	private View loadingView, emptyView;
 	private TextView emptyViewText;
 
-	public static PreferencesFragment newInstance(String paramName,
-			String paramPath, String paramPackageName) {
+	public static PreferencesFragment newInstance(String paramName, String paramPath, String paramPackageName) {
 		PreferencesFragment fragment = new PreferencesFragment();
 		Bundle args = new Bundle();
 		args.putString(ARG_NAME, paramName);
@@ -94,10 +95,8 @@ public class PreferencesFragment extends Fragment {
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		return inflater
-				.inflate(R.layout.fragment_preferences, container, false);
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		return inflater.inflate(R.layout.fragment_preferences, container, false);
 	}
 
 	@Override
@@ -132,14 +131,11 @@ public class PreferencesFragment extends Fragment {
 
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		menu.findItem(R.id.action_add).setEnabled(
-				preferenceFile != null
-						&& preferenceFile.isValidPreferenceFile());
-		menu.findItem(R.id.action_add)
-				.setIcon(
-						preferenceFile != null
-								&& preferenceFile.isValidPreferenceFile() ? R.drawable.ic_action_add
-								: R.drawable.ic_action_add_disabled);
+		menu.findItem(R.id.action_add).setEnabled(preferenceFile != null && preferenceFile.isValidPreferenceFile());
+		menu.findItem(R.id.action_add).setIcon(
+				preferenceFile != null && preferenceFile.isValidPreferenceFile() ? R.drawable.ic_action_add : R.drawable.ic_action_add_disabled);
+		menu.findItem(R.id.action_sort_alpha).setChecked(PreferencesActivity.preferenceSortType == PreferenceSortType.ALPHANUMERIC);
+		menu.findItem(R.id.action_sort_type).setChecked(PreferencesActivity.preferenceSortType == PreferenceSortType.TYPE_AND_ALPHANUMERIC);
 		super.onPrepareOptionsMenu(menu);
 	}
 
@@ -174,21 +170,37 @@ public class PreferencesFragment extends Fragment {
 			intent.putExtra(ARG_PACKAGE_NAME, mPackageName);
 			startActivityForResult(intent, CODE_EDIT_FILE);
 			return true;
+		case R.id.action_sort_alpha:
+			setSortType(PreferenceSortType.ALPHANUMERIC);
+			return true;
+		case R.id.action_sort_type:
+			setSortType(PreferenceSortType.TYPE_AND_ALPHANUMERIC);
+			return true;
 		default:
 			return super.onOptionsItemSelected(item);
 		}
 	}
 
+	private void setSortType(PreferenceSortType type) {
+		if (PreferencesActivity.preferenceSortType != type) {
+			PreferencesActivity.preferenceSortType = type;
+			getActivity().supportInvalidateOptionsMenu();
+			PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putInt(PreferencesActivity.KEY_SORT_TYPE, type.ordinal()).commit();
+
+			if (gridView.getAdapter() != null && preferenceFile != null) {
+				preferenceFile.updateSort();
+				((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
+			}
+		}
+	}
+
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == CODE_EDIT_FILE
-				&& resultCode == ActionBarActivity.RESULT_OK) {
+		if (requestCode == CODE_EDIT_FILE && resultCode == ActionBarActivity.RESULT_OK) {
 			loadingView.setVisibility(View.VISIBLE);
-			loadingView.startAnimation(AnimationUtils.loadAnimation(
-					getActivity(), android.R.anim.fade_in));
+			loadingView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
 			gridView.setVisibility(View.GONE);
-			gridView.startAnimation(AnimationUtils.loadAnimation(getActivity(),
-					android.R.anim.fade_out));
+			gridView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
 			launchTask();
 		}
 
@@ -199,24 +211,19 @@ public class PreferencesFragment extends Fragment {
 		showPrefDialog(type, false, null, null);
 	}
 
-	private void showPrefDialog(PreferenceType type, boolean editMode,
-			String key, Object obj) {
-		DialogFragment newFragment = PreferenceDialog.newInstance(type,
-				editMode, key, obj);
-		newFragment.setTargetFragment(this,
-				("Fragment:" + mPath + "/" + mName).hashCode());
+	private void showPrefDialog(PreferenceType type, boolean editMode, String key, Object obj) {
+		DialogFragment newFragment = PreferenceDialog.newInstance(type, editMode, key, obj);
+		newFragment.setTargetFragment(this, ("Fragment:" + mPath + "/" + mName).hashCode());
 		newFragment.show(getFragmentManager(), mPath + "/" + mName + "#" + key);
 	}
 
-	public void addPrefKeyValue(String previousKey, String newKey,
-			Object value, boolean editMode) {
+	public void addPrefKeyValue(String previousKey, String newKey, Object value, boolean editMode) {
 		if (preferenceFile == null) {
 			return;
 		}
 		preferenceFile.add(previousKey, newKey, value, editMode);
 		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
-		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName,
-				getActivity(), mPackageName);
+		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
 	}
 
 	public void deletePref(String key) {
@@ -225,8 +232,7 @@ public class PreferencesFragment extends Fragment {
 		}
 		preferenceFile.removeValue(key);
 		((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
-		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName,
-				getActivity(), mPackageName);
+		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
 	}
 
 	public void onButtonPressed(Uri uri) {
@@ -241,8 +247,7 @@ public class PreferencesFragment extends Fragment {
 		try {
 			mListener = (OnFragmentInteractionListener) activity;
 		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString()
-					+ " must implement OnFragmentInteractionListener");
+			throw new ClassCastException(activity.toString() + " must implement OnFragmentInteractionListener");
 		}
 	}
 
@@ -258,32 +263,24 @@ public class PreferencesFragment extends Fragment {
 			return;
 		}
 		preferenceFile = p;
-		emptyViewText
-				.setText(preferenceFile.isValidPreferenceFile() ? R.string.empty_preference_file_valid
-						: R.string.empty_preference_file_invalid);
+		emptyViewText.setText(preferenceFile.isValidPreferenceFile() ? R.string.empty_preference_file_valid : R.string.empty_preference_file_invalid);
 		loadingView.setVisibility(View.GONE);
 		gridView.setVisibility(View.VISIBLE);
 		if (animate) {
-			loadingView.startAnimation(AnimationUtils.loadAnimation(
-					getActivity(), android.R.anim.fade_out));
-			gridView.startAnimation(AnimationUtils.loadAnimation(getActivity(),
-					android.R.anim.fade_in));
+			loadingView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_out));
+			gridView.startAnimation(AnimationUtils.loadAnimation(getActivity(), android.R.anim.fade_in));
 		}
 		gridView.setAdapter(new PreferenceAdapter(getActivity(), this));
 		gridView.setEmptyView(emptyView);
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 			@SuppressWarnings("unchecked")
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
+			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
 
-				Entry<String, Object> item = (Entry<String, Object>) gridView
-						.getAdapter().getItem(arg2);
+				Entry<String, Object> item = (Entry<String, Object>) gridView.getAdapter().getItem(arg2);
 				PreferenceType type = PreferenceType.fromObject(item.getValue());
 				if (type == PreferenceType.UNSUPPORTED) {
-					Toast.makeText(getActivity(),
-							R.string.preferece_unsupported, Toast.LENGTH_SHORT)
-							.show();
+					Toast.makeText(getActivity(), R.string.preferece_unsupported, Toast.LENGTH_SHORT).show();
 				} else {
 					showPrefDialog(type, true, item.getKey(), item.getValue());
 				}
@@ -314,8 +311,7 @@ public class PreferencesFragment extends Fragment {
 			Log.e(Utils.TAG, System.currentTimeMillis() + "\t read start");
 			Data data = App.getRoot().file.read(mFile);
 			Log.e(Utils.TAG, System.currentTimeMillis() + "\t read end");
-			return PreferenceFile
-					.fromXml(data == null ? null : data.toString());
+			return PreferenceFile.fromXml(data == null ? null : data.toString());
 		}
 
 		@Override
