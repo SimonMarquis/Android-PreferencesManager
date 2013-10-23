@@ -108,7 +108,7 @@
     <string name="no">No</string>
     
     <string name="action_sort">Sort</string>
-    <string name="action_sort_alpha">Alphanumeric</string>
+    <string name="action_sort_alpha">Alphabetically</string>
     <string name="action_sort_type">Type</string>
     <string name="action_search_preference">Search a preference</string>
     <string name="action_select_all">Select all</string>

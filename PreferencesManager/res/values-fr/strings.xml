@@ -102,4 +102,11 @@
     
     <string name="yes">Oui</string>
     <string name="no">Non</string>
+    
+    <string name="action_sort">Trier</string>
+    <string name="action_sort_alpha">Alphabétique</string>
+    <string name="action_sort_type">Type</string>
+    <string name="action_search_preference">Chercher une préférence</string>
+    <string name="action_select_all">Tout sélectionner</string>
+    <string name="action_delete">Supprimer</string>
 </resources>
