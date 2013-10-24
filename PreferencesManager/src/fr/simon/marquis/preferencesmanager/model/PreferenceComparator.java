@@ -29,11 +29,13 @@ public final class PreferenceComparator implements Comparator<Entry<String, Obje
 	@Override
 	public int compare(Entry<String, Object> lhs, Entry<String, Object> rhs) {
 		if (mType == PreferenceSortType.TYPE_AND_ALPHANUMERIC) {
-			int res = lhs.getValue().getClass().getName().compareTo(rhs.getValue().getClass().getName());
+			String l = lhs == null ? "" : (lhs.getValue() == null ? "" : lhs.getValue().getClass().getName());
+			String r = rhs == null ? "" : (rhs.getValue() == null ? "" : rhs.getValue().getClass().getName());
+			int res = l.compareToIgnoreCase(r);
 			if (res != 0) {
 				return res;
 			}
 		}
-		return lhs.getKey().compareTo(rhs.getKey());
+		return lhs.getKey().compareToIgnoreCase(rhs.getKey());
 	}
 }
