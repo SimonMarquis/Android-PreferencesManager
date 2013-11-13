@@ -27,7 +27,7 @@
         android:background="@drawable/abc_list_selector_holo_light"
         android:orientation="vertical" >
 
-        <com.roboto.RobotoTextView
+        <fr.simon.marquis.preferencesmanager.roboto.RobotoTextView
             android:id="@+id/item_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,7 +40,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             app:typeface="robotoslab_regular" />
 
-        <com.roboto.RobotoTextView
+        <fr.simon.marquis.preferencesmanager.roboto.RobotoTextView
             android:id="@+id/item_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

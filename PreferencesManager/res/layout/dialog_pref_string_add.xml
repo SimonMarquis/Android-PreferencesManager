@@ -16,15 +16,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/PreferenceDialogContainer" >
 
-    <com.roboto.RobotoTextView
+    <fr.simon.marquis.preferencesmanager.roboto.RobotoTextView
         android:id="@+id/title"
         style="@style/PreferenceDialogTitle" />
 
-    <com.roboto.RobotoEditText
+    <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
         android:id="@+id/key"
         style="@style/EditTextKey" />
 
-    <com.roboto.RobotoEditText
+    <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
         android:id="@+id/value"
         style="@style/EditTextValue"
         android:ems="10"

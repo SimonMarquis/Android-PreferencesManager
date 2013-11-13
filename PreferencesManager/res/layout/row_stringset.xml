@@ -19,7 +19,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal" >
 
-    <com.roboto.RobotoEditText
+    <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"

@@ -25,7 +25,7 @@
         android:layout_height="48dip"
         android:padding="4dp" />
 
-    <com.roboto.RobotoTextView
+    <fr.simon.marquis.preferencesmanager.roboto.RobotoTextView
         android:id="@+id/item_text"
         android:layout_width="0dip"
         android:layout_height="wrap_content"

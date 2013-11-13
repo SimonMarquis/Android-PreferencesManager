@@ -47,12 +47,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.roboto.RobotoTypefaceManager;
 import com.spazedog.lib.rootfw.container.FileStat;
 
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.model.File;
 import fr.simon.marquis.preferencesmanager.model.Files;
+import fr.simon.marquis.preferencesmanager.roboto.RobotoTypefaceManager;
 import fr.simon.marquis.preferencesmanager.ui.App;
 import fr.simon.marquis.preferencesmanager.ui.RootDialog;
 
