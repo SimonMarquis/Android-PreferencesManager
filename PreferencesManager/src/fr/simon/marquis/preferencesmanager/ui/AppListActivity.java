@@ -34,7 +34,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.emilsjolander.components.stickylistheaders.StickyListHeadersListView;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
@@ -43,6 +43,7 @@ import fr.simon.marquis.preferencesmanager.util.Utils;
 public class AppListActivity extends ActionBarActivity implements OnQueryTextListener {
 	private static final int REQUEST_CODE = 123;
 	private StickyListHeadersListView listView;
+	private AppAdapter mAdapter;
 	private View loadingView, emptyView;
 	private GetApplicationsTask task;
 
@@ -69,7 +70,7 @@ public class AppListActivity extends ActionBarActivity implements OnQueryTextLis
 						}
 					}).start();
 				} else {
-					AppEntry item = (AppEntry) ((AppAdapter) listView.getWrappedAdapter()).getItem(arg2);
+					AppEntry item = (AppEntry) mAdapter.getItem(arg2);
 
 					Intent i = new Intent(AppListActivity.this, PreferencesActivity.class);
 					i.putExtra("TITLE", item.getLabel());
@@ -123,7 +124,10 @@ public class AppListActivity extends ActionBarActivity implements OnQueryTextLis
 	}
 
 	public void updateListView(ArrayList<AppEntry> apps) {
-		listView.setAdapter(new AppAdapter(this, apps, emptyView));
+		if (mAdapter == null) {
+			mAdapter = new AppAdapter(this, apps, emptyView);
+		}
+		listView.setAdapter(mAdapter);
 		updateView(loadingView, false, false);
 		updateView(listView, true, true);
 	}
@@ -132,8 +136,8 @@ public class AppListActivity extends ActionBarActivity implements OnQueryTextLis
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		if (requestCode == REQUEST_CODE) {
-			if (listView != null && listView.getWrappedAdapter() != null) {
-				((AppAdapter) listView.getWrappedAdapter()).notifyDataSetChanged();
+			if (mAdapter != null) {
+				mAdapter.notifyDataSetChanged();
 			}
 		}
 	}
@@ -216,7 +220,7 @@ public class AppListActivity extends ActionBarActivity implements OnQueryTextLis
 	@Override
 	public boolean onQueryTextChange(String newText) {
 		mCurFilter = !TextUtils.isEmpty(newText) ? newText.trim() : null;
-		AppAdapter adapter = ((AppAdapter) listView.getWrappedAdapter());
+		AppAdapter adapter = (AppAdapter) mAdapter;
 		if (adapter == null) {
 			return false;
 		}

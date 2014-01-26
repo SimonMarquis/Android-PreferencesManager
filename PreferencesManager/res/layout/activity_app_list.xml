@@ -20,7 +20,7 @@
     android:layout_height="match_parent"
     tools:context=".AppListActivity" >
 
-    <com.emilsjolander.components.stickylistheaders.StickyListHeadersListView
+    <se.emilsjolander.stickylistheaders.StickyListHeadersListView
         android:id="@+id/listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:scrollbarStyle="outsideOverlay"
         android:visibility="gone" >
-    </com.emilsjolander.components.stickylistheaders.StickyListHeadersListView>
+    </se.emilsjolander.stickylistheaders.StickyListHeadersListView>
 
     <LinearLayout
         android:id="@+id/loadingView"
