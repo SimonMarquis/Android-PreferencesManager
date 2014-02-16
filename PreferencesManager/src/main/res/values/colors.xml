@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+
+    <color name="blue">#33b5e5</color>
+    
+<!--     Default theme from eclipse -->
+    <color name="xml_eclipse_tag">#3F7F7F</color>
+    <color name="xml_eclipse_attribute_name">#7F007F</color>
+    <color name="xml_eclipse_attribute_value">#2A00FF</color>
+    <color name="xml_eclipse_comment">#3F5FBF</color>
+    <color name="xml_eclipse_value">#000000</color>
+    <color name="xml_eclipse_default">#000000</color>
+    
+<!--     Prettyprint from http://developer.android.com -->
+    <color name="xml_google_tag">#008</color>
+    <color name="xml_google_attribute_name">#828</color>
+    <color name="xml_google_attribute_value">#080</color>
+    <color name="xml_google_comment">#800</color>
+    <color name="xml_google_value">#000</color>
+    <color name="xml_google_default">#000</color>
+    
+<!--     Roboticket from http://eclipsecolorthemes.org/?view=theme&id=93 -->
+    <color name="xml_roboticket_tag">#B05A65</color>
+    <color name="xml_roboticket_attribute_name">#566874</color>
+    <color name="xml_roboticket_attribute_value">#317ECC</color>
+    <color name="xml_roboticket_comment">#AD95AF</color>
+    <color name="xml_roboticket_value">#585858</color>
+    <color name="xml_roboticket_default">#585858</color>
+    
+<!--     Notepad++ from http://eclipsecolorthemes.org/?view=theme&id=91 -->
+    <color name="xml_notepad_tag">#000080</color>
+    <color name="xml_notepad_attribute_name">#800080</color>
+    <color name="xml_notepad_attribute_value">#808080</color>
+    <color name="xml_notepad_comment">#008000</color>
+    <color name="xml_notepad_value">#008000</color>
+    <color name="xml_notepad_default">#008000</color>
+    
+<!--     Netbeans 6++ from http://eclipsecolorthemes.org/?view=theme&id=259 -->
+    <color name="xml_netbeans_tag">#001A49</color>
+    <color name="xml_netbeans_attribute_name">#009900</color>
+    <color name="xml_netbeans_attribute_value">#CE7B00</color>
+    <color name="xml_netbeans_comment">#B7B7B7</color>
+    <color name="xml_netbeans_value">#000000</color>
+    <color name="xml_netbeans_default">#000000</color>
+
+</resources>
