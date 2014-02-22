@@ -17,7 +17,7 @@
 
     <string name="about_body"><![CDATA[
         Preferences Manager est une application Open Source qui permet de facilement modifier les préférences des applications. Si vous souhaitez plus d\'informations, visitez ces liens :<br><br>
-        <b>&bull;&nbsp;&nbsp;<a href="https://plus.google.com/u/0/communities/112244514442534711821">Communauté Google+</a></b> <i>Partagez vos bugs, vos améliorations, ...</i><br>
+        <b>&bull;&nbsp;&nbsp;<a href="https://plus.google.com/u/0/communities/112244514442534711821">Communauté Google+</a></b> <i>Partagez vos bugs, vos améliorations, …</i><br>
         <b>&bull;&nbsp;&nbsp;<a href="http://simonmarquis.github.io/Android-PreferencesManager/">Page Github</a></b> <i>Description du projet</i><br>
         <b>&bull;&nbsp;&nbsp;<a href="https://github.com/SimonMarquis/Android-PreferencesManager">Repository Github</a></b> <i>Code source du projet</i><br>
         <b>&bull;&nbsp;&nbsp;<a href="http://www.simon-marquis.fr">Mon site internet</a></b> <i>A propos de moi, et de mes autres projets</i>
@@ -27,13 +27,15 @@
     <string name="exit">Quitter</string>
     
     <string name="no_root_title">Problème détecté</string>
-    <string name="no_root_message">"Votre système d'exploitation n'est pas rooté !\nPour faire fonctionner cette application, vous devez disposer des droits root."</string>
+    <string name="no_root_message">"Votre système d'exploitation ne semble pas être root !\nPour faire fonctionner cette application, vous devez disposer des droits root."</string>
     <string name="no_root_button">Continuer</string>
     <string name="action_settings">Paramètres</string>
     
     <string name="popup_edit_message">Ce fichier a été modifié.\nSouhaitez-vous sauvegarder ces changements ?</string>
+    <string name="toast_shortcut">Raccourci créé</string>
 
     <string name="action_fav">Ajouter aux favoris</string>
+    <string name="action_shortcut">Créer un raccourci</string>
     <string name="action_save_file">Sauvegarder le fichier</string>
     <string name="action_change_theme">Changer le thème</string>
     <string name="action_unfav">Retirer des favoris</string>
@@ -98,7 +100,7 @@
     <string name="loading_apps">Chargement des applications</string>
     <string name="loading_preference_application">Recherche des fichiers de préférences</string>
 
-    <string name="preferece_unsupported">Ce type de préférence n\'est pas supporté…</string>
+    <string name="preference_unsupported">Ce type de préférence n\'est pas supporté…</string>
     
     <string name="yes">Oui</string>
     <string name="no">Non</string>

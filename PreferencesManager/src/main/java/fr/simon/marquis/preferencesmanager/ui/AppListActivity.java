@@ -74,8 +74,8 @@ public class AppListActivity extends ActionBarActivity implements OnQueryTextLis
 					AppEntry item = (AppEntry) mAdapter.getItem(arg2);
 
 					Intent i = new Intent(AppListActivity.this, PreferencesActivity.class);
-					i.putExtra("TITLE", item.getLabel());
-					i.putExtra("PACKAGE_NAME", item.getApplicationInfo().packageName);
+					i.putExtra(PreferencesActivity.EXTRA_TITLE, item.getLabel());
+					i.putExtra(PreferencesActivity.EXTRA_PACKAGE_NAME, item.getApplicationInfo().packageName);
 
 					startActivityForResult(i, REQUEST_CODE);
 				}

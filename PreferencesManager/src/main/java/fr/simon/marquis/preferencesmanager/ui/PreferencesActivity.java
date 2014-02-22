@@ -15,9 +15,7 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -32,6 +30,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
@@ -40,168 +43,206 @@ import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class PreferencesActivity extends ActionBarActivity implements OnFragmentInteractionListener {
 
-	private final static String KEY_FILES = "KEY_FILES";
-	public final static String KEY_SORT_TYPE = "KEY_SORT_TYPE";
+    public final static String KEY_SORT_TYPE = "KEY_SORT_TYPE";
+    public final static String KEY_FILES = "KEY_FILES";
+    public final static String INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
+    public final static String EXTRA_PACKAGE_NAME = "EXTRA_PACKAGE_NAME";
+    public final static String EXTRA_TITLE = "EXTRA_TITLE";
+    public final static String EXTRA_SHORTCUT = "EXTRA_SHORTCUT";
+    public static PreferenceSortType preferenceSortType = PreferenceSortType.TYPE_AND_ALPHANUMERIC;
 
-	public static PreferenceSortType preferenceSortType = PreferenceSortType.TYPE_AND_ALPHANUMERIC;
+    SectionsPagerAdapter mSectionsPagerAdapter;
 
-	SectionsPagerAdapter mSectionsPagerAdapter;
+    ViewPager mViewPager;
+    View mLoadingView;
+    View mEmptyView;
 
-	ViewPager mViewPager;
-	View mLoadingView;
-	View mEmptyView;
+    Files files;
+    String packageName;
+    String title;
 
-	Files files;
-	String packageName;
+    FindFilesTask findFilesTask;
 
-	FindFilesTask findFilesTask;
+    boolean launchedFromShortcut = false;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_preferences);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_preferences);
 
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		Bundle b = getIntent().getExtras();
-		if (b == null) {
-			finish();
-			return;
-		}
+        Bundle b = getIntent().getExtras();
+        if (b == null) {
+            finish();
+            return;
+        }
 
-		int index = PreferenceManager.getDefaultSharedPreferences(this).getInt(KEY_SORT_TYPE, 0);
-		preferenceSortType = PreferenceSortType.values()[index];
+        int index = PreferenceManager.getDefaultSharedPreferences(this).getInt(KEY_SORT_TYPE, 0);
+        preferenceSortType = PreferenceSortType.values()[index];
 
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mLoadingView = (View) findViewById(R.id.loadingView);
-		mEmptyView = (View) findViewById(R.id.emptyView);
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mLoadingView = findViewById(R.id.loadingView);
+        mEmptyView = findViewById(R.id.emptyView);
 
-		packageName = b.getString("PACKAGE_NAME");
+        packageName = b.getString(EXTRA_PACKAGE_NAME);
+        title = b.getString(EXTRA_TITLE);
+        launchedFromShortcut = b.getBoolean(EXTRA_SHORTCUT, false);
 
-		getActionBar().setTitle(Utils.applyCustomTypeFace(b.getString("TITLE"), this));
-		getActionBar().setSubtitle(Utils.applyCustomTypeFace(packageName, this));
-		Drawable drawable = Utils.findDrawable(packageName, this);
-		if (drawable != null) {
-			getSupportActionBar().setIcon(drawable);
-		}
+        getActionBar().setTitle(Utils.applyCustomTypeFace(title, this));
+        getActionBar().setSubtitle(Utils.applyCustomTypeFace(packageName, this));
+        Drawable drawable = Utils.findDrawable(packageName, this);
+        if (drawable != null) {
+            getSupportActionBar().setIcon(drawable);
+        }
 
-		if (savedInstanceState == null) {
-			findFilesTask = new FindFilesTask(packageName);
-			findFilesTask.execute();
-		} else {
-			try {
-				updateFindFiles(Files.fromJSON(new JSONArray(savedInstanceState.getString(KEY_FILES))));
-			} catch (JSONException e) {
-				findFilesTask = new FindFilesTask(packageName);
-				findFilesTask.execute();
-			}
-		}
-	}
+        if (savedInstanceState == null) {
+            findFilesTask = new FindFilesTask(packageName);
+            findFilesTask.execute();
+        } else {
+            try {
+                updateFindFiles(Files.fromJSON(new JSONArray(savedInstanceState.getString(KEY_FILES))));
+            } catch (JSONException e) {
+                findFilesTask = new FindFilesTask(packageName);
+                findFilesTask.execute();
+            }
+        }
+    }
 
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		outState.putString(KEY_FILES, files.toJSON().toString());
-		super.onSaveInstanceState(outState);
-	}
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        if(files != null){
+            outState.putString(KEY_FILES, files.toJSON().toString());
+        }
+        super.onSaveInstanceState(outState);
+    }
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.preferences_activity, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.preferences_activity, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
 
-	@Override
-	public boolean onPrepareOptionsMenu(Menu menu) {
-		boolean fav = Utils.isFavorite(packageName, this);
-		menu.findItem(R.id.action_fav).setIcon(fav ? R.drawable.ic_action_star_10 : R.drawable.ic_action_star_0)
-				.setTitle(fav ? R.string.action_unfav : R.string.action_fav);
-		return super.onPrepareOptionsMenu(menu);
-	}
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        boolean fav = Utils.isFavorite(packageName, this);
+        MenuItem itemFav = menu.findItem(R.id.action_fav);
+        if (itemFav != null) {
+            itemFav.setIcon(fav ? R.drawable.ic_action_star_10 : R.drawable.ic_action_star_0)
+                    .setTitle(fav ? R.string.action_unfav : R.string.action_fav);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case android.R.id.home:
-			finish();
-			break;
-		case R.id.action_fav:
-			Utils.setFavorite(packageName, !Utils.isFavorite(packageName, this), this);
-			supportInvalidateOptionsMenu();
-			break;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (launchedFromShortcut) {
+                    Intent i = new Intent(this, AppListActivity.class);
+                    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                }
+                finish();
+                return true;
+            case R.id.action_fav:
+                Utils.setFavorite(packageName, !Utils.isFavorite(packageName, this), this);
+                supportInvalidateOptionsMenu();
+                break;
+            case R.id.action_shortcut:
+                createShortcut();
+                Toast.makeText(this, R.string.toast_shortcut, Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-		default:
-			break;
-		}
-		return super.onOptionsItemSelected(item);
-	}
+    private void createShortcut() {
+        Intent shortcutIntent = new Intent(this, PreferencesActivity.class);
+        shortcutIntent.putExtra(EXTRA_PACKAGE_NAME, packageName);
+        shortcutIntent.putExtra(EXTRA_TITLE, title);
+        shortcutIntent.putExtra(EXTRA_SHORTCUT, true);
+        shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        shortcutIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
-	public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        Intent addIntent = new Intent();
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, title);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, Intent.ShortcutIconResource.fromContext(this, R.drawable.ic_launcher));
+        addIntent.setAction(INSTALL_SHORTCUT);
+        sendBroadcast(addIntent);
+    }
 
-		public SectionsPagerAdapter(FragmentManager fm) {
-			super(fm);
-		}
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
-		@Override
-		public Fragment getItem(int position) {
-			PreferencesFragment fragment = PreferencesFragment.newInstance(files.get(position).getName(), files.get(position).getPath(), packageName);
-			return fragment;
-		}
+    }
 
-		@Override
-		public int getCount() {
-			return files.size();
-		}
+    private void updateFindFiles(Files f) {
+        files = f;
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mViewPager.setAdapter(mSectionsPagerAdapter);
 
-		@Override
-		public CharSequence getPageTitle(int position) {
-			return Utils.applyCustomTypeFace(files.get(position).getName(), PreferencesActivity.this);
-		}
-	}
+        if (files == null || files.size() == 0) {
+            mEmptyView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+            mEmptyView.setVisibility(View.VISIBLE);
+            mLoadingView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+            mLoadingView.setVisibility(View.GONE);
+        } else {
+            mEmptyView.setVisibility(View.GONE);
+            mLoadingView.setVisibility(View.GONE);
+            mViewPager.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+            mViewPager.setVisibility(View.VISIBLE);
+        }
+    }
 
-	@Override
-	public void onFragmentInteraction(Uri uri) {
+    public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
-	}
+        public SectionsPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
-	public class FindFilesTask extends AsyncTask<Void, Void, Files> {
-		private String mPackageName;
+        @Override
+        public Fragment getItem(int position) {
+            PreferencesFragment fragment = PreferencesFragment.newInstance(files.get(position).getName(), files.get(position).getPath(), packageName);
+            return fragment;
+        }
 
-		public FindFilesTask(String packageName) {
-			this.mPackageName = packageName;
-		}
+        @Override
+        public int getCount() {
+            return files.size();
+        }
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-		}
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return Utils.applyCustomTypeFace(files.get(position).getName(), PreferencesActivity.this);
+        }
+    }
 
-		@Override
-		protected Files doInBackground(Void... params) {
-			return Utils.findXmlFiles(mPackageName);
-		}
+    public class FindFilesTask extends AsyncTask<Void, Void, Files> {
+        private String mPackageName;
 
-		@Override
-		protected void onPostExecute(Files result) {
-			updateFindFiles(result);
-			super.onPostExecute(result);
-		}
-	}
+        public FindFilesTask(String packageName) {
+            this.mPackageName = packageName;
+        }
 
-	private void updateFindFiles(Files f) {
-		files = f;
-		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-		mViewPager.setAdapter(mSectionsPagerAdapter);
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
 
-		if (files == null || files.size() == 0) {
-			mEmptyView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-			mEmptyView.setVisibility(View.VISIBLE);
-			mLoadingView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
-			mLoadingView.setVisibility(View.GONE);
-		} else {
-			mEmptyView.setVisibility(View.GONE);
-			mLoadingView.setVisibility(View.GONE);
-			mViewPager.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
-			mViewPager.setVisibility(View.VISIBLE);
-		}
-	}
+        @Override
+        protected Files doInBackground(Void... params) {
+            return Utils.findXmlFiles(mPackageName);
+        }
+
+        @Override
+        protected void onPostExecute(Files result) {
+            updateFindFiles(result);
+            super.onPostExecute(result);
+        }
+    }
 }

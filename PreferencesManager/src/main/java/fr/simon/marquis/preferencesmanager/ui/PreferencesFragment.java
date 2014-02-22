@@ -271,12 +271,6 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
 	}
 
-	public void onButtonPressed(Uri uri) {
-		if (mListener != null) {
-			mListener.onFragmentInteraction(uri);
-		}
-	}
-
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
@@ -316,7 +310,7 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 				Entry<String, Object> item = (Entry<String, Object>) gridView.getAdapter().getItem(arg2);
 				PreferenceType type = PreferenceType.fromObject(item.getValue());
 				if (type == PreferenceType.UNSUPPORTED) {
-					Toast.makeText(getActivity(), R.string.preferece_unsupported, Toast.LENGTH_SHORT).show();
+					Toast.makeText(getActivity(), R.string.preference_unsupported, Toast.LENGTH_SHORT).show();
 				} else {
 					showPrefDialog(type, true, item.getKey(), item.getValue());
 				}

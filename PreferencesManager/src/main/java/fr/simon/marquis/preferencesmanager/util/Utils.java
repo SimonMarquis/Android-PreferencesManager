@@ -230,12 +230,23 @@ public class Utils {
 		if (TextUtils.isEmpty(packageName)) {
 			return null;
 		}
-		for (AppEntry app : applications) {
-			if (packageName.equals(app.getApplicationInfo().packageName)) {
-				return app.getIcon(ctx);
-			}
-		}
-		return null;
+
+        if (applications != null) {
+            for (AppEntry app : applications) {
+                if (packageName.equals(app.getApplicationInfo().packageName)) {
+                    return app.getIcon(ctx);
+                }
+            }
+        } else {
+            try {
+                ApplicationInfo applicationInfo = ctx.getPackageManager().getApplicationInfo(packageName, 0);
+                if(applicationInfo != null){
+                    AppEntry appEntry = new AppEntry(applicationInfo, ctx);
+                    return  appEntry.getIcon(ctx);
+                }
+            } catch (PackageManager.NameNotFoundException e) {}
+        }
+        return null;
 	}
 
 	/**

@@ -23,4 +23,10 @@
         android:title="@string/action_fav"
         app:showAsAction="ifRoom"/>
 
+    <item
+        android:id="@+id/action_shortcut"
+        android:orderInCategory="4"
+        android:title="@string/action_shortcut"
+        app:showAsAction="never"/>
+
 </menu>
