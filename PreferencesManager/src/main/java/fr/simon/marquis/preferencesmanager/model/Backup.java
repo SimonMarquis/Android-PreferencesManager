@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -18,41 +18,37 @@ package fr.simon.marquis.preferencesmanager.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class File {
+public class Backup {
 
-    private static final String KEY_NAME = "NAME";
+    private static final String KEY_FILE = "FILE";
     private static final String KEY_PATH = "PATH";
+    private static final String KEY_TIME = "TIME";
 
-    private final String name;
+    private final String file;
     private final String path;
+    private final long time;
 
-    public File(String name, String path) {
+    public Backup(String file, String path, long time) {
         super();
-		this.name = name;
-		this.path = path;
-	}
+        this.file = file;
+        this.path = path;
+        this.time = time;
+    }
 
-	public static File fromJSON(JSONObject jsonObject) {
-        return new File(jsonObject.optString(KEY_NAME), jsonObject.optString(KEY_PATH));
+    public static Backup fromJSON(JSONObject jsonObject) {
+        return new Backup(jsonObject.optString(KEY_FILE), jsonObject.optString(KEY_PATH), jsonObject.optLong(KEY_TIME));
     }
 
     public JSONObject toJSON() {
-		try {
-			JSONObject obj = new JSONObject();
-            obj.put(KEY_NAME, name);
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put(KEY_FILE, file);
             obj.put(KEY_PATH, path);
+            obj.put(KEY_TIME, time);
             return obj;
-        } catch (JSONException ignored) {
+        } catch (JSONException ignore) {
         }
         return null;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getPath() {
-		return path;
-	}
+    }
 
 }

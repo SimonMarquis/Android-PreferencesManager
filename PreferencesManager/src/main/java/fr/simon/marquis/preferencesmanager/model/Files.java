@@ -15,17 +15,18 @@
  */
 package fr.simon.marquis.preferencesmanager.model;
 
-import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Files {
 
-	ArrayList<File> files;
+    private final List<File> files;
 
-	public Files() {
-		super();
+    public Files() {
+        super();
 		files = new ArrayList<File>();
 	}
 
