@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -26,15 +25,15 @@
         <b>&bull;&nbsp;&nbsp;<a href="https://github.com/SimonMarquis/Android-PreferencesManager">Github repository</a></b> <i>Source code of the project</i><br>
         <b>&bull;&nbsp;&nbsp;<a href="http://www.simon-marquis.fr">My personal website</a></b> <i>About me, and other projects</i>
     ]]></string>
-    
+
     <string name="close">Close</string>
     <string name="exit">Exit</string>
-    
+
     <string name="no_root_title">Problem detected</string>
     <string name="no_root_message">"Your device doesn't seem to be rooted!\nIn order to run this app, your device needs to be rooted."</string>
     <string name="no_root_button">Continue</string>
     <string name="action_settings">Settings</string>
-    
+
     <string name="popup_edit_message">This file has been modified.\nWould you like to save the changes?</string>
     <string name="toast_shortcut">Shortcut created</string>
 
@@ -44,6 +43,8 @@
     <string name="action_change_theme">Change color theme</string>
     <string name="action_unfav">Remove from favorites</string>
     <string name="action_direct_edit">Edit the file</string>
+    <string name="action_backup_file">Backup</string>
+    <string name="action_restore_file">Restore</string>
     <string name="action_add">Add a preference</string>
     <string name="action_add_int">Integer</string>
     <string name="action_add_string">String</string>
@@ -58,40 +59,40 @@
     <string name="action_theme_roboticket">Roboticket</string>
     <string name="action_theme_notepad">Notepad++</string>
     <string name="action_theme_netbeans">Netbeans 6++</string>
-    
+
     <string name="action_size">Font size</string>
     <string name="action_size_extra_small">Extra small</string>
     <string name="action_size_small">Small</string>
     <string name="action_size_medium">Medium</string>
     <string name="action_size_large">Large</string>
     <string name="action_size_extra_large">Extra large</string>
-    
+
     <string name="save_success">File saved</string>
     <string name="save_fail">The xml file is not valid…</string>
-    
+
     <string name="hint_key">Key</string>
     <string name="hint_value">Value</string>
-    
-    
+
+
     <string name="title_add_boolean">Add a Boolean value</string>
     <string name="title_add_int">Add an Integer value</string>
     <string name="title_add_string">Add a String value</string>
     <string name="title_add_float">Add a Float value</string>
     <string name="title_add_long">Add a Long value</string>
     <string name="title_add_stringset">Add a StringSet value</string>
-    
+
     <string name="title_edit_boolean">Edit a Boolean value</string>
     <string name="title_edit_int">Edit an Integer value</string>
     <string name="title_edit_string">Edit a String value</string>
     <string name="title_edit_float">Edit a Float value</string>
     <string name="title_edit_long">Edit a Long value</string>
     <string name="title_edit_stringset">Edit a StringSet value</string>
-    
+
     <string name="dialog_add">Add</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_update">Update</string>
     <string name="dialog_suppr">Delete</string>
- 
+
     <string name="action_search">Search an app</string>
     <string name="show_system_apps">Show system apps</string>
     <string name="hide_system_apps">Hide system apps</string>
@@ -105,10 +106,10 @@
     <string name="loading_preference_application">Scanning preference files</string>
 
     <string name="preference_unsupported">This preference isn\'t supported…</string>
-    
+
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    
+
     <string name="action_sort">Sort</string>
     <string name="action_sort_alpha">Alphabetically</string>
     <string name="action_sort_type">Type</string>
