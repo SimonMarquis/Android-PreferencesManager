@@ -15,6 +15,7 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -29,6 +30,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
@@ -44,33 +46,32 @@ import fr.simon.marquis.preferencesmanager.util.Utils;
 public class PreferencesActivity extends ActionBarActivity implements OnFragmentInteractionListener {
 
     public final static String KEY_SORT_TYPE = "KEY_SORT_TYPE";
-    public final static String KEY_FILES = "KEY_FILES";
-    public final static String INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
     public final static String EXTRA_PACKAGE_NAME = "EXTRA_PACKAGE_NAME";
     public final static String EXTRA_TITLE = "EXTRA_TITLE";
-    public final static String EXTRA_SHORTCUT = "EXTRA_SHORTCUT";
+    private final static String KEY_FILES = "KEY_FILES";
+    private final static String INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
+    private final static String EXTRA_SHORTCUT = "EXTRA_SHORTCUT";
     public static PreferenceSortType preferenceSortType = PreferenceSortType.TYPE_AND_ALPHANUMERIC;
 
-    SectionsPagerAdapter mSectionsPagerAdapter;
+    private ViewPager mViewPager;
+    private View mLoadingView;
+    private View mEmptyView;
 
-    ViewPager mViewPager;
-    View mLoadingView;
-    View mEmptyView;
+    private Files files;
+    private String packageName;
+    private String title;
 
-    Files files;
-    String packageName;
-    String title;
-
-    FindFilesTask findFilesTask;
-
-    boolean launchedFromShortcut = false;
+    private boolean launchedFromShortcut = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
+        ActionBar actionBar = getActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
 
         Bundle b = getIntent().getExtras();
         if (b == null) {
@@ -97,14 +98,12 @@ public class PreferencesActivity extends ActionBarActivity implements OnFragment
         }
 
         if (savedInstanceState == null) {
-            findFilesTask = new FindFilesTask(packageName);
-            findFilesTask.execute();
+            new FindFilesTask(packageName).execute();
         } else {
             try {
                 updateFindFiles(Files.fromJSON(new JSONArray(savedInstanceState.getString(KEY_FILES))));
             } catch (JSONException e) {
-                findFilesTask = new FindFilesTask(packageName);
-                findFilesTask.execute();
+                new FindFilesTask(packageName).execute();
             }
         }
     }
@@ -183,18 +182,26 @@ public class PreferencesActivity extends ActionBarActivity implements OnFragment
 
     private void updateFindFiles(Files f) {
         files = f;
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
+        Animation fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
+        Animation fadeOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
 
         if (files == null || files.size() == 0) {
-            mEmptyView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+            if (fadeIn != null) {
+                mEmptyView.startAnimation(fadeIn);
+            }
             mEmptyView.setVisibility(View.VISIBLE);
-            mLoadingView.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_out));
+            if (fadeOut != null) {
+                mLoadingView.startAnimation(fadeOut);
+            }
             mLoadingView.setVisibility(View.GONE);
         } else {
             mEmptyView.setVisibility(View.GONE);
             mLoadingView.setVisibility(View.GONE);
-            mViewPager.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.fade_in));
+            if (fadeIn != null) {
+                mViewPager.startAnimation(fadeIn);
+            }
             mViewPager.setVisibility(View.VISIBLE);
         }
     }
@@ -207,8 +214,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnFragment
 
         @Override
         public Fragment getItem(int position) {
-            PreferencesFragment fragment = PreferencesFragment.newInstance(files.get(position).getName(), files.get(position).getPath(), packageName);
-            return fragment;
+            return PreferencesFragment.newInstance(files.get(position).getName(), files.get(position).getPath(), packageName);
         }
 
         @Override
@@ -223,15 +229,10 @@ public class PreferencesActivity extends ActionBarActivity implements OnFragment
     }
 
     public class FindFilesTask extends AsyncTask<Void, Void, Files> {
-        private String mPackageName;
+        private final String mPackageName;
 
         public FindFilesTask(String packageName) {
             this.mPackageName = packageName;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
         }
 
         @Override
