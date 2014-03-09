@@ -20,30 +20,22 @@ import org.json.JSONObject;
 
 public class Backup {
 
-    private static final String KEY_FILE = "FILE";
-    private static final String KEY_PATH = "PATH";
     private static final String KEY_TIME = "TIME";
 
-    private final String file;
-    private final String path;
     private final long time;
 
-    public Backup(String file, String path, long time) {
+    public Backup(long time) {
         super();
-        this.file = file;
-        this.path = path;
         this.time = time;
     }
 
     public static Backup fromJSON(JSONObject jsonObject) {
-        return new Backup(jsonObject.optString(KEY_FILE), jsonObject.optString(KEY_PATH), jsonObject.optLong(KEY_TIME));
+        return new Backup(jsonObject.optLong(KEY_TIME));
     }
 
     public JSONObject toJSON() {
         try {
             JSONObject obj = new JSONObject();
-            obj.put(KEY_FILE, file);
-            obj.put(KEY_PATH, path);
             obj.put(KEY_TIME, time);
             return obj;
         } catch (JSONException ignore) {
@@ -51,4 +43,7 @@ public class Backup {
         return null;
     }
 
+    public long getTime() {
+        return time;
+    }
 }

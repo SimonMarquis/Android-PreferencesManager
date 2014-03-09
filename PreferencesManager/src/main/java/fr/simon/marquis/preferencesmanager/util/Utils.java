@@ -15,16 +15,6 @@
  */
 package fr.simon.marquis.preferencesmanager.util;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -47,9 +37,23 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.spazedog.lib.rootfw.container.Data;
 import com.spazedog.lib.rootfw.container.FileStat;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
+import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
+import fr.simon.marquis.preferencesmanager.model.Backup;
+import fr.simon.marquis.preferencesmanager.model.BackupContainer;
 import fr.simon.marquis.preferencesmanager.model.File;
 import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.roboto.RobotoTypefaceManager;
@@ -67,8 +71,8 @@ public class Utils {
 		return applications;
 	}
 
-	public static void displayNoRoot(Context ctx, FragmentManager fragmentManager) {
-		FragmentTransaction tr = fragmentManager.beginTransaction();
+    public static void displayNoRoot(FragmentManager fragmentManager) {
+        FragmentTransaction tr = fragmentManager.beginTransaction();
 		DialogFragment newFragment = RootDialog.newInstance();
 		tr.add(newFragment, "RootDialog");
 		tr.commitAllowingStateLoss();
@@ -213,7 +217,47 @@ public class Utils {
 		return list;
 	}
 
-	public static void hideSoftKeyboard(Context context, View view) {
+    public static BackupContainer getBackups(Context ctx, String packageName) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
+        BackupContainer container = null;
+        try {
+            container = BackupContainer.fromJSON(new JSONArray(sp.getString(packageName, "[]")));
+        } catch (JSONException ignore) {
+        }
+        if (container == null) {
+            container = new BackupContainer();
+        }
+        return container;
+    }
+
+    public static void saveBackups(Context ctx, String packageName, BackupContainer container) {
+        Log.e("", "Container inside " + container.toString());
+        Editor ed = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
+        String str = container.toJSON().toString();
+        Log.e("", "saveBackups " + str);
+        ed.putString(packageName, str);
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
+            ed.apply();
+        } else {
+            ed.commit();
+        }
+    }
+
+    public static void backupFile(Backup backup, Data data, Context ctx) {
+        //TODO create and save file
+        String filename = String.valueOf(backup.getTime());
+        FileOutputStream outputStream;
+        try {
+            outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
+            outputStream.write(data.toString().getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void hideSoftKeyboard(Context context, View view) {
 		InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 	}
@@ -244,19 +288,12 @@ public class Utils {
                     AppEntry appEntry = new AppEntry(applicationInfo, ctx);
                     return  appEntry.getIcon(ctx);
                 }
-            } catch (PackageManager.NameNotFoundException e) {}
+            } catch (PackageManager.NameNotFoundException ignored) {
+            }
         }
         return null;
 	}
 
-	/**
-	 * Highlight text
-	 * 
-	 * @param color
-	 * 
-	 * @param s
-	 * @return
-	 */
 	public static SpannableStringBuilder createSpannable(Pattern pattern, int color, String s) {
 		final SpannableStringBuilder spannable = new SpannableStringBuilder(s);
 		if (pattern == null)
@@ -270,4 +307,5 @@ public class Utils {
 		}
 		return spannable;
 	}
+
 }

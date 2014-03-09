@@ -32,6 +32,7 @@
 
     <string name="popup_edit_message">Ce fichier a été modifié.\nSouhaitez-vous sauvegarder ces changements ?</string>
     <string name="toast_shortcut">Raccourci créé</string>
+    <string name="toast_backup">Backup effectué</string>
 
     <string name="action_fav">Ajouter aux favoris</string>
     <string name="action_shortcut">Créer un raccourci</string>

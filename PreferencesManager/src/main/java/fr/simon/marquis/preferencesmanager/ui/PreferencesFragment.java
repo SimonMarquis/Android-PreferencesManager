@@ -15,11 +15,8 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
-import java.util.Map.Entry;
-
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -50,6 +47,8 @@ import android.widget.Toast;
 
 import com.spazedog.lib.rootfw.container.Data;
 
+import java.util.Map.Entry;
+
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
@@ -57,9 +56,9 @@ import fr.simon.marquis.preferencesmanager.model.PreferenceType;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class PreferencesFragment extends Fragment implements OnQueryTextListener {
-	public static final int CODE_EDIT_FILE = 666;
+    private static final int CODE_EDIT_FILE = 666;
 
-	public static final String ARG_NAME = "NAME";
+    public static final String ARG_NAME = "NAME";
 	public static final String ARG_PATH = "PATH";
 	public static final String ARG_PACKAGE_NAME = "PACKAGE_NAME";
 
@@ -72,9 +71,9 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 
 	public PreferenceFile preferenceFile;
 
-	private OnFragmentInteractionListener mListener;
+    private OnPreferenceFragmentInteractionListener mListener;
 
-	private GridView gridView;
+    private GridView gridView;
 	private View loadingView, emptyView;
 	private TextView emptyViewText;
 
@@ -88,8 +87,8 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 		return fragment;
 	}
 
-	public PreferencesFragment() {
-		// Required empty public constructor
+    private PreferencesFragment() {
+        // Required empty public constructor
 	}
 
 	@Override
@@ -113,9 +112,9 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 	@Override
 	public void onViewCreated(View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		loadingView = (View) view.findViewById(R.id.loadingView);
-		emptyView = (View) view.findViewById(R.id.emptyView);
-		emptyViewText = (TextView) view.findViewById(R.id.emptyViewText);
+        loadingView = view.findViewById(R.id.loadingView);
+        emptyView = view.findViewById(R.id.emptyView);
+        emptyViewText = (TextView) view.findViewById(R.id.emptyViewText);
 		gridView = (GridView) view.findViewById(R.id.gridView);
 		gridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
 
@@ -168,56 +167,65 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 	public void onPrepareOptionsMenu(Menu menu) {
 		menu.findItem(R.id.action_add).setEnabled(preferenceFile != null && preferenceFile.isValidPreferenceFile());
 		menu.findItem(R.id.action_add).setIcon(
-				preferenceFile != null && preferenceFile.isValidPreferenceFile() ? R.drawable.ic_action_add : R.drawable.ic_action_add_disabled);
-		menu.findItem(R.id.action_sort_alpha).setChecked(PreferencesActivity.preferenceSortType == PreferenceSortType.ALPHANUMERIC);
+                preferenceFile != null && preferenceFile.isValidPreferenceFile() ? R.drawable.ic_action_add : R.drawable.ic_action_add_disabled);
+        menu.findItem(R.id.action_sort_alpha).setChecked(PreferencesActivity.preferenceSortType == PreferenceSortType.ALPHANUMERIC);
 		menu.findItem(R.id.action_sort_type).setChecked(PreferencesActivity.preferenceSortType == PreferenceSortType.TYPE_AND_ALPHANUMERIC);
-		super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.action_restore_file).setVisible(mListener != null && mListener.canRestoreFile(mPath + "/" + mName));
+        super.onPrepareOptionsMenu(menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
-		case R.id.action_add_int:
-			showPrefDialog(PreferenceType.INT);
-			return true;
-		case R.id.action_add_boolean:
-			showPrefDialog(PreferenceType.BOOLEAN);
-			return true;
-		case R.id.action_add_string:
-			showPrefDialog(PreferenceType.STRING);
-			return true;
-		case R.id.action_add_float:
-			showPrefDialog(PreferenceType.FLOAT);
-			return true;
-		case R.id.action_add_long:
-			showPrefDialog(PreferenceType.LONG);
-			return true;
-		case R.id.action_add_stringset:
-			showPrefDialog(PreferenceType.STRINGSET);
-			return true;
-		case R.id.action_edit_file:
-			if (preferenceFile == null) {
-				getActivity().finish();
-			}
-			Intent intent = new Intent(getActivity(), FileEditorActivity.class);
-			intent.putExtra(ARG_NAME, mName);
-			intent.putExtra(ARG_PATH, mPath);
-			intent.putExtra(ARG_PACKAGE_NAME, mPackageName);
-			startActivityForResult(intent, CODE_EDIT_FILE);
-			return true;
-		case R.id.action_sort_alpha:
-			setSortType(PreferenceSortType.ALPHANUMERIC);
-			return true;
-		case R.id.action_sort_type:
-			setSortType(PreferenceSortType.TYPE_AND_ALPHANUMERIC);
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
+            case R.id.action_add_int:
+                showPrefDialog(PreferenceType.INT);
+                return true;
+            case R.id.action_add_boolean:
+                showPrefDialog(PreferenceType.BOOLEAN);
+                return true;
+            case R.id.action_add_string:
+                showPrefDialog(PreferenceType.STRING);
+                return true;
+            case R.id.action_add_float:
+                showPrefDialog(PreferenceType.FLOAT);
+                return true;
+            case R.id.action_add_long:
+                showPrefDialog(PreferenceType.LONG);
+                return true;
+            case R.id.action_add_stringset:
+                showPrefDialog(PreferenceType.STRINGSET);
+                return true;
+            case R.id.action_edit_file:
+                if (preferenceFile == null) {
+                    getActivity().finish();
+                }
+                Intent intent = new Intent(getActivity(), FileEditorActivity.class);
+                intent.putExtra(ARG_NAME, mName);
+                intent.putExtra(ARG_PATH, mPath);
+                intent.putExtra(ARG_PACKAGE_NAME, mPackageName);
+                startActivityForResult(intent, CODE_EDIT_FILE);
+                return true;
+            case R.id.action_sort_alpha:
+                setSortType(PreferenceSortType.ALPHANUMERIC);
+                return true;
+            case R.id.action_sort_type:
+                setSortType(PreferenceSortType.TYPE_AND_ALPHANUMERIC);
+                return true;
+            case R.id.action_backup_file:
+                if (mListener != null) {
+                    mListener.onBackupFile(mPath + "/" + mName);
+                }
+                return true;
+            case R.id.action_restore_file:
+
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
 	}
 
-	private void setSortType(PreferenceSortType type) {
-		if (PreferencesActivity.preferenceSortType != type) {
+    private void setSortType(PreferenceSortType type) {
+        if (PreferencesActivity.preferenceSortType != type) {
 			PreferencesActivity.preferenceSortType = type;
 			getActivity().supportInvalidateOptionsMenu();
 			PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putInt(PreferencesActivity.KEY_SORT_TYPE, type.ordinal()).commit();
@@ -275,10 +283,10 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
 		try {
-			mListener = (OnFragmentInteractionListener) activity;
-		} catch (ClassCastException e) {
-			throw new ClassCastException(activity.toString() + " must implement OnFragmentInteractionListener");
-		}
+            mListener = (OnPreferenceFragmentInteractionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnPreferenceFragmentInteractionListener");
+        }
 	}
 
 	@Override
@@ -287,8 +295,8 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 		mListener = null;
 	}
 
-	public void updateListView(PreferenceFile p, boolean animate) {
-		if (p == null) {
+    void updateListView(PreferenceFile p, boolean animate) {
+        if (p == null) {
 			getActivity().finish();
 			return;
 		}
@@ -366,25 +374,24 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 		getActivity().supportInvalidateOptionsMenu();
 	}
 
-	public interface OnFragmentInteractionListener {
-		public void onFragmentInteraction(Uri uri);
-	}
+    public interface OnPreferenceFragmentInteractionListener {
 
-	public class ParsingTask extends AsyncTask<Void, Void, PreferenceFile> {
-		private String mFile;
+        public void onBackupFile(String fullPath);
 
-		public ParsingTask(String file) {
+        public boolean canRestoreFile(String fullPath);
+
+    }
+
+    public class ParsingTask extends AsyncTask<Void, Void, PreferenceFile> {
+        private final String mFile;
+
+        public ParsingTask(String file) {
 			super();
 			this.mFile = file;
 		}
 
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-		}
-
-		@Override
-		protected PreferenceFile doInBackground(Void... params) {
+        @Override
+        protected PreferenceFile doInBackground(Void... params) {
 			Log.e(Utils.TAG, System.currentTimeMillis() + "\t read start");
 			Data data = App.getRoot().file.read(mFile);
 			Log.e(Utils.TAG, System.currentTimeMillis() + "\t read end");

@@ -18,7 +18,6 @@ package fr.simon.marquis.preferencesmanager.ui;
 import android.app.ActionBar;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -27,6 +26,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,16 +34,22 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
+import com.spazedog.lib.rootfw.container.Data;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import java.util.Date;
+
 import fr.simon.marquis.preferencesmanager.R;
+import fr.simon.marquis.preferencesmanager.model.Backup;
+import fr.simon.marquis.preferencesmanager.model.BackupContainer;
 import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
-import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnFragmentInteractionListener;
+import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnPreferenceFragmentInteractionListener;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class PreferencesActivity extends ActionBarActivity implements OnFragmentInteractionListener {
+public class PreferencesActivity extends ActionBarActivity implements OnPreferenceFragmentInteractionListener {
 
     public final static String KEY_SORT_TYPE = "KEY_SORT_TYPE";
     public final static String EXTRA_PACKAGE_NAME = "EXTRA_PACKAGE_NAME";
@@ -60,6 +66,8 @@ public class PreferencesActivity extends ActionBarActivity implements OnFragment
     private Files files;
     private String packageName;
     private String title;
+
+    private BackupContainer backupContainer;
 
     private boolean launchedFromShortcut = false;
 
@@ -98,12 +106,12 @@ public class PreferencesActivity extends ActionBarActivity implements OnFragment
         }
 
         if (savedInstanceState == null) {
-            new FindFilesTask(packageName).execute();
+            new FindFilesAndBackupsTask(packageName).execute();
         } else {
             try {
                 updateFindFiles(Files.fromJSON(new JSONArray(savedInstanceState.getString(KEY_FILES))));
             } catch (JSONException e) {
-                new FindFilesTask(packageName).execute();
+                new FindFilesAndBackupsTask(packageName).execute();
             }
         }
     }
@@ -176,8 +184,20 @@ public class PreferencesActivity extends ActionBarActivity implements OnFragment
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onBackupFile(String fullPath) {
+        Backup backup = new Backup(new Date().getTime());
+        backupContainer.put(fullPath, backup);
 
+        Data data = App.getRoot().file.read(fullPath);
+        Utils.backupFile(backup, data, this);
+
+        Utils.saveBackups(this, packageName, backupContainer);
+        Toast.makeText(this, R.string.toast_backup, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public boolean canRestoreFile(String fullPath) {
+        return backupContainer.contains(fullPath);
     }
 
     private void updateFindFiles(Files f) {
@@ -206,6 +226,10 @@ public class PreferencesActivity extends ActionBarActivity implements OnFragment
         }
     }
 
+    private void updateFindBackups(BackupContainer b) {
+        backupContainer = b;
+    }
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -228,21 +252,22 @@ public class PreferencesActivity extends ActionBarActivity implements OnFragment
         }
     }
 
-    public class FindFilesTask extends AsyncTask<Void, Void, Files> {
+    public class FindFilesAndBackupsTask extends AsyncTask<Void, Void, Pair<Files, BackupContainer>> {
         private final String mPackageName;
 
-        public FindFilesTask(String packageName) {
+        public FindFilesAndBackupsTask(String packageName) {
             this.mPackageName = packageName;
         }
 
         @Override
-        protected Files doInBackground(Void... params) {
-            return Utils.findXmlFiles(mPackageName);
+        protected Pair<Files, BackupContainer> doInBackground(Void... params) {
+            return Pair.create(Utils.findXmlFiles(mPackageName), Utils.getBackups(getApplicationContext(), mPackageName));
         }
 
         @Override
-        protected void onPostExecute(Files result) {
-            updateFindFiles(result);
+        protected void onPostExecute(Pair<Files, BackupContainer> result) {
+            updateFindFiles(result.first);
+            updateFindBackups(result.second);
             super.onPostExecute(result);
         }
     }
