@@ -16,12 +16,11 @@
 package fr.simon.marquis.preferencesmanager.ui;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
 import android.support.v7.app.ActionBarActivity;
@@ -47,9 +46,11 @@ import android.widget.Toast;
 
 import com.spazedog.lib.rootfw.container.Data;
 
+import java.util.List;
 import java.util.Map.Entry;
 
 import fr.simon.marquis.preferencesmanager.R;
+import fr.simon.marquis.preferencesmanager.model.Backup;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
 import fr.simon.marquis.preferencesmanager.model.PreferenceType;
@@ -217,18 +218,24 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
                 }
                 return true;
             case R.id.action_restore_file:
-
+                restoreBackup();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
 	}
 
+    private void restoreBackup() {
+        if (mListener != null) {
+            RestoreDialogFragment.show(getFragmentManager(), mListener.getBackups(mPath + "/" + mName));
+        }
+    }
+
     private void setSortType(PreferenceSortType type) {
         if (PreferencesActivity.preferenceSortType != type) {
 			PreferencesActivity.preferenceSortType = type;
-			getActivity().supportInvalidateOptionsMenu();
-			PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putInt(PreferencesActivity.KEY_SORT_TYPE, type.ordinal()).commit();
+            getActivity().invalidateOptionsMenu();
+            PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putInt(PreferencesActivity.KEY_SORT_TYPE, type.ordinal()).commit();
 
 			if (gridView.getAdapter() != null && preferenceFile != null) {
 				preferenceFile.updateSort();
@@ -255,8 +262,8 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 	}
 
 	private void showPrefDialog(PreferenceType type, boolean editMode, String key, Object obj) {
-		DialogFragment newFragment = PreferenceDialog.newInstance(type, editMode, key, obj);
-		newFragment.setTargetFragment(this, ("Fragment:" + mPath + "/" + mName).hashCode());
+        PreferenceDialog newFragment = PreferenceDialog.newInstance(type, editMode, key, obj);
+        newFragment.setTargetFragment(this, ("Fragment:" + mPath + "/" + mName).hashCode());
 		newFragment.show(getFragmentManager(), mPath + "/" + mName + "#" + key);
 	}
 
@@ -362,8 +369,8 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 			@Override
 			public void onDestroyActionMode(ActionMode mode) {
 				((PreferenceAdapter) gridView.getAdapter()).resetSelection();
-				getActivity().supportInvalidateOptionsMenu();
-			}
+                getActivity().invalidateOptionsMenu();
+            }
 
 			@Override
 			public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
@@ -371,8 +378,8 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 			}
 
 		});
-		getActivity().supportInvalidateOptionsMenu();
-	}
+        getActivity().invalidateOptionsMenu();
+    }
 
     public interface OnPreferenceFragmentInteractionListener {
 
@@ -380,6 +387,7 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 
         public boolean canRestoreFile(String fullPath);
 
+        public List<Backup> getBackups(String fullPath);
     }
 
     public class ParsingTask extends AsyncTask<Void, Void, PreferenceFile> {

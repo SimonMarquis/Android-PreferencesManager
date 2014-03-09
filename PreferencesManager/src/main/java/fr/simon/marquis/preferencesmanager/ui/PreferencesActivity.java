@@ -16,14 +16,14 @@
 package fr.simon.marquis.preferencesmanager.ui;
 
 import android.app.ActionBar;
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Pair;
@@ -40,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.util.Date;
+import java.util.List;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.Backup;
@@ -49,7 +50,7 @@ import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnPreferenceFragmentInteractionListener;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class PreferencesActivity extends ActionBarActivity implements OnPreferenceFragmentInteractionListener {
+public class PreferencesActivity extends ActionBarActivity implements OnPreferenceFragmentInteractionListener, RestoreDialogFragment.OnRestoreFragmentInteractionListener {
 
     public final static String KEY_SORT_TYPE = "KEY_SORT_TYPE";
     public final static String EXTRA_PACKAGE_NAME = "EXTRA_PACKAGE_NAME";
@@ -118,7 +119,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        if(files != null){
+        if (files != null) {
             outState.putString(KEY_FILES, files.toJSON().toString());
         }
         super.onSaveInstanceState(outState);
@@ -197,12 +198,29 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
 
     @Override
     public boolean canRestoreFile(String fullPath) {
-        return backupContainer.contains(fullPath);
+        return backupContainer != null && backupContainer.contains(fullPath);
+    }
+
+    @Override
+    public List<Backup> getBackups(String fullPath) {
+        return backupContainer == null ? null : backupContainer.get(fullPath);
+    }
+
+    @Override
+    public void onRestoreFile(Backup backup) {
+        // TODO
+        Toast.makeText(this, "onRestoreFile", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onDeleteBackup(Backup backup) {
+        // TODO
+        Toast.makeText(this, "onDeleteBackup", Toast.LENGTH_SHORT).show();
     }
 
     private void updateFindFiles(Files f) {
         files = f;
-        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
         mViewPager.setAdapter(mSectionsPagerAdapter);
         Animation fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
         Animation fadeOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);

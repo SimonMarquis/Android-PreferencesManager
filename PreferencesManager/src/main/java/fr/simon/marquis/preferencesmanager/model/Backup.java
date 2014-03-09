@@ -15,14 +15,20 @@
  */
 package fr.simon.marquis.preferencesmanager.model;
 
+import android.content.Context;
+import android.text.format.DateUtils;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class Backup {
+import java.util.Date;
+
+public class Backup implements Comparable<Backup> {
 
     private static final String KEY_TIME = "TIME";
 
     private final long time;
+    private String displayLabel;
 
     public Backup(long time) {
         super();
@@ -30,6 +36,9 @@ public class Backup {
     }
 
     public static Backup fromJSON(JSONObject jsonObject) {
+        if (jsonObject == null) {
+            return null;
+        }
         return new Backup(jsonObject.optLong(KEY_TIME));
     }
 
@@ -45,5 +54,31 @@ public class Backup {
 
     public long getTime() {
         return time;
+    }
+
+    public String getDisplayLabel(Context ctx) {
+        if (displayLabel == null) {
+            displayLabel = new StringBuilder(upperFirstLetter(DateUtils.formatDateTime(ctx, getTime(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_WEEKDAY))).append(" (").append(lowerFirstLetter(DateUtils.getRelativeTimeSpanString(getTime(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS).toString())).append(")").toString();
+        }
+        return displayLabel;
+    }
+
+    private String upperFirstLetter(String original) {
+        if (original.length() == 0) {
+            return original;
+        }
+        return original.substring(0, 1).toUpperCase() + original.substring(1);
+    }
+
+    private String lowerFirstLetter(String original) {
+        if (original.length() == 0) {
+            return original;
+        }
+        return original.substring(0, 1).toLowerCase() + original.substring(1);
+    }
+
+    @Override
+    public int compareTo(Backup another) {
+        return (int) (another.getTime() - getTime());
     }
 }

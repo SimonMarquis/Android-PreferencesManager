@@ -96,4 +96,8 @@ public class BackupContainer {
         return backups.containsKey(key);
     }
 
+    public List<Backup> get(String key) {
+        return backups.get(key);
+    }
+
 }
