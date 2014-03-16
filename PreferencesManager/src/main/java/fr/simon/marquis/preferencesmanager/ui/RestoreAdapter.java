@@ -23,7 +23,6 @@ import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import java.text.DateFormat;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,11 +31,10 @@ import fr.simon.marquis.preferencesmanager.model.Backup;
 
 public class RestoreAdapter extends BaseAdapter {
 
-    private Context ctx;
+    private final Context ctx;
+    private final String fullPath;
+    private final RestoreDialogFragment.OnRestoreFragmentInteractionListener listener;
     private List<Backup> backups;
-    private String fullPath;
-    private DateFormat format;
-    private RestoreDialogFragment.OnRestoreFragmentInteractionListener listener;
 
     public RestoreAdapter(Context ctx, List<Backup> backups, RestoreDialogFragment.OnRestoreFragmentInteractionListener listener, String fullPath) {
         Collections.sort(backups);
@@ -44,7 +42,6 @@ public class RestoreAdapter extends BaseAdapter {
         this.backups = backups;
         this.listener = listener;
         this.fullPath = fullPath;
-        this.format = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
     }
 
     @Override
@@ -67,6 +64,7 @@ public class RestoreAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             convertView = LayoutInflater.from(ctx).inflate(R.layout.row_restore, parent, false);
+            assert convertView != null;
             holder = new ViewHolder();
             holder.label = (TextView) convertView.findViewById(R.id.item_label);
             holder.delete = (ImageButton) convertView.findViewById(R.id.item_delete);
@@ -77,13 +75,6 @@ public class RestoreAdapter extends BaseAdapter {
 
         final Backup backup = backups.get(position);
         holder.label.setText(backup.getDisplayLabel(ctx));
-        //holder.label.setText(format.format(new Date(backup.getTime())));
-       /* holder.label.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onRestoreFile(backup);
-            }
-        });*/
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -16,26 +16,25 @@ package fr.simon.marquis.preferencesmanager.model;
  * the License.
  */
 public enum XmlFontSize {
-	// EXTRA_SMALL(12), SMALL(14), MEDIUM(16), LARGE(18), EXTRA_LARGE(22);
-	EXTRA_SMALL(10), SMALL(13), MEDIUM(16), LARGE(20), EXTRA_LARGE(24);
+    EXTRA_SMALL(10), SMALL(13), MEDIUM(16), LARGE(20), EXTRA_LARGE(24);
 
-	private int mSize;
+    private final int mSize;
 
-	private XmlFontSize(int size) {
-		this.mSize = size;
-	}
+    private XmlFontSize(int size) {
+        this.mSize = size;
+    }
 
-	public int getSize() {
-		return mSize;
-	}
+    public int getSize() {
+        return mSize;
+    }
 
-	public static XmlFontSize generateSize(int n) {
-		XmlFontSize[] sizes = XmlFontSize.values();
-		for (int i = 0; i < sizes.length; i++) {
-			if (sizes[i].getSize() == n) {
-				return sizes[i];
-			}
-		}
-		return MEDIUM;
-	}
+    public static XmlFontSize generateSize(int n) {
+        XmlFontSize[] sizes = XmlFontSize.values();
+        for (XmlFontSize size : sizes) {
+            if (size.getSize() == n) {
+                return size;
+            }
+        }
+        return MEDIUM;
+    }
 }

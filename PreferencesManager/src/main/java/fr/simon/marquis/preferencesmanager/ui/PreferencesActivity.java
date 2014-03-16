@@ -48,6 +48,7 @@ import fr.simon.marquis.preferencesmanager.model.BackupContainer;
 import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnPreferenceFragmentInteractionListener;
+import fr.simon.marquis.preferencesmanager.util.Ui;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class PreferencesActivity extends ActionBarActivity implements OnPreferenceFragmentInteractionListener, RestoreDialogFragment.OnRestoreFragmentInteractionListener {
@@ -69,6 +70,8 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
     private String title;
 
     private BackupContainer backupContainer;
+
+    private FindFilesAndBackupsTask findFilesAndBackupsTask;
 
     private boolean launchedFromShortcut = false;
 
@@ -99,20 +102,22 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         title = b.getString(EXTRA_TITLE);
         launchedFromShortcut = b.getBoolean(EXTRA_SHORTCUT, false);
 
-        getActionBar().setTitle(Utils.applyCustomTypeFace(title, this));
-        getActionBar().setSubtitle(Utils.applyCustomTypeFace(packageName, this));
+        getActionBar().setTitle(Ui.applyCustomTypeFace(title, this));
+        getActionBar().setSubtitle(Ui.applyCustomTypeFace(packageName, this));
         Drawable drawable = Utils.findDrawable(packageName, this);
         if (drawable != null) {
             getSupportActionBar().setIcon(drawable);
         }
 
         if (savedInstanceState == null) {
-            new FindFilesAndBackupsTask(packageName).execute();
+            findFilesAndBackupsTask = new FindFilesAndBackupsTask(packageName);
+            findFilesAndBackupsTask.execute();
         } else {
             try {
                 updateFindFiles(Files.fromJSON(new JSONArray(savedInstanceState.getString(KEY_FILES))));
             } catch (JSONException e) {
-                new FindFilesAndBackupsTask(packageName).execute();
+                findFilesAndBackupsTask = new FindFilesAndBackupsTask(packageName);
+                findFilesAndBackupsTask.execute();
             }
         }
     }
@@ -190,7 +195,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         backupContainer.put(fullPath, backup);
 
         Data data = App.getRoot().file.read(fullPath);
-        if(Utils.backupFile(backup, data, this)) {
+        if (Utils.backupFile(backup, data, this)) {
             Utils.saveBackups(this, packageName, backupContainer);
             Toast.makeText(this, R.string.toast_backup_success, Toast.LENGTH_SHORT).show();
         } else {
@@ -274,7 +279,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return Utils.applyCustomTypeFace(files.get(position).getName(), PreferencesActivity.this);
+            return Ui.applyCustomTypeFace(files.get(position).getName(), PreferencesActivity.this);
         }
     }
 
@@ -296,5 +301,13 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
             updateFindBackups(result.second);
             super.onPostExecute(result);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (findFilesAndBackupsTask != null) {
+            findFilesAndBackupsTask.cancel(true);
+        }
+        super.onDestroy();
     }
 }

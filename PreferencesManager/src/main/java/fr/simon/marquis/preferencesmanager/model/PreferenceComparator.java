@@ -15,27 +15,28 @@ package fr.simon.marquis.preferencesmanager.model;
  * License for the specific language governing permissions and limitations under
  * the License.
  */
+
 import java.util.Comparator;
 import java.util.Map.Entry;
 
-public final class PreferenceComparator implements Comparator<Entry<String, Object>> {
+final class PreferenceComparator implements Comparator<Entry<String, Object>> {
 
-	private PreferenceSortType mType = PreferenceSortType.ALPHANUMERIC;
+    private PreferenceSortType mType = PreferenceSortType.ALPHANUMERIC;
 
-	public PreferenceComparator(PreferenceSortType type) {
-		mType = type;
-	}
+    public PreferenceComparator(PreferenceSortType type) {
+        mType = type;
+    }
 
-	@Override
-	public int compare(Entry<String, Object> lhs, Entry<String, Object> rhs) {
-		if (mType == PreferenceSortType.TYPE_AND_ALPHANUMERIC) {
-			String l = lhs == null ? "" : (lhs.getValue() == null ? "" : lhs.getValue().getClass().getName());
-			String r = rhs == null ? "" : (rhs.getValue() == null ? "" : rhs.getValue().getClass().getName());
-			int res = l.compareToIgnoreCase(r);
-			if (res != 0) {
-				return res;
-			}
-		}
-		return lhs.getKey().compareToIgnoreCase(rhs.getKey());
-	}
+    @Override
+    public int compare(Entry<String, Object> lhs, Entry<String, Object> rhs) {
+        if (mType == PreferenceSortType.TYPE_AND_ALPHANUMERIC) {
+            String l = lhs == null ? "" : (lhs.getValue() == null ? "" : lhs.getValue().getClass().getName());
+            String r = rhs == null ? "" : (rhs.getValue() == null ? "" : rhs.getValue().getClass().getName());
+            int res = l.compareToIgnoreCase(r);
+            if (res != 0) {
+                return res;
+            }
+        }
+        return (lhs == null ? "" : lhs.getKey()).compareToIgnoreCase((rhs == null ? "" : rhs.getKey()));
+    }
 }

@@ -20,63 +20,62 @@ import java.util.Set;
 import fr.simon.marquis.preferencesmanager.R;
 
 public enum PreferenceType {
-	BOOLEAN(R.layout.dialog_pref_boolean_add, R.layout.dialog_pref_boolean_edit, R.string.title_add_boolean, R.string.title_edit_boolean,
-			R.drawable.card_purpleborder), STRING(R.layout.dialog_pref_string_add, R.layout.dialog_pref_string_edit, R.string.title_add_string,
-			R.string.title_edit_string, R.drawable.card_greenborder), INT(R.layout.dialog_pref_integer_add, R.layout.dialog_pref_integer_edit,
-			R.string.title_add_int, R.string.title_edit_int, R.drawable.card_redborder), FLOAT(R.layout.dialog_pref_float_add,
-			R.layout.dialog_pref_float_edit, R.string.title_add_float, R.string.title_edit_float, R.drawable.card_navyborder), LONG(
-			R.layout.dialog_pref_integer_add, R.layout.dialog_pref_integer_edit, R.string.title_add_long, R.string.title_edit_long,
-			R.drawable.card_tealborder), STRINGSET(R.layout.dialog_pref_stringset_add, R.layout.dialog_pref_stringset_edit,
-			R.string.title_add_stringset, R.string.title_edit_stringset, R.drawable.card_goldborder), UNSUPPORTED(0, 0, 0, 0, R.drawable.card_unknown);
+    BOOLEAN(R.layout.dialog_pref_boolean_add, R.layout.dialog_pref_boolean_edit, R.string.title_add_boolean, R.string.title_edit_boolean, R.drawable.card_purpleborder), //
+    STRING(R.layout.dialog_pref_string_add, R.layout.dialog_pref_string_edit, R.string.title_add_string, R.string.title_edit_string, R.drawable.card_greenborder), //
+    INT(R.layout.dialog_pref_integer_add, R.layout.dialog_pref_integer_edit, R.string.title_add_int, R.string.title_edit_int, R.drawable.card_redborder), //
+    FLOAT(R.layout.dialog_pref_float_add, R.layout.dialog_pref_float_edit, R.string.title_add_float, R.string.title_edit_float, R.drawable.card_navyborder), //
+    LONG(R.layout.dialog_pref_integer_add, R.layout.dialog_pref_integer_edit, R.string.title_add_long, R.string.title_edit_long, R.drawable.card_tealborder), //
+    STRINGSET(R.layout.dialog_pref_stringset_add, R.layout.dialog_pref_stringset_edit, R.string.title_add_stringset, R.string.title_edit_stringset, R.drawable.card_goldborder),//
+    UNSUPPORTED(0, 0, 0, 0, R.drawable.card_unknown);
 
-	private int mDialogLayoutAdd;
-	private int mDialogLayoutEdit;
-	private int mDialogTitleAdd;
-	private int mDialogTitleEdit;
-	private int mCardBackground;
+    private final int mDialogLayoutAdd;
+    private final int mDialogLayoutEdit;
+    private final int mDialogTitleAdd;
+    private final int mDialogTitleEdit;
+    private final int mCardBackground;
 
-	private PreferenceType(int dialogLayoutAdd, int dialogLayoutEdit, int dialogTitleAdd, int dialogTitleEdit, int cardBackground) {
-		this.mDialogLayoutAdd = dialogLayoutAdd;
-		this.mDialogLayoutEdit = dialogLayoutEdit;
-		this.mDialogTitleAdd = dialogTitleAdd;
-		this.mDialogTitleEdit = dialogTitleEdit;
-		this.mCardBackground = cardBackground;
-	}
+    private PreferenceType(int dialogLayoutAdd, int dialogLayoutEdit, int dialogTitleAdd, int dialogTitleEdit, int cardBackground) {
+        this.mDialogLayoutAdd = dialogLayoutAdd;
+        this.mDialogLayoutEdit = dialogLayoutEdit;
+        this.mDialogTitleAdd = dialogTitleAdd;
+        this.mDialogTitleEdit = dialogTitleEdit;
+        this.mCardBackground = cardBackground;
+    }
 
-	public static PreferenceType fromObject(Object obj) {
-		if (obj instanceof String) {
-			return STRING;
-		} else if (obj instanceof Integer) {
-			return INT;
-		} else if (obj instanceof Long) {
-			return LONG;
-		} else if (obj instanceof Float) {
-			return FLOAT;
-		} else if (obj instanceof Boolean) {
-			return BOOLEAN;
-		} else if (obj instanceof Set<?>) {
-			return STRINGSET;
-		}
-		return UNSUPPORTED;
-	}
+    public static PreferenceType fromObject(Object obj) {
+        if (obj instanceof String) {
+            return STRING;
+        } else if (obj instanceof Integer) {
+            return INT;
+        } else if (obj instanceof Long) {
+            return LONG;
+        } else if (obj instanceof Float) {
+            return FLOAT;
+        } else if (obj instanceof Boolean) {
+            return BOOLEAN;
+        } else if (obj instanceof Set<?>) {
+            return STRINGSET;
+        }
+        return UNSUPPORTED;
+    }
 
-	public static int getDialogLayout(Object obj) {
-		return fromObject(obj).getCardBackground();
-	}
+    public static int getDialogLayout(Object obj) {
+        return fromObject(obj).getCardBackground();
+    }
 
-	public int getDialogLayout(boolean editMode) {
-		return editMode ? mDialogLayoutEdit : mDialogLayoutAdd;
-	}
+    public int getDialogLayout(boolean editMode) {
+        return editMode ? mDialogLayoutEdit : mDialogLayoutAdd;
+    }
 
-	public int getCardBackground() {
-		return mCardBackground;
-	}
+    public int getCardBackground() {
+        return mCardBackground;
+    }
 
-	public int getDialogTitleAdd() {
-		return mDialogTitleAdd;
-	}
+    public int getDialogTitleAdd() {
+        return mDialogTitleAdd;
+    }
 
-	public int getDialogTitleEdit() {
-		return mDialogTitleEdit;
-	}
+    public int getDialogTitleEdit() {
+        return mDialogTitleEdit;
+    }
 }

@@ -28,31 +28,31 @@ public class File {
 
     public File(String name, String path) {
         super();
-		this.name = name;
-		this.path = path;
-	}
+        this.name = name;
+        this.path = path;
+    }
 
-	public static File fromJSON(JSONObject jsonObject) {
+    public static File fromJSON(JSONObject jsonObject) {
         return new File(jsonObject.optString(KEY_NAME), jsonObject.optString(KEY_PATH));
     }
 
     public JSONObject toJSON() {
-		try {
-			JSONObject obj = new JSONObject();
+        try {
+            JSONObject obj = new JSONObject();
             obj.put(KEY_NAME, name);
             obj.put(KEY_PATH, path);
             return obj;
         } catch (JSONException ignored) {
         }
         return null;
-	}
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public String getPath() {
-		return path;
-	}
+    public String getPath() {
+        return path;
+    }
 
 }

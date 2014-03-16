@@ -15,171 +15,170 @@
  */
 package fr.simon.marquis.preferencesmanager.model;
 
-import java.io.File;
-
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+
+import java.io.File;
+
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class AppEntry {
 
-	/**
-	 * 
-	 */
-	private final ApplicationInfo mInfo;
-	/**
-	 * File of the application
-	 */
-	private final File mApkFile;
-	/**
-	 * Label of the application
-	 */
-	private String mLabel;
-	/**
-	 * Value used to sort the list of applications
-	 */
-	private String mSortingValue;
-	/**
-	 * Icon drawable displayed in the list
-	 */
-	private Drawable mIcon;
-	/**
-	 * Detect if app is starred by user
-	 */
-	private boolean isFavorite;
-	/**
-	 * Char value used by indexed ListView
-	 */
-	private char headerChar;
+    /**
+     *
+     */
+    private final ApplicationInfo mInfo;
+    /**
+     * File of the application
+     */
+    private final File mApkFile;
+    /**
+     * Label of the application
+     */
+    private String mLabel;
+    /**
+     * Value used to sort the list of applications
+     */
+    private String mSortingValue;
+    /**
+     * Icon drawable displayed in the list
+     */
+    private Drawable mIcon;
+    /**
+     * Detect if app is starred by user
+     */
+    private boolean isFavorite;
+    /**
+     * Char value used by indexed ListView
+     */
+    private char headerChar;
 
-	/**
-	 * @param info
-	 * @param context
-	 */
-	public AppEntry(ApplicationInfo info, Context context) {
-		mInfo = info;
-		isFavorite = Utils.isFavorite(mInfo.packageName, context);
-		mApkFile = new File(info.sourceDir);
-		loadLabels(context);
-		// Pre-load the icons for smooth scrolling
-		getIcon(context);
-	}
 
-	public ApplicationInfo getApplicationInfo() {
-		return mInfo;
-	}
+    public AppEntry(ApplicationInfo info, Context context) {
+        mInfo = info;
+        isFavorite = Utils.isFavorite(mInfo.packageName, context);
+        mApkFile = new File(info.sourceDir);
+        loadLabels(context);
+        // Pre-load the icons for smooth scrolling
+        getIcon(context);
+    }
 
-	public String getLabel() {
-		return mLabel;
-	}
+    public ApplicationInfo getApplicationInfo() {
+        return mInfo;
+    }
 
-	public String getSortingValue() {
-		return mSortingValue;
-	}
+    public String getLabel() {
+        return mLabel;
+    }
 
-	public Drawable getIcon(Context ctx) {
-		if (mIcon == null) {
-			if (mApkFile.exists()) {
-				mIcon = mInfo.loadIcon(ctx.getPackageManager());
-				return mIcon;
-			} else {
-				return ctx.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
-			}
-		} else {
-			return mIcon;
-		}
+    public String getSortingValue() {
+        return mSortingValue;
+    }
 
-	}
+    public Drawable getIcon(Context ctx) {
+        if (mIcon == null) {
+            PackageManager pm = ctx.getPackageManager();
+            if (pm != null && mApkFile.exists()) {
+                mIcon = mInfo.loadIcon(pm);
+            } else {
+                mIcon = ctx.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
+            }
+            return mIcon;
+        } else {
+            return mIcon;
+        }
+    }
 
-	@Override
-	public String toString() {
-		return mLabel;
-	}
+    @Override
+    public String toString() {
+        return mLabel;
+    }
 
-	public boolean isFavorite() {
-		return isFavorite;
-	}
+    public void setFavorite(boolean isFavorite) {
+        this.isFavorite = isFavorite;
+        // IMPORTANT! also update the char used for sorting
+        mSortingValue = (isFavorite ? " " : "") + mLabel;
+        headerChar = formatChar(mLabel);
+    }
 
-	public void setFavorite(boolean isFavorite) {
-		this.isFavorite = isFavorite;
-		// IMPORTANT! also update the char used for sorting
-		mSortingValue = (isFavorite ? " " : "") + mLabel;
-		headerChar = formatChar(mLabel);
-	}
+    /**
+     * Generate the labels
+     *
+     * @param ctx .
+     */
+    private void loadLabels(Context ctx) {
+        if (mLabel == null) {
+            if (!mApkFile.exists()) {
+                mLabel = mInfo.packageName;
+            } else {
+                PackageManager pm = ctx.getPackageManager();
+                CharSequence label = null;
+                if (pm != null) {
+                    label = mInfo.loadLabel(pm);
+                }
+                mLabel = label != null ? label.toString() : mInfo.packageName;
+            }
 
-	/**
-	 * Generate the labels
-	 * 
-	 * @param ctx
-	 */
-	private void loadLabels(Context ctx) {
-		if (mLabel == null) {
-			if (!mApkFile.exists()) {
-				mLabel = mInfo.packageName;
-			} else {
-				CharSequence label = mInfo.loadLabel(ctx.getPackageManager());
-				mLabel = label != null ? label.toString() : mInfo.packageName;
-			}
+            // replace false spaces O_o
+            mLabel = mLabel.replaceAll("\\s", " ");
+        }
 
-			// repalce false spaces O_o
-			mLabel = mLabel.replaceAll("\\s", " ");
-		}
+        if (mSortingValue == null)
+            mSortingValue = (isFavorite ? " " : "") + mLabel;
 
-		if (mSortingValue == null)
-			mSortingValue = (isFavorite ? " " : "") + mLabel;
+        headerChar = formatChar(mLabel);
+    }
 
-		headerChar = formatChar(mLabel);
-	}
+    /**
+     * Generate a char from a string to index the entry
+     *
+     * @param s .
+     * @return .
+     */
+    private char formatChar(String s) {
+        if (isFavorite) {
+            return '☆';
+        }
 
-	/**
-	 * Generate a char from a string to index the entry
-	 * 
-	 * @param s
-	 * @return
-	 */
-	private char formatChar(String s) {
-		if (isFavorite) {
-			return '☆';
-		}
+        if (TextUtils.isEmpty(s)) {
+            return '#';
+        }
 
-		if (TextUtils.isEmpty(s)) {
-			return '#';
-		}
+        char c = Character.toUpperCase(s.charAt(0));
 
-		char c = Character.toUpperCase(s.charAt(0));
+        // Number
+        if (c >= '0' && c <= '9') {
+            return '#';
+        }
 
-		// Number
-		if (c >= '0' && c <= '9') {
-			return '#';
-		}
+        // Letter
+        if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') {
+            return c;
+        }
 
-		// Letter
-		if (c >= 'A' && c <= 'Z' || c >= 'a' && c <= 'z') {
-			return c;
-		}
+        // Accented letter
+        switch (c) {
+            case 'À':
+            case 'Á':
+            case 'Â':
+            case 'Ã':
+            case 'Ä':
+                return 'A';
+            case 'É':
+            case 'È':
+            case 'Ê':
+            case 'Ë':
+                return 'E';
+        }
 
-		// Accented letter
-		switch (c) {
-		case 'À':
-		case 'Á':
-		case 'Â':
-		case 'Ã':
-		case 'Ä':
-			return 'A';
-		case 'É':
-		case 'È':
-		case 'Ê':
-		case 'Ë':
-			return 'E';
-		}
+        // Everything else
+        return '#';
+    }
 
-		// Everthing else
-		return '#';
-	}
-
-	public char getHeaderChar() {
-		return headerChar;
-	}
+    public char getHeaderChar() {
+        return headerChar;
+    }
 }

@@ -20,28 +20,23 @@ import android.app.Application;
 import com.spazedog.lib.rootfw.RootFW;
 
 public class App extends Application {
-	private static RootFW root;
+    private static RootFW root;
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
-	}
+    public static RootFW getRoot() {
+        if (root == null)
+            root = new RootFW();
+        return root;
+    }
 
-	public static RootFW getRoot() {
-		if (root == null)
-			root = new RootFW();
-		return root;
-	}
+    public static RootFW getRootForce() {
+        if (root == null) {
+            return getRoot();
+        }
 
-	public static RootFW getRootForce() {
-		if (root == null) {
-			root = new RootFW();
-			return root;
-		} else {
-			if (!root.connected()) {
-				root = new RootFW();
-			}
-		}
-		return root;
-	}
+        if (!root.connected()) {
+            root = new RootFW();
+        }
+
+        return root;
+    }
 }

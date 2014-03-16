@@ -16,5 +16,5 @@ package fr.simon.marquis.preferencesmanager.model;
  * the License.
  */
 public enum PreferenceSortType {
-	ALPHANUMERIC, TYPE_AND_ALPHANUMERIC
+    ALPHANUMERIC, TYPE_AND_ALPHANUMERIC
 }

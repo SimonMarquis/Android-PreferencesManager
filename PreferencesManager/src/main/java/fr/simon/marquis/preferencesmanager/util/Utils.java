@@ -15,6 +15,7 @@
  */
 package fr.simon.marquis.preferencesmanager.util;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -23,19 +24,8 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.StyleSpan;
 import android.util.Log;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 
 import com.spazedog.lib.rootfw.container.Data;
 import com.spazedog.lib.rootfw.container.FileStat;
@@ -46,23 +36,18 @@ import org.json.JSONException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.model.Backup;
 import fr.simon.marquis.preferencesmanager.model.BackupContainer;
 import fr.simon.marquis.preferencesmanager.model.File;
 import fr.simon.marquis.preferencesmanager.model.Files;
-import fr.simon.marquis.preferencesmanager.roboto.RobotoTypefaceManager;
 import fr.simon.marquis.preferencesmanager.ui.App;
 import fr.simon.marquis.preferencesmanager.ui.RootDialog;
 
@@ -70,6 +55,9 @@ public class Utils {
 
     public static final String TAG = "PreferencesManager";
     private static final String FAVORITES_KEY = "FAVORITES_KEY";
+    private static final String TAG_ROOT_DIALOG = "RootDialog";
+    private static final String PREF_SHOW_SYSTEM_APPS = "SHOW_SYSTEM_APPS";
+    private static final String BASE_PATH = "data/data/";
     private static ArrayList<AppEntry> applications;
     private static HashSet<String> favorites;
 
@@ -77,40 +65,35 @@ public class Utils {
         return applications;
     }
 
-    public static void displayNoRoot(FragmentManager fragmentManager) {
-        FragmentTransaction tr = fragmentManager.beginTransaction();
-        DialogFragment newFragment = RootDialog.newInstance();
-        tr.add(newFragment, "RootDialog");
-        tr.commitAllowingStateLoss();
+    public static void displayNoRoot(FragmentManager fm) {
+        RootDialog.newInstance().show(fm, TAG_ROOT_DIALOG);
     }
 
     public static ArrayList<AppEntry> getApplications(Context ctx) {
-        boolean showSystemApps = isShowSystemApps(ctx);
-        List<ApplicationInfo> appsInfo = ctx.getPackageManager().getInstalledApplications(
-                PackageManager.GET_UNINSTALLED_PACKAGES | PackageManager.GET_DISABLED_COMPONENTS);
-        if (appsInfo == null)
-            appsInfo = new ArrayList<ApplicationInfo>();
-
-        List<AppEntry> entries = new ArrayList<AppEntry>(appsInfo.size());
-        for (ApplicationInfo a : appsInfo) {
-            if (showSystemApps || (a.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
-                entries.add(new AppEntry(a, ctx));
+        PackageManager pm = ctx.getPackageManager();
+        if (pm == null) {
+            applications = new ArrayList<AppEntry>();
+        } else {
+            boolean showSystemApps = isShowSystemApps(ctx);
+            List<ApplicationInfo> appsInfo = pm.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES | PackageManager.GET_DISABLED_COMPONENTS);
+            if (appsInfo == null) {
+                appsInfo = new ArrayList<ApplicationInfo>();
             }
-        }
 
-        Collections.sort(entries, new MyComparator());
-        applications = new ArrayList<AppEntry>(entries);
+            List<AppEntry> entries = new ArrayList<AppEntry>(appsInfo.size());
+            for (ApplicationInfo a : appsInfo) {
+                if (showSystemApps || (a.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
+                    entries.add(new AppEntry(a, ctx));
+                }
+            }
+
+            Collections.sort(entries, new MyComparator());
+            applications = new ArrayList<AppEntry>(entries);
+        }
         return applications;
     }
 
-    public static void verifyFavorites(Context ctx) {
-        for (AppEntry a : applications) {
-            a.setFavorite(isFavorite(a.getApplicationInfo().packageName, ctx));
-        }
-    }
-
     public static void setFavorite(String packageName, boolean favorite, Context ctx) {
-
         if (favorites == null) {
             initFavorites(ctx);
         }
@@ -175,20 +158,18 @@ public class Utils {
     }
 
     public static boolean isShowSystemApps(Context ctx) {
-        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean("SHOW_SYSTEM_APPS", false);
+        return PreferenceManager.getDefaultSharedPreferences(ctx).getBoolean(PREF_SHOW_SYSTEM_APPS, false);
     }
 
     public static void setShowSystemApps(Context ctx, boolean show) {
         Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
-        e.putBoolean("SHOW_SYSTEM_APPS", show);
+        e.putBoolean(PREF_SHOW_SYSTEM_APPS, show);
         e.commit();
     }
 
     public static void debugFile(String file) {
         FileStat fileStat = App.getRoot().file.stat(file);
-        Log.d(Utils.TAG, file + " [ `" + fileStat.access() + "` , `" + fileStat.link() + "` , `" + fileStat.mm() + "` , `" + fileStat.name()
-                + "` , `" + fileStat.permission() + "` , `" + fileStat.type() + "` , `" + fileStat.group() + "` , `" + fileStat.size() + "` , `"
-                + fileStat.user() + "` ]");
+        Log.d(Utils.TAG, file + " [ `" + fileStat.access() + "` , `" + fileStat.link() + "` , `" + fileStat.mm() + "` , `" + fileStat.name() + "` , `" + fileStat.permission() + "` , `" + fileStat.type() + "` , `" + fileStat.group() + "` , `" + fileStat.size() + "` , `" + fileStat.user() + "` ]");
     }
 
     public static boolean hasHONEYCOMB() {
@@ -196,12 +177,12 @@ public class Utils {
     }
 
     public static Files findXmlFiles(String packageName) {
-        String path = "data/data/" + packageName;
+        String path = BASE_PATH + packageName;
         ArrayList<FileStat> files = App.getRoot().file.statList(path);
         return findFiles(files, path, new Files());
     }
 
-    public static Files findFiles(ArrayList<FileStat> files, String path, Files list) {
+    private static Files findFiles(ArrayList<FileStat> files, String path, Files list) {
         if (files == null)
             return list;
 
@@ -237,10 +218,8 @@ public class Utils {
     }
 
     public static void saveBackups(Context ctx, String packageName, BackupContainer container) {
-        Log.e("", "Container inside " + container.toString());
         Editor ed = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         String str = container.toJSON().toString();
-        Log.e("", "saveBackups " + str);
         ed.putString(packageName, str);
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
@@ -268,7 +247,7 @@ public class Utils {
     public static String getBackupContent(Backup backup, Context ctx) {
         String eol = System.getProperty("line.separator");
         BufferedReader input = null;
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         try {
             input = new BufferedReader(new InputStreamReader(ctx.openFileInput(String.valueOf(backup.getTime()))));
             String line;
@@ -293,19 +272,6 @@ public class Utils {
         return buffer.toString();
     }
 
-    public static void hideSoftKeyboard(Context context, View view) {
-        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-
-    public static SpannableString applyCustomTypeFace(CharSequence src, Context ctx) {
-        SpannableString span = new SpannableString(src);
-
-        span.setSpan(new CustomTypefaceSpan("", RobotoTypefaceManager.obtainTypeface(ctx, RobotoTypefaceManager.ROBOTOSLAB_REGULAR)), 0,
-                span.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return span;
-    }
-
     public static Drawable findDrawable(String packageName, Context ctx) {
         if (TextUtils.isEmpty(packageName)) {
             return null;
@@ -319,7 +285,11 @@ public class Utils {
             }
         } else {
             try {
-                ApplicationInfo applicationInfo = ctx.getPackageManager().getApplicationInfo(packageName, 0);
+                PackageManager pm = ctx.getPackageManager();
+                if (pm == null) {
+                    return null;
+                }
+                ApplicationInfo applicationInfo = pm.getApplicationInfo(packageName, 0);
                 if (applicationInfo != null) {
                     AppEntry appEntry = new AppEntry(applicationInfo, ctx);
                     return appEntry.getIcon(ctx);
@@ -328,20 +298,6 @@ public class Utils {
             }
         }
         return null;
-    }
-
-    public static SpannableStringBuilder createSpannable(Pattern pattern, int color, String s) {
-        final SpannableStringBuilder spannable = new SpannableStringBuilder(s);
-        if (pattern == null)
-            return spannable;
-        final Matcher matcher = pattern.matcher(s);
-        while (matcher.find()) {
-            final ForegroundColorSpan span = new ForegroundColorSpan(color);
-            final StyleSpan span2 = new StyleSpan(android.graphics.Typeface.BOLD);
-            spannable.setSpan(span2, matcher.start(), matcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-            spannable.setSpan(span, matcher.start(), matcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        }
-        return spannable;
     }
 
 }

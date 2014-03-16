@@ -37,17 +37,17 @@ import java.util.regex.Pattern;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.PreferenceType;
-import fr.simon.marquis.preferencesmanager.util.Utils;
+import fr.simon.marquis.preferencesmanager.util.Ui;
 
 public class PreferenceAdapter extends BaseAdapter implements Filterable {
 
-    private LayoutInflater layoutInflater;
-    private PreferencesFragment mPreferencesFragment;
-    private Pattern pattern;
-    private int color;
+    private final LayoutInflater layoutInflater;
+    private final PreferencesFragment mPreferencesFragment;
+    private final int color;
     private final Object mLock = new Object();
+    private final Map<Entry<String, Object>, Boolean> mCheckedPositions;
+    private Pattern pattern;
     private List<Entry<String, Object>> mListToDisplay;
-    private Map<Entry<String, Object>, Boolean> mCheckedPositions;
 
     public PreferenceAdapter(Context ctx, PreferencesFragment f) {
         this.layoutInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -77,6 +77,7 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
         ViewHolder holder;
         if (convertView == null) {
             convertView = layoutInflater.inflate(R.layout.row_preference, parent, false);
+            assert convertView != null;
             holder = new ViewHolder();
             holder.background = convertView;
             holder.name = (TextView) convertView.findViewById(R.id.item_name);
@@ -90,10 +91,9 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
         Entry<String, Object> item = mListToDisplay.get(position);
         Boolean checked = mCheckedPositions.get(item);
         holder.background.setBackgroundResource(PreferenceType.getDialogLayout(item.getValue()));
-        holder.name.setText(Utils.createSpannable(pattern, color, item.getKey()));
-        holder.value.setText((item.getValue() == null ? null : Utils.createSpannable(pattern, color, item.getValue().toString())));
-        holder.selector.setBackgroundResource((checked != null && checked.booleanValue()) ? R.drawable.abc_list_pressed_holo_light
-                : R.drawable.abc_list_selector_holo_light);
+        holder.name.setText(Ui.createSpannable(pattern, color, item.getKey()));
+        holder.value.setText((item.getValue() == null ? null : Ui.createSpannable(pattern, color, item.getValue().toString())));
+        holder.selector.setBackgroundResource((checked != null && checked) ? R.drawable.abc_list_pressed_holo_light : R.drawable.abc_list_selector_holo_light);
 
         return convertView;
     }
@@ -106,10 +106,7 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
     }
 
     public void setFilter(String filter) {
-        if (TextUtils.isEmpty(filter))
-            pattern = null;
-        else
-            pattern = Pattern.compile(filter, Pattern.CASE_INSENSITIVE);
+        pattern = TextUtils.isEmpty(filter) ? null : Pattern.compile(filter, Pattern.CASE_INSENSITIVE);
     }
 
     @Override
@@ -129,9 +126,7 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
                     synchronized (mLock) {
                         for (Entry<String, Object> data : mPreferencesFragment.preferenceFile.getList()) {
                             Pattern p = Pattern.compile(prefixString, Pattern.CASE_INSENSITIVE);
-                            if (p.matcher(data.getKey().toLowerCase(Locale.getDefault()).trim()).find()
-                                    || (data.getValue() != null && p.matcher(data.getValue().toString().toLowerCase(Locale.getDefault()).trim())
-                                    .find())) {
+                            if (p.matcher(data.getKey().toLowerCase(Locale.getDefault()).trim()).find() || (data.getValue() != null && p.matcher(data.getValue().toString().toLowerCase(Locale.getDefault()).trim()).find())) {
                                 filterResultsData.add(data);
                             }
                         }
@@ -164,10 +159,10 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
         super.notifyDataSetChanged();
     }
 
-    public void deleteSelection(Context ctx) {
+    public void deleteSelection() {
         ArrayList<Entry<String, Object>> temp = new ArrayList<Entry<String, Object>>();
         for (Entry<String, Object> item : mListToDisplay) {
-            if (!mCheckedPositions.containsKey(item) || !mCheckedPositions.get(item).booleanValue()) {
+            if (!mCheckedPositions.containsKey(item) || !mCheckedPositions.get(item)) {
                 mCheckedPositions.remove(item);
                 temp.add(item);
             }

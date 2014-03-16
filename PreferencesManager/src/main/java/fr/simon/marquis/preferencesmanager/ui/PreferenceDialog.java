@@ -15,6 +15,7 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
+import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
@@ -52,7 +53,7 @@ public class PreferenceDialog extends DialogFragment {
     private String mEditKey;
     private Object mEditValue;
 
-    private Button mBtnOK, mBtnKO, mBtnSUPPR, mBtnAddEntrySet;
+    private Button mBtnOK, mBtnKO, mBtnSuppr, mBtnAddEntrySet;
 
     @SuppressWarnings("unchecked")
     public static PreferenceDialog newInstance(PreferenceType type, boolean editMode, String editKey, Object editValue) {
@@ -98,6 +99,10 @@ public class PreferenceDialog extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle b = getArguments();
+        if (b == null) {
+            return;
+        }
+
         mPreferenceType = PreferenceType.valueOf(b.getString(KEY_TYPE));
         mEditMode = b.getBoolean(KEY_EDIT_MODE);
         mEditKey = b.getString(KEY_EDIT_KEY);
@@ -119,7 +124,6 @@ public class PreferenceDialog extends DialogFragment {
                 mEditValue = b.getString(KEY_EDIT_VALUE);
                 break;
             case STRINGSET:
-                // Convert to Set<String>
                 mEditValue = b.getStringArray(KEY_EDIT_VALUE);
                 break;
             case UNSUPPORTED:
@@ -132,7 +136,10 @@ public class PreferenceDialog extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // remove the background of the regular Dialog
-        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+        }
 
         View view = buildView();
 
@@ -161,8 +168,8 @@ public class PreferenceDialog extends DialogFragment {
                     break;
                 case STRINGSET:
                     String[] array = (String[]) mEditValue;
-                    for (int i = 0; i < array.length; i++) {
-                        addStringSetEntry(false, array[i]);
+                    for (String anArray : array) {
+                        addStringSetEntry(false, anArray);
                     }
                     break;
                 case UNSUPPORTED:
@@ -185,26 +192,42 @@ public class PreferenceDialog extends DialogFragment {
     }
 
     private void addStringSetEntry(boolean changeFocus, String value) {
+        if (getActivity() == null) {
+            return;
+        }
+
         LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LinearLayout layout = ((LinearLayout) mValue);
         final LinearLayout item = (LinearLayout) inflater.inflate(R.layout.row_stringset, null);
+        assert item != null;
         layout.addView(item);
         EditText editText = (EditText) item.getChildAt(0);
-        item.getChildAt(1).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (((LinearLayout) mValue).getChildCount() > 1) {
-                    ((LinearLayout) mValue).removeView(item);
-                } else {
-                    ((EditText) ((ViewGroup) ((LinearLayout) mValue).getChildAt(0)).getChildAt(0)).setText(null);
+        View child = item.getChildAt(1);
+        if (child != null) {
+            child.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (((LinearLayout) mValue).getChildCount() > 1) {
+                        ((LinearLayout) mValue).removeView(item);
+                    } else {
+                        View childRoot = ((ViewGroup) mValue).getChildAt(0);
+                        if (childRoot != null) {
+                            EditText childEditText = (EditText) ((ViewGroup) childRoot).getChildAt(0);
+                            if (childEditText != null) {
+                                childEditText.setText(null);
+                            }
+                        }
+                    }
+                    validate();
                 }
-                validate();
-            }
-        });
-        if (changeFocus) {
-            editText.requestFocus();
+            });
         }
-        editText.setText(value);
+        if (editText != null) {
+            if (changeFocus) {
+                editText.requestFocus();
+            }
+            editText.setText(value);
+        }
     }
 
     private void createValidator() {
@@ -246,8 +269,12 @@ public class PreferenceDialog extends DialogFragment {
     }
 
     private View buildView() {
+        if (getActivity() == null) {
+            return null;
+        }
         int layout = mPreferenceType.getDialogLayout(mEditMode);
         View view = getActivity().getLayoutInflater().inflate(layout, null);
+        assert view != null;
         view.setBackgroundResource(mPreferenceType.getCardBackground());
 
         mKey = (EditText) view.findViewById(R.id.key);
@@ -270,11 +297,11 @@ public class PreferenceDialog extends DialogFragment {
             }
         });
         if (mEditMode) {
-            mBtnSUPPR = (Button) view.findViewById(R.id.btnSUPPR);
-            mBtnSUPPR.setOnClickListener(new OnClickListener() {
+            mBtnSuppr = (Button) view.findViewById(R.id.btnSUPPR);
+            mBtnSuppr.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    performSUPPR();
+                    performSuppr();
                     dismiss();
                 }
             });
@@ -291,7 +318,7 @@ public class PreferenceDialog extends DialogFragment {
         return view;
     }
 
-    private void performSUPPR() {
+    private void performSuppr() {
         PreferencesFragment fragment = (PreferencesFragment) getTargetFragment();
         if (fragment == null) {
             return;
@@ -306,7 +333,11 @@ public class PreferenceDialog extends DialogFragment {
         }
 
         if (validate()) {
-            String key = mKey.getText().toString();
+            Editable editable = mKey.getText();
+            String key = "";
+            if (editable != null) {
+                key = editable.toString();
+            }
             Object value = null;
 
             switch (mPreferenceType) {
@@ -341,7 +372,11 @@ public class PreferenceDialog extends DialogFragment {
     }
 
     private boolean validate() {
-        String key = mKey.getText().toString().trim();
+        Editable editable = mKey.getText();
+        String key = "";
+        if (editable != null) {
+            key = editable.toString().trim();
+        }
         boolean keyValid = !TextUtils.isEmpty(key);
         boolean valueValid = false;
         try {

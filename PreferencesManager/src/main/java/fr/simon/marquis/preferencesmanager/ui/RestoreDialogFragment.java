@@ -34,7 +34,6 @@ import java.util.List;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.Backup;
-import fr.simon.marquis.preferencesmanager.model.BackupContainer;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 
 public class RestoreDialogFragment extends DialogFragment implements AdapterView.OnItemClickListener {
@@ -45,10 +44,17 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
 
     private OnRestoreFragmentInteractionListener listener;
     private List<Backup> backups;
-    private ListView listView;
     private String mFullPath;
 
-    public static RestoreDialogFragment newInstance(String fullPath, List<Backup> backups) {
+    public static void show(PreferencesFragment target, FragmentManager fm, String fullPath, List<Backup> backups) {
+        dismiss(fm);
+        RestoreDialogFragment restoreDialogFragment = RestoreDialogFragment.newInstance(fullPath, backups);
+        restoreDialogFragment.setTargetFragment(target, ("Fragment:" + fullPath).hashCode());
+        restoreDialogFragment.show(fm, TAG);
+
+    }
+
+    private static RestoreDialogFragment newInstance(String fullPath, List<Backup> backups) {
         RestoreDialogFragment dialog = new RestoreDialogFragment();
         Bundle args = new Bundle();
         JSONArray array = new JSONArray();
@@ -82,8 +88,12 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (getActivity() == null) {
+            return null;
+        }
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_restore, null);
-        listView = (ListView) view.findViewById(R.id.listView);
+        assert view != null;
+        ListView listView = (ListView) view.findViewById(R.id.listView);
         listView.setAdapter(new RestoreAdapter(getActivity(), backups, listener, mFullPath));
         listView.setOnItemClickListener(this);
         return view;
@@ -94,11 +104,6 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         dialog.setTitle(R.string.pick_restore);
         return dialog;
-    }
-
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
@@ -117,23 +122,14 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
         listener = null;
     }
 
-    public static void show(PreferencesFragment target, String fullPath, List<Backup> backups) {
-        FragmentManager fm = target.getFragmentManager();
-        dismiss(fm);
-        RestoreDialogFragment restoreDialogFragment = RestoreDialogFragment.newInstance(fullPath, backups);
-        restoreDialogFragment.setTargetFragment(target, ("Fragment:" + fullPath).hashCode());
-        restoreDialogFragment.show(fm, TAG);
-
-    }
-
-    public static void dismiss(android.app.FragmentManager fm) {
+    private static void dismiss(android.app.FragmentManager fm) {
         RestoreDialogFragment dialog = find(fm);
         if (dialog != null) {
             dialog.dismiss();
         }
     }
 
-    private static final RestoreDialogFragment find(android.app.FragmentManager fm) {
+    private static RestoreDialogFragment find(android.app.FragmentManager fm) {
         return (RestoreDialogFragment) fm.findFragmentByTag(TAG);
     }
 
@@ -143,7 +139,9 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
         if (listener != null) {
             String data = listener.onRestoreFile(backups.get(position), mFullPath);
             PreferencesFragment fragment = (PreferencesFragment) getTargetFragment();
-            fragment.updateListView(PreferenceFile.fromXml(data), true);
+            if (fragment != null) {
+                fragment.updateListView(PreferenceFile.fromXml(data), true);
+            }
             dismiss(getFragmentManager());
         }
     }

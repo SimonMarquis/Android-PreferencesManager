@@ -58,7 +58,7 @@ public class Backup implements Comparable<Backup> {
 
     public String getDisplayLabel(Context ctx) {
         if (displayLabel == null) {
-            displayLabel = new StringBuilder(upperFirstLetter(DateUtils.formatDateTime(ctx, getTime(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_WEEKDAY))).append(" (").append(lowerFirstLetter(DateUtils.getRelativeTimeSpanString(getTime(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS).toString())).append(")").toString();
+            displayLabel = upperFirstLetter(DateUtils.formatDateTime(ctx, getTime(), DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_WEEKDAY)) + " (" + lowerFirstLetter(DateUtils.getRelativeTimeSpanString(getTime(), new Date().getTime(), DateUtils.SECOND_IN_MILLIS).toString()) + ")";
         }
         return displayLabel;
     }
@@ -89,9 +89,7 @@ public class Backup implements Comparable<Backup> {
 
         Backup backup = (Backup) o;
 
-        if (time != backup.time) return false;
-
-        return true;
+        return time == backup.time;
     }
 
     @Override

@@ -2,68 +2,95 @@ package fr.simon.marquis.preferencesmanager.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.DialogFragment;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
+
 import fr.simon.marquis.preferencesmanager.R;
 
 public class AboutDialog extends DialogFragment {
-	private static final String VERSION_UNAVAILABLE = "N/A";
-	private boolean mExit;
 
-	public static AboutDialog newInstance(boolean exit) {
-		AboutDialog frag = new AboutDialog();
-		Bundle args = new Bundle();
-		args.putBoolean("exit", exit);
-		frag.setArguments(args);
-		return frag;
-	}
+    private static final String TAG = "ABOUT_DIALOG";
+    private static final String ARG_EXIT = "EXIT";
+    private static final String VERSION_UNAVAILABLE = "N/A";
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		Bundle b = getArguments();
-		mExit = b.getBoolean("exit");
-		super.onCreate(savedInstanceState);
-	}
+    private boolean mExit;
 
-	@Override
-	public Dialog onCreateDialog(Bundle savedInstanceState) {
-		PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean("about", true).commit();
-		PackageManager pm = getActivity().getPackageManager();
-		String packageName = getActivity().getPackageName();
-		String versionName;
-		try {
-			PackageInfo info = pm.getPackageInfo(packageName, 0);
-			versionName = info.versionName;
-		} catch (PackageManager.NameNotFoundException e) {
-			versionName = VERSION_UNAVAILABLE;
-		}
+    public static void show(FragmentManager fm, boolean exit) {
+        AboutDialog newFragment = AboutDialog.newInstance(exit);
+        newFragment.show(fm, TAG);
+    }
 
-		LayoutInflater layoutInflater = getActivity().getLayoutInflater();
-		View rootView = layoutInflater.inflate(R.layout.dialog_about, null);
-		TextView nameAndVersionView = (TextView) rootView.findViewById(R.id.app_name_and_version);
-		nameAndVersionView.setText(Html.fromHtml(getString(R.string.app_name_and_version, versionName)));
-		TextView aboutBodyView = (TextView) rootView.findViewById(R.id.about_body);
-		aboutBodyView.setText(Html.fromHtml(getString(R.string.about_body)));
-		aboutBodyView.setMovementMethod(new LinkMovementMethod());
+    public static AboutDialog newInstance(boolean exit) {
+        AboutDialog frag = new AboutDialog();
+        Bundle args = new Bundle();
+        args.putBoolean(ARG_EXIT, exit);
+        frag.setArguments(args);
+        return frag;
+    }
 
-		return new AlertDialog.Builder(getActivity()).setView(rootView)
-				.setPositiveButton(mExit ? R.string.exit : R.string.close, new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int whichButton) {
-						dialog.dismiss();
-						if (mExit) {
-							getActivity().finish();
-						}
-					}
-				}).create();
-	}
+    /**
+     * Check if this Dialog has already been displayed once.
+     *
+     * @param ctx .
+     * @return .
+     */
+    public static boolean alreadyDisplayed(Context ctx) {
+        return PreferenceManager.getDefaultSharedPreferences(ctx).contains(TAG);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        if (getArguments() != null) {
+            mExit = getArguments().getBoolean(ARG_EXIT);
+        }
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        if (getActivity() == null || getActivity().getPackageManager() == null) {
+            return null;
+        }
+        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putBoolean(TAG, true).commit();
+        PackageManager pm = getActivity().getPackageManager();
+        String packageName = getActivity().getPackageName();
+        String versionName;
+        try {
+            PackageInfo info = pm.getPackageInfo(packageName, 0);
+            versionName = info.versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            versionName = VERSION_UNAVAILABLE;
+        }
+
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        View rootView = layoutInflater.inflate(R.layout.dialog_about, null);
+        assert rootView != null;
+        TextView nameAndVersionView = (TextView) rootView.findViewById(R.id.app_name_and_version);
+        nameAndVersionView.setText(Html.fromHtml(getString(R.string.app_name_and_version, versionName)));
+        TextView aboutBodyView = (TextView) rootView.findViewById(R.id.about_body);
+        aboutBodyView.setText(Html.fromHtml(getString(R.string.about_body)));
+        aboutBodyView.setMovementMethod(new LinkMovementMethod());
+
+        return new AlertDialog.Builder(getActivity()).setView(rootView)
+                .setPositiveButton(mExit ? R.string.exit : R.string.close, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        dialog.dismiss();
+                        if (mExit) {
+                            getActivity().finish();
+                        }
+                    }
+                }).create();
+    }
 
 }
