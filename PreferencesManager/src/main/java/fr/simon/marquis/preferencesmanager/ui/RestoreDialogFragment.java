@@ -34,23 +34,28 @@ import java.util.List;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.Backup;
+import fr.simon.marquis.preferencesmanager.model.BackupContainer;
+import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 
 public class RestoreDialogFragment extends DialogFragment implements AdapterView.OnItemClickListener {
 
     private final static String TAG = "RestoreDialogFragment";
+    private static final String ARG_FULL_PATH = "FULL_PATH";
     private static final String ARG_BACKUPS = "BACKUPS";
 
     private OnRestoreFragmentInteractionListener listener;
     private List<Backup> backups;
     private ListView listView;
+    private String mFullPath;
 
-    public static RestoreDialogFragment newInstance(List<Backup> backups) {
+    public static RestoreDialogFragment newInstance(String fullPath, List<Backup> backups) {
         RestoreDialogFragment dialog = new RestoreDialogFragment();
         Bundle args = new Bundle();
         JSONArray array = new JSONArray();
         for (Backup backup : backups) {
             array.put(backup.toJSON());
         }
+        args.putString(ARG_FULL_PATH, fullPath);
         args.putString(ARG_BACKUPS, array.toString());
         dialog.setArguments(args);
         return dialog;
@@ -60,6 +65,7 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            mFullPath = getArguments().getString(ARG_FULL_PATH);
             backups = new ArrayList<Backup>();
             try {
                 JSONArray array = new JSONArray(getArguments().getString(ARG_BACKUPS));
@@ -78,7 +84,7 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_restore, null);
         listView = (ListView) view.findViewById(R.id.listView);
-        listView.setAdapter(new RestoreAdapter(getActivity(), backups, listener));
+        listView.setAdapter(new RestoreAdapter(getActivity(), backups, listener, mFullPath));
         listView.setOnItemClickListener(this);
         return view;
     }
@@ -111,9 +117,13 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
         listener = null;
     }
 
-    public static void show(FragmentManager fm, List<Backup> backups) {
+    public static void show(PreferencesFragment target, String fullPath, List<Backup> backups) {
+        FragmentManager fm = target.getFragmentManager();
         dismiss(fm);
-        RestoreDialogFragment.newInstance(backups).show(fm, TAG);
+        RestoreDialogFragment restoreDialogFragment = RestoreDialogFragment.newInstance(fullPath, backups);
+        restoreDialogFragment.setTargetFragment(target, ("Fragment:" + fullPath).hashCode());
+        restoreDialogFragment.show(fm, TAG);
+
     }
 
     public static void dismiss(android.app.FragmentManager fm) {
@@ -131,14 +141,17 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         if (listener != null) {
-            listener.onRestoreFile(backups.get(position));
+            String data = listener.onRestoreFile(backups.get(position), mFullPath);
+            PreferencesFragment fragment = (PreferencesFragment) getTargetFragment();
+            fragment.updateListView(PreferenceFile.fromXml(data), true);
+            dismiss(getFragmentManager());
         }
     }
 
 
     public interface OnRestoreFragmentInteractionListener {
-        public void onRestoreFile(Backup backup);
+        public String onRestoreFile(Backup backup, String fullPath);
 
-        public void onDeleteBackup(Backup backup);
+        public List<Backup> onDeleteBackup(Backup backup, String fullPath);
     }
 }

@@ -15,6 +15,8 @@
  */
 package fr.simon.marquis.preferencesmanager.model;
 
+import android.util.Log;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -89,6 +91,12 @@ public class BackupContainer {
             List<Backup> list = new ArrayList<Backup>();
             list.add(value);
             backups.put(key, list);
+        }
+    }
+
+    public void remove(String key, Backup value) {
+        if (backups.containsKey(key)) {
+            backups.get(key).remove(value);
         }
     }
 

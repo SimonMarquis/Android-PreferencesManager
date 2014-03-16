@@ -66,6 +66,7 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 	private String mName;
 	private String mPath;
 	private String mPackageName;
+    private String mFullPath;
 
 	private SearchView mSearchView;
 	private String mCurFilter;
@@ -98,6 +99,7 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 		if (getArguments() != null) {
 			mName = getArguments().getString(ARG_NAME);
 			mPath = getArguments().getString(ARG_PATH);
+            mFullPath = mPath + "/" + mName;
 			mPackageName = getArguments().getString(ARG_PACKAGE_NAME);
 		}
 
@@ -127,7 +129,7 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 	}
 
 	private void launchTask() {
-		ParsingTask task = new ParsingTask(mPath + "/" + mName);
+		ParsingTask task = new ParsingTask(mFullPath);
 		if (Utils.hasHONEYCOMB()) {
 			task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		} else {
@@ -171,7 +173,7 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
                 preferenceFile != null && preferenceFile.isValidPreferenceFile() ? R.drawable.ic_action_add : R.drawable.ic_action_add_disabled);
         menu.findItem(R.id.action_sort_alpha).setChecked(PreferencesActivity.preferenceSortType == PreferenceSortType.ALPHANUMERIC);
 		menu.findItem(R.id.action_sort_type).setChecked(PreferencesActivity.preferenceSortType == PreferenceSortType.TYPE_AND_ALPHANUMERIC);
-        menu.findItem(R.id.action_restore_file).setVisible(mListener != null && mListener.canRestoreFile(mPath + "/" + mName));
+        menu.findItem(R.id.action_restore_file).setVisible(mListener != null && mListener.canRestoreFile(mFullPath));
         super.onPrepareOptionsMenu(menu);
 	}
 
@@ -214,7 +216,7 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
                 return true;
             case R.id.action_backup_file:
                 if (mListener != null) {
-                    mListener.onBackupFile(mPath + "/" + mName);
+                    mListener.onBackupFile(mFullPath);
                 }
                 return true;
             case R.id.action_restore_file:
@@ -227,7 +229,7 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 
     private void restoreBackup() {
         if (mListener != null) {
-            RestoreDialogFragment.show(getFragmentManager(), mListener.getBackups(mPath + "/" + mName));
+            RestoreDialogFragment.show(this, mFullPath, mListener.getBackups(mFullPath));
         }
     }
 
@@ -263,8 +265,8 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 
 	private void showPrefDialog(PreferenceType type, boolean editMode, String key, Object obj) {
         PreferenceDialog newFragment = PreferenceDialog.newInstance(type, editMode, key, obj);
-        newFragment.setTargetFragment(this, ("Fragment:" + mPath + "/" + mName).hashCode());
-		newFragment.show(getFragmentManager(), mPath + "/" + mName + "#" + key);
+        newFragment.setTargetFragment(this, ("Fragment:" + mFullPath).hashCode());
+		newFragment.show(getFragmentManager(), mFullPath + "#" + key);
 	}
 
 	public void addPrefKeyValue(String previousKey, String newKey, Object value, boolean editMode) {
@@ -274,7 +276,7 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 		preferenceFile.add(previousKey, newKey, value, editMode);
 
 		((PreferenceAdapter) gridView.getAdapter()).getFilter().filter(mCurFilter);
-		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
+		PreferenceFile.saveFast(preferenceFile, mFullPath, getActivity(), mPackageName);
 	}
 
 	public void deletePref(String key) {
@@ -283,7 +285,7 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 		}
 		preferenceFile.removeValue(key);
 		((PreferenceAdapter) gridView.getAdapter()).getFilter().filter(mCurFilter);
-		PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
+		PreferenceFile.saveFast(preferenceFile, mFullPath, getActivity(), mPackageName);
 	}
 
 	@Override
@@ -344,7 +346,7 @@ public class PreferencesFragment extends Fragment implements OnQueryTextListener
 				switch (item.getItemId()) {
 				case R.id.action_delete:
 					((PreferenceAdapter) gridView.getAdapter()).deleteSelection(getActivity());
-					PreferenceFile.saveFast(preferenceFile, mPath + "/" + mName, getActivity(), mPackageName);
+					PreferenceFile.saveFast(preferenceFile, mFullPath, getActivity(), mPackageName);
 					((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
 					mode.finish();
 					return true;

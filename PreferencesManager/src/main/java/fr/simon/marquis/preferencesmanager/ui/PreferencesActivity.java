@@ -190,10 +190,12 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         backupContainer.put(fullPath, backup);
 
         Data data = App.getRoot().file.read(fullPath);
-        Utils.backupFile(backup, data, this);
-
-        Utils.saveBackups(this, packageName, backupContainer);
-        Toast.makeText(this, R.string.toast_backup, Toast.LENGTH_SHORT).show();
+        if(Utils.backupFile(backup, data, this)) {
+            Utils.saveBackups(this, packageName, backupContainer);
+            Toast.makeText(this, R.string.toast_backup_success, Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, R.string.toast_backup_fail, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
@@ -207,15 +209,21 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
     }
 
     @Override
-    public void onRestoreFile(Backup backup) {
-        // TODO
+    public String onRestoreFile(Backup backup, String fullPath) {
+        String data = Utils.getBackupContent(backup, this);
+        App.getRoot().file.write(fullPath, data.replace("'", "'\"'\"'"), false);
+        App.getRoot().processes.kill(packageName);
         Toast.makeText(this, "onRestoreFile", Toast.LENGTH_SHORT).show();
+        return data;
     }
 
     @Override
-    public void onDeleteBackup(Backup backup) {
-        // TODO
+    public List<Backup> onDeleteBackup(Backup backup, String fullPath) {
+        backupContainer.remove(fullPath, backup);
+        deleteFile(String.valueOf(backup.getTime()));
+        Utils.saveBackups(this, packageName, backupContainer);
         Toast.makeText(this, "onDeleteBackup", Toast.LENGTH_SHORT).show();
+        return backupContainer.get(fullPath);
     }
 
     private void updateFindFiles(Files f) {

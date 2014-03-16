@@ -81,4 +81,21 @@ public class Backup implements Comparable<Backup> {
     public int compareTo(Backup another) {
         return (int) (another.getTime() - getTime());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || ((Object) this).getClass() != o.getClass()) return false;
+
+        Backup backup = (Backup) o;
+
+        if (time != backup.time) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (time ^ (time >>> 32));
+    }
 }

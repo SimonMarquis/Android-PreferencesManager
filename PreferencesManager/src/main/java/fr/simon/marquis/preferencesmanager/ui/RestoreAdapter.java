@@ -34,15 +34,17 @@ public class RestoreAdapter extends BaseAdapter {
 
     private Context ctx;
     private List<Backup> backups;
+    private String fullPath;
     private DateFormat format;
     private RestoreDialogFragment.OnRestoreFragmentInteractionListener listener;
 
-    public RestoreAdapter(Context ctx, List<Backup> backups, RestoreDialogFragment.OnRestoreFragmentInteractionListener listener) {
+    public RestoreAdapter(Context ctx, List<Backup> backups, RestoreDialogFragment.OnRestoreFragmentInteractionListener listener, String fullPath) {
         Collections.sort(backups);
         this.ctx = ctx;
         this.backups = backups;
         this.listener = listener;
-        format = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
+        this.fullPath = fullPath;
+        this.format = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
     }
 
     @Override
@@ -85,7 +87,8 @@ public class RestoreAdapter extends BaseAdapter {
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                listener.onDeleteBackup(backup);
+                backups = listener.onDeleteBackup(backup, fullPath);
+                notifyDataSetChanged();
             }
         });
 
