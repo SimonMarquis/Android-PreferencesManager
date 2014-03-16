@@ -94,7 +94,7 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_restore, null);
         assert view != null;
         ListView listView = (ListView) view.findViewById(R.id.listView);
-        listView.setAdapter(new RestoreAdapter(getActivity(), backups, listener, mFullPath));
+        listView.setAdapter(new RestoreAdapter(getActivity(), this, backups, listener, mFullPath));
         listView.setOnItemClickListener(this);
         return view;
     }
@@ -143,6 +143,14 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
                 fragment.updateListView(PreferenceFile.fromXml(data), true);
             }
             dismiss(getFragmentManager());
+        }
+    }
+
+    public void noMoreBackup() {
+        dismiss(getFragmentManager());
+        PreferencesFragment fragment = (PreferencesFragment) getTargetFragment();
+        if (fragment != null) {
+            fragment.getActivity().invalidateOptionsMenu();
         }
     }
 

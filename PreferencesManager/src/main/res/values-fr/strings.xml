@@ -116,4 +116,5 @@
     <string name="action_delete">Supprimer</string>
 
     <string name="pick_restore">Sélectionnez la version à restaurer</string>
+    <string name="file_restored">Fichier restauré</string>
 </resources>

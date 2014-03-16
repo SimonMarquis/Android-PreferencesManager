@@ -94,7 +94,11 @@ public class BackupContainer {
 
     public void remove(String key, Backup value) {
         if (backups.containsKey(key)) {
-            backups.get(key).remove(value);
+            List<Backup> list = backups.get(key);
+            list.remove(value);
+            if(list.isEmpty()){
+                backups.remove(key);
+            }
         }
     }
 

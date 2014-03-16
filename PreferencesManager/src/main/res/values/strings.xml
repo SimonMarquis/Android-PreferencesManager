@@ -120,4 +120,5 @@
     <string name="action_delete">Delete</string>
 
     <string name="pick_restore">Select the version to restore</string>
+    <string name="file_restored">Backup restored</string>
 </resources>

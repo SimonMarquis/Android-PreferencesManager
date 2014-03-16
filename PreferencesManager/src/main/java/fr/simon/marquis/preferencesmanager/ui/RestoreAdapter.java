@@ -15,6 +15,7 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,13 +35,15 @@ public class RestoreAdapter extends BaseAdapter {
     private final Context ctx;
     private final String fullPath;
     private final RestoreDialogFragment.OnRestoreFragmentInteractionListener listener;
+    private final RestoreDialogFragment dialog;
     private List<Backup> backups;
 
-    public RestoreAdapter(Context ctx, List<Backup> backups, RestoreDialogFragment.OnRestoreFragmentInteractionListener listener, String fullPath) {
+    public RestoreAdapter(Context ctx, RestoreDialogFragment dialog, List<Backup> backups, RestoreDialogFragment.OnRestoreFragmentInteractionListener listener, String fullPath) {
         Collections.sort(backups);
         this.ctx = ctx;
         this.backups = backups;
         this.listener = listener;
+        this.dialog = dialog;
         this.fullPath = fullPath;
     }
 
@@ -79,7 +82,11 @@ public class RestoreAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 backups = listener.onDeleteBackup(backup, fullPath);
-                notifyDataSetChanged();
+                if(backups == null || backups.isEmpty()){
+                    dialog.noMoreBackup();
+                } else {
+                    notifyDataSetChanged();
+                }
             }
         });
 

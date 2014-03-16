@@ -218,7 +218,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         String data = Utils.getBackupContent(backup, this);
         App.getRoot().file.write(fullPath, data.replace("'", "'\"'\"'"), false);
         App.getRoot().processes.kill(packageName);
-        Toast.makeText(this, "onRestoreFile", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.file_restored, Toast.LENGTH_SHORT).show();
         return data;
     }
 
@@ -227,7 +227,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         backupContainer.remove(fullPath, backup);
         deleteFile(String.valueOf(backup.getTime()));
         Utils.saveBackups(this, packageName, backupContainer);
-        Toast.makeText(this, "onDeleteBackup", Toast.LENGTH_SHORT).show();
+        invalidateOptionsMenu();
         return backupContainer.get(fullPath);
     }
 
