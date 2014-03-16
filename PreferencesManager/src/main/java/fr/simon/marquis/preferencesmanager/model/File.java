@@ -20,28 +20,31 @@ import org.json.JSONObject;
 
 public class File {
 
-	private String name;
-	private String path;
+    private static final String KEY_NAME = "NAME";
+    private static final String KEY_PATH = "PATH";
 
-	public File(String name, String path) {
-		super();
+    private final String name;
+    private final String path;
+
+    public File(String name, String path) {
+        super();
 		this.name = name;
 		this.path = path;
 	}
 
 	public static File fromJSON(JSONObject jsonObject) {
-		return new File(jsonObject.optString("NAME"), jsonObject.optString("PATH"));
-	}
+        return new File(jsonObject.optString(KEY_NAME), jsonObject.optString(KEY_PATH));
+    }
 
-	public JSONObject toJSON() {
+    public JSONObject toJSON() {
 		try {
 			JSONObject obj = new JSONObject();
-			obj.put("NAME", name);
-			obj.put("PATH", path);
-			return obj;
-		} catch (JSONException e) {
-		}
-		return null;
+            obj.put(KEY_NAME, name);
+            obj.put(KEY_PATH, path);
+            return obj;
+        } catch (JSONException ignored) {
+        }
+        return null;
 	}
 
 	public String getName() {

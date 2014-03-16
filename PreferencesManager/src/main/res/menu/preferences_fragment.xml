@@ -18,6 +18,7 @@
 
     <item
         android:id="@+id/menu_search"
+        android:orderInCategory="1"
         android:icon="@drawable/ic_action_search"
         android:title="@string/action_search_preference"
         app:actionViewClass="android.support.v7.widget.SearchView"
@@ -25,7 +26,7 @@
     <item
         android:id="@+id/action_sort"
         android:icon="@drawable/ic_action_sort_1"
-        android:orderInCategory="1"
+        android:orderInCategory="3"
         android:title="@string/action_sort"
         app:showAsAction="ifRoom">
         <menu>
@@ -44,15 +45,9 @@
         </menu>
     </item>
     <item
-        android:id="@+id/action_edit_file"
-        android:icon="@drawable/ic_action_edit"
-        android:orderInCategory="2"
-        android:title="@string/action_direct_edit"
-        app:showAsAction="ifRoom"/>
-    <item
         android:id="@+id/action_add"
         android:icon="@drawable/ic_action_add"
-        android:orderInCategory="3"
+        android:orderInCategory="4"
         android:title="@string/action_add"
         app:showAsAction="always">
         <menu>
@@ -78,5 +73,20 @@
             </group>
         </menu>
     </item>
-
+    <item
+        android:id="@+id/action_edit_file"
+        android:icon="@drawable/ic_action_edit"
+        android:orderInCategory="5"
+        android:title="@string/action_direct_edit"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_backup_file"
+        android:orderInCategory="7"
+        android:title="@string/action_backup_file"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_restore_file"
+        android:orderInCategory="8"
+        android:title="@string/action_restore_file"
+        app:showAsAction="never" />
 </menu>
