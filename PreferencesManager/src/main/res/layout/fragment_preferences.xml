@@ -15,13 +15,10 @@
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin" >
+    android:paddingRight="@dimen/activity_horizontal_margin">
 
     <GridView
         android:id="@+id/gridView"
@@ -32,10 +29,12 @@
         android:listSelector="@android:color/transparent"
         android:numColumns="@integer/numColumns"
         android:overScrollMode="never"
-        android:requiresFadingEdge="vertical"
         android:scrollbars="none"
-        android:verticalSpacing="10dp" >
-    </GridView>
+        android:verticalSpacing="10dp"
+        android:clipToPadding="false"
+        android:scrollbarStyle="outsideOverlay"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingBottom="@dimen/activity_vertical_margin"></GridView>
 
     <LinearLayout
         android:id="@+id/emptyView"
