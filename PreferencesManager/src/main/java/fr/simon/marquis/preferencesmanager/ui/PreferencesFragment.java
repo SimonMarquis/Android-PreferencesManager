@@ -455,9 +455,9 @@ public class PreferencesFragment extends Fragment {
         @Override
         protected PreferenceFile doInBackground(Void... params) {
             long start = System.currentTimeMillis();
-            Log.e(Utils.TAG, "Start reading " + mFile);
+            Log.d(Utils.TAG, "Start reading " + mFile);
             Data data = App.getRoot().file.read(mFile);
-            Log.e(Utils.TAG, "End reading " + mFile + " --> " + (System.currentTimeMillis() - start) + " ms");
+            Log.d(Utils.TAG, "End reading " + mFile + " --> " + (System.currentTimeMillis() - start) + " ms");
             return PreferenceFile.fromXml(data == null ? null : data.toString());
         }
 

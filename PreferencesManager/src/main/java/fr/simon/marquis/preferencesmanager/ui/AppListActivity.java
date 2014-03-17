@@ -226,7 +226,7 @@ public class AppListActivity extends ActionBarActivity {
                 if (!startTask()) {
                     Utils.setShowSystemApps(this, !Utils.isShowSystemApps(this));
                 }
-                supportInvalidateOptionsMenu();
+                invalidateOptionsMenu();
                 break;
         }
         return super.onOptionsItemSelected(item);

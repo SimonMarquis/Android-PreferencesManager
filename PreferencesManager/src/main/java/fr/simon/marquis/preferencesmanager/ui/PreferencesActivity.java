@@ -37,7 +37,6 @@ import android.widget.Toast;
 import com.spazedog.lib.rootfw.container.Data;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import java.util.Date;
 import java.util.List;
@@ -106,7 +105,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         getActionBar().setSubtitle(Ui.applyCustomTypeFace(packageName, this));
         Drawable drawable = Utils.findDrawable(packageName, this);
         if (drawable != null) {
-            getSupportActionBar().setIcon(drawable);
+            getActionBar().setIcon(drawable);
         }
 
         if (savedInstanceState == null) {
@@ -115,7 +114,8 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         } else {
             try {
                 updateFindFiles(Files.fromJSON(new JSONArray(savedInstanceState.getString(KEY_FILES))));
-            } catch (JSONException e) {
+                updateFindBackups(Utils.getBackups(getApplicationContext(), packageName));
+            } catch (Exception e) {
                 findFilesAndBackupsTask = new FindFilesAndBackupsTask(packageName);
                 findFilesAndBackupsTask.execute();
             }
@@ -161,7 +161,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
                 return true;
             case R.id.action_fav:
                 Utils.setFavorite(packageName, !Utils.isFavorite(packageName, this), this);
-                supportInvalidateOptionsMenu();
+                invalidateOptionsMenu();
                 break;
             case R.id.action_shortcut:
                 createShortcut();

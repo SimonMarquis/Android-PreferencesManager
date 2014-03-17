@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,7 +13,7 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/PreferenceDialogContainer" >
+    style="@style/PreferenceDialogContainer">
 
     <fr.simon.marquis.preferencesmanager.roboto.RobotoTextView
         android:id="@+id/title"
@@ -24,7 +23,7 @@
         android:id="@+id/key"
         style="@style/EditTextKey" />
 
-    <ToggleButton
+    <Switch
         android:id="@+id/value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

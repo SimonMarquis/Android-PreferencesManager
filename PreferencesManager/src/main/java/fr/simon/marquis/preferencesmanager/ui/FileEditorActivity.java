@@ -123,7 +123,7 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
         mXmlColorTheme = XmlColorTheme.createTheme(getResources(), mColorTheme);
 
         updateTitle();
-        supportInvalidateOptionsMenu();
+        invalidateOptionsMenu();
 
         highlightXMLText(mEditText.getText());
 
@@ -237,7 +237,7 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
     private void setXmlFontSize(XmlFontSize size) {
         if (mXmlFontSize != size) {
             mXmlFontSize = size;
-            supportInvalidateOptionsMenu();
+            invalidateOptionsMenu();
             mEditText.setTextSize(TypedValue.COMPLEX_UNIT_SP, mXmlFontSize.getSize());
 
             PreferenceManager.getDefaultSharedPreferences(this).edit().putInt(KEY_FONT_SIZE, mXmlFontSize.getSize()).commit();
@@ -248,7 +248,7 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
         if (mColorTheme != theme) {
             mColorTheme = theme;
             mXmlColorTheme = XmlColorTheme.createTheme(getResources(), mColorTheme);
-            supportInvalidateOptionsMenu();
+            invalidateOptionsMenu();
             highlightXMLText(mEditText.getText());
 
             PreferenceManager.getDefaultSharedPreferences(this).edit().putString(KEY_COLOR_THEME, mColorTheme.name()).commit();
@@ -265,7 +265,7 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
             Ui.hideSoftKeyboard(this, mEditText);
             mHasContentChanged = false;
             updateTitle();
-            supportInvalidateOptionsMenu();
+            invalidateOptionsMenu();
             return true;
         } else {
             Toast.makeText(this, R.string.save_fail, Toast.LENGTH_SHORT).show();
@@ -325,7 +325,7 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
         if (!mHasContentChanged) {
             mHasContentChanged = true;
             updateTitle();
-            supportInvalidateOptionsMenu();
+            invalidateOptionsMenu();
         }
         highlightXMLText(mEditText.getText());
     }
