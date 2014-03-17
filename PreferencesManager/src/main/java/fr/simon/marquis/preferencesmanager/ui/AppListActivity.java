@@ -218,7 +218,7 @@ public class AppListActivity extends ActionBarActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.show_popop:
+            case R.id.show_popup:
                 AboutDialog.show(getFragmentManager(), false);
                 break;
             case R.id.show_system_apps:
