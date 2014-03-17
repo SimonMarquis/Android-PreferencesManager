@@ -316,6 +316,7 @@ public class PreferencesFragment extends Fragment {
         }
         preferenceFile.add(previousKey, newKey, value, editMode);
         PreferenceFile.saveFast(preferenceFile, mFullPath, mPackageName);
+        ((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
     }
 
     public void deletePref(String key) {
@@ -324,6 +325,7 @@ public class PreferencesFragment extends Fragment {
         }
         preferenceFile.removeValue(key);
         PreferenceFile.saveFast(preferenceFile, mFullPath, mPackageName);
+        ((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
     }
 
     @Override
