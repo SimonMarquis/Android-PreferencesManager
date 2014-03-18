@@ -28,7 +28,6 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.Spanned;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
@@ -105,6 +104,15 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
         }
 
         mEditText = (EditText) findViewById(R.id.editText);
+        //Hack to prevent EditText to request focus when the Activity is created
+        mEditText.post(new Runnable() {
+            @Override
+            public void run() {
+                mEditText.setFocusable(true);
+                mEditText.setFocusableInTouchMode(true);
+            }
+        });
+
 
         if (arg0 == null) {
             Data data = App.getRoot().file.read(mFullPath);
@@ -171,11 +179,27 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
         menu.findItem(R.id.action_theme_notepad).setChecked(mColorTheme == ColorThemeEnum.NOTEPAD);
         menu.findItem(R.id.action_theme_netbeans).setChecked(mColorTheme == ColorThemeEnum.NETBEANS);
 
-        menu.findItem(R.id.action_size_extra_small).setChecked(mXmlFontSize == XmlFontSize.EXTRA_SMALL);
-        menu.findItem(R.id.action_size_small).setChecked(mXmlFontSize == XmlFontSize.SMALL);
-        menu.findItem(R.id.action_size_medium).setChecked(mXmlFontSize == XmlFontSize.MEDIUM);
-        menu.findItem(R.id.action_size_large).setChecked(mXmlFontSize == XmlFontSize.LARGE);
-        menu.findItem(R.id.action_size_extra_large).setChecked(mXmlFontSize == XmlFontSize.EXTRA_LARGE);
+        menu.findItem(R.id.action_size_extra_small).setChecked(false);
+        menu.findItem(R.id.action_size_small).setChecked(false);
+        menu.findItem(R.id.action_size_medium).setChecked(false);
+        menu.findItem(R.id.action_size_large).setChecked(false);
+        menu.findItem(R.id.action_size_extra_large).setChecked(false);
+
+        if (mXmlFontSize == XmlFontSize.EXTRA_SMALL) {
+            menu.findItem(R.id.action_size_extra_small).setChecked(true);
+        }
+        if (mXmlFontSize == XmlFontSize.SMALL) {
+            menu.findItem(R.id.action_size_small).setChecked(true);
+        }
+        if (mXmlFontSize == XmlFontSize.MEDIUM) {
+            menu.findItem(R.id.action_size_medium).setChecked(true);
+        }
+        if (mXmlFontSize == XmlFontSize.LARGE) {
+            menu.findItem(R.id.action_size_large).setChecked(true);
+        }
+        if (mXmlFontSize == XmlFontSize.EXTRA_LARGE) {
+            menu.findItem(R.id.action_size_extra_large).setChecked(true);
+        }
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -257,7 +281,7 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
 
     private boolean save() {
         Editable editable = mEditText.getText();
-        String preferences = TextUtils.isEmpty(editable) ? "" : editable.toString();
+        String preferences = editable == null ? "" : editable.toString();
         if (PreferenceFile.saveFast(preferences, mFullPath, mPackageName)) {
             mNeedUpdateOnActivityFinish = true;
             setResult(RESULT_OK);
