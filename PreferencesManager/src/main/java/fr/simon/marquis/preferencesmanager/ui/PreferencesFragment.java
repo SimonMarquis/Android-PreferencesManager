@@ -91,7 +91,7 @@ public class PreferencesFragment extends Fragment {
         return fragment;
     }
 
-    private PreferencesFragment() {
+    public PreferencesFragment() {
         // Required empty public constructor
     }
 
