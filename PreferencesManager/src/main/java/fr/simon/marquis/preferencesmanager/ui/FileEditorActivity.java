@@ -173,11 +173,27 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_save).setEnabled(mHasContentChanged).setIcon(mHasContentChanged ? R.drawable.ic_action_save : R.drawable.ic_action_save_disabled);
 
-        menu.findItem(R.id.action_theme_eclipse).setChecked(mColorTheme == ColorThemeEnum.ECLIPSE);
-        menu.findItem(R.id.action_theme_google).setChecked(mColorTheme == ColorThemeEnum.GOOGLE);
-        menu.findItem(R.id.action_theme_roboticket).setChecked(mColorTheme == ColorThemeEnum.ROBOTICKET);
-        menu.findItem(R.id.action_theme_notepad).setChecked(mColorTheme == ColorThemeEnum.NOTEPAD);
-        menu.findItem(R.id.action_theme_netbeans).setChecked(mColorTheme == ColorThemeEnum.NETBEANS);
+        menu.findItem(R.id.action_theme_eclipse).setChecked(false);
+        menu.findItem(R.id.action_theme_google).setChecked(false);
+        menu.findItem(R.id.action_theme_roboticket).setChecked(false);
+        menu.findItem(R.id.action_theme_notepad).setChecked(false);
+        menu.findItem(R.id.action_theme_netbeans).setChecked(false);
+
+        if(mColorTheme == ColorThemeEnum.ECLIPSE) {
+            menu.findItem(R.id.action_theme_eclipse).setChecked(true);
+        }
+        if(mColorTheme == ColorThemeEnum.GOOGLE) {
+            menu.findItem(R.id.action_theme_google).setChecked(true);
+        }
+        if(mColorTheme == ColorThemeEnum.ROBOTICKET) {
+            menu.findItem(R.id.action_theme_roboticket).setChecked(true);
+        }
+        if(mColorTheme == ColorThemeEnum.NOTEPAD) {
+            menu.findItem(R.id.action_theme_notepad).setChecked(true);
+        }
+        if(mColorTheme == ColorThemeEnum.NETBEANS) {
+            menu.findItem(R.id.action_theme_netbeans).setChecked(true);
+        }
 
         menu.findItem(R.id.action_size_extra_small).setChecked(false);
         menu.findItem(R.id.action_size_small).setChecked(false);

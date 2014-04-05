@@ -119,6 +119,6 @@
     <string name="action_select_all">Select all</string>
     <string name="action_delete">Delete</string>
 
-    <string name="pick_restore">Select the version to restore</string>
+    <string name="pick_restore">Select a revision</string>
     <string name="file_restored">Backup restored</string>
 </resources>
