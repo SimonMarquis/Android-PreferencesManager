@@ -345,6 +345,9 @@ public class PreferencesFragment extends Fragment {
     }
 
     void updateListView(PreferenceFile p, boolean animate) {
+        if (getActivity() == null || getActivity().isFinishing()) {
+            return;
+        }
         if (p == null) {
             if (getActivity() != null) {
                 getActivity().finish();
