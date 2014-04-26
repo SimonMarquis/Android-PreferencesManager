@@ -34,7 +34,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
-import com.spazedog.lib.rootfw.container.Data;
+import com.stericson.RootTools.RootTools;
 
 import org.json.JSONArray;
 
@@ -194,8 +194,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         Backup backup = new Backup(new Date().getTime());
         backupContainer.put(fullPath, backup);
 
-        Data data = App.getRoot().file.read(fullPath);
-        if (Utils.backupFile(backup, data, this)) {
+        if (Utils.backupFile(backup, Utils.readFile(fullPath), this)) {
             Utils.saveBackups(this, packageName, backupContainer);
             Toast.makeText(this, R.string.toast_backup_success, Toast.LENGTH_SHORT).show();
         } else {
@@ -215,11 +214,11 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
 
     @Override
     public String onRestoreFile(Backup backup, String fullPath) {
-        String data = Utils.getBackupContent(backup, this);
-        App.getRoot().file.write(fullPath, data.replace("'", "'\"'\"'"), false);
-        App.getRoot().processes.kill(packageName);
+        final String separator = System.getProperty("file.separator");
+        RootTools.copyFile(getFilesDir().getAbsolutePath() + separator + backup.getTime(), fullPath, true, true);
+        RootTools.killProcess(packageName);
         Toast.makeText(this, R.string.file_restored, Toast.LENGTH_SHORT).show();
-        return data;
+        return Utils.readFile(fullPath);
     }
 
     @Override

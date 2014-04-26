@@ -19,7 +19,8 @@ dependencies {
     compile 'com.android.support:support-v13:19.0.+'
     compile 'com.android.support:appcompat-v7:19.0.+'
     compile 'se.emilsjolander:stickylistheaders:2.1.5'
-    compile files('libs/rootfw.jar')
+    compile files('libs/RootTools.jar')
+    compile files('libs/RootTools-javadoc.jar')
 }
 
 

@@ -27,8 +27,8 @@ import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.spazedog.lib.rootfw.container.Data;
-import com.spazedog.lib.rootfw.container.FileStat;
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.execution.CommandCapture;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,7 +48,6 @@ import fr.simon.marquis.preferencesmanager.model.Backup;
 import fr.simon.marquis.preferencesmanager.model.BackupContainer;
 import fr.simon.marquis.preferencesmanager.model.File;
 import fr.simon.marquis.preferencesmanager.model.Files;
-import fr.simon.marquis.preferencesmanager.ui.App;
 import fr.simon.marquis.preferencesmanager.ui.RootDialog;
 
 public class Utils {
@@ -57,7 +56,8 @@ public class Utils {
     private static final String FAVORITES_KEY = "FAVORITES_KEY";
     private static final String TAG_ROOT_DIALOG = "RootDialog";
     private static final String PREF_SHOW_SYSTEM_APPS = "SHOW_SYSTEM_APPS";
-    private static final String BASE_PATH = "data/data/";
+    public static final String CMD_FIND_XML_FILES = "find /data/data/%s -type f -name \\*.xml";
+    public static final String CMD_CAT_FILE = "cat %s";
     private static ArrayList<AppEntry> applications;
     private static HashSet<String> favorites;
 
@@ -167,41 +167,57 @@ public class Utils {
         e.commit();
     }
 
+
     public static void debugFile(String file) {
-        FileStat fileStat = App.getRoot().file.stat(file);
-        Log.d(Utils.TAG, file + " [ `" + fileStat.access() + "` , `" + fileStat.link() + "` , `" + fileStat.mm() + "` , `" + fileStat.name() + "` , `" + fileStat.permission() + "` , `" + fileStat.type() + "` , `" + fileStat.group() + "` , `" + fileStat.size() + "` , `" + fileStat.user() + "` ]");
+        //TODO:
     }
 
     public static boolean hasHONEYCOMB() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     }
 
-    public static Files findXmlFiles(String packageName) {
-        String path = BASE_PATH + packageName;
-        ArrayList<FileStat> files = App.getRoot().file.statList(path);
-        return findFiles(files, path, new Files());
-    }
-
-    private static Files findFiles(ArrayList<FileStat> files, String path, Files list) {
-        if (files == null)
-            return list;
-
-        for (FileStat file : files) {
-            if (file == null || TextUtils.isEmpty(file.name()))
-                continue;
-            if (".".equals(file.name()) || "..".equals(file.name()))
-                continue;
-            if ("d".equals(file.type())) {
-                String p = path + "/" + file.name();
-                findFiles(App.getRoot().file.statList(p), p, list);
-                continue;
+    public static Files findXmlFiles(final String packageName) {
+        final String separator = System.getProperty("file.separator");
+        final Files files = new Files();
+        CommandCapture cmd = new CommandCapture(CMD_FIND_XML_FILES.hashCode(), false, String.format(CMD_FIND_XML_FILES, packageName)) {
+            @Override
+            public void commandOutput(int i, String s) {
+                String filename = s.substring(s.lastIndexOf(separator) + 1);
+                String path = s.replace(filename, "");
+                files.add(new File(filename, path));
             }
-            if ("f".equals(file.type()) && file.name().endsWith(".xml")) {
-                list.add(new File(file.name(), path));
+        };
+
+        synchronized (cmd) {
+            try {
+                RootTools.getShell(true).add(cmd).wait();
+            } catch (Exception e) {
+                Log.e(TAG, "Error in findXmlFiles", e);
             }
         }
 
-        return list;
+        return files;
+    }
+
+    public static String readFile(String file) {
+        final String ln = System.getProperty("line.separator");
+        final StringBuilder sb = new StringBuilder();
+        CommandCapture cmd = new CommandCapture(0, false, String.format(CMD_CAT_FILE, file)) {
+            @Override
+            public void commandOutput(int i, String s) {
+                sb.append(s).append(ln);
+            }
+        };
+
+        synchronized (cmd) {
+            try {
+                RootTools.getShell(true).add(cmd).wait();
+            } catch (Exception e) {
+                Log.e(TAG, "Error in readFile", e);
+            }
+        }
+
+        return sb.toString();
     }
 
     public static BackupContainer getBackups(Context ctx, String packageName) {
@@ -229,15 +245,15 @@ public class Utils {
         }
     }
 
-    public static boolean backupFile(Backup backup, Data data, Context ctx) {
+    public static boolean backupFile(Backup backup, String content, Context ctx) {
         String filename = String.valueOf(backup.getTime());
         FileOutputStream outputStream;
         try {
             outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream.write(data.toString().getBytes());
+            outputStream.write(content.getBytes());
             outputStream.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error in backupFile", e);
             return false;
         }
         return true;

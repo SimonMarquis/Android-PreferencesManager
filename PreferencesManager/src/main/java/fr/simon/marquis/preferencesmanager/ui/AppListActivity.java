@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
@@ -31,6 +30,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.stericson.RootTools.RootTools;
 
 import java.util.ArrayList;
 
@@ -55,6 +56,7 @@ public class AppListActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list);
+        RootTools.debugMode = true;
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setTitle(Ui.applyCustomTypeFace(getString(R.string.app_name), this));
@@ -78,31 +80,11 @@ public class AppListActivity extends ActionBarActivity {
         }
 
         if (savedInstanceState == null) {
-            checkIfIsRoot();
+            if (!RootTools.isRootAvailable() && RootTools.isAccessGiven()) {
+                Utils.displayNoRoot(getFragmentManager());
+            }
         }
 
-    }
-
-    private void checkIfIsRoot() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (!App.getRoot().connected()) {
-                    Utils.displayNoRoot(getFragmentManager());
-                }
-            }
-        });
-    }
-
-    private void checkIfIsRootForce() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (!App.getRootForce().connected()) {
-                    Utils.displayNoRoot(getFragmentManager());
-                }
-            }
-        });
     }
 
     /**
@@ -111,8 +93,8 @@ public class AppListActivity extends ActionBarActivity {
      * @param app to browse
      */
     private void startPreferencesActivity(AppEntry app) {
-        if (!App.getRoot().connected()) {
-            checkIfIsRootForce();
+        if (!RootTools.isRootAvailable() && RootTools.isAccessGiven()) {
+            Utils.displayNoRoot(getFragmentManager());
         } else {
             Intent i = new Intent(AppListActivity.this, PreferencesActivity.class);
             i.putExtra(PreferencesActivity.EXTRA_TITLE, app.getLabel());

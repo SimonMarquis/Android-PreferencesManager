@@ -36,8 +36,6 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.spazedog.lib.rootfw.container.Data;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -115,8 +113,7 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
 
 
         if (arg0 == null) {
-            Data data = App.getRoot().file.read(mFullPath);
-            mEditText.setText(data == null ? null : data.toString());
+            mEditText.setText(Utils.readFile(mFullPath));
             mColorTheme = ColorThemeEnum.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString(KEY_COLOR_THEME, ColorThemeEnum.ECLIPSE.name()));
             setXmlFontSize(XmlFontSize.generateSize(PreferenceManager.getDefaultSharedPreferences(this).getInt(KEY_FONT_SIZE, XmlFontSize.MEDIUM.getSize())));
         } else {

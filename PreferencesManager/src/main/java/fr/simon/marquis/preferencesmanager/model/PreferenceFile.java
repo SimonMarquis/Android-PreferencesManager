@@ -17,6 +17,8 @@ package fr.simon.marquis.preferencesmanager.model;
 
 import android.text.TextUtils;
 
+import com.stericson.RootTools.RootTools;
+
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayInputStream;
@@ -31,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import fr.simon.marquis.preferencesmanager.ui.App;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesActivity;
 import fr.simon.marquis.preferencesmanager.util.XmlUtils;
 
@@ -175,8 +176,12 @@ public class PreferenceFile {
             return false;
         }
         try {
-            App.getRoot().file.write(mFile, preferences.replace("'", "'\"'\"'"), false);
-            App.getRoot().processes.kill(packageName);
+            //TODO
+            // Save to tmp file
+            // Copy file
+            // Delete tmp file
+            //App.getRoot().file.write(mFile, preferences.replace("'", "'\"'\"'"), false);
+            RootTools.killProcess(packageName);
         } catch (Exception e) {
             return false;
         }

@@ -46,8 +46,6 @@ import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.spazedog.lib.rootfw.container.Data;
-
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -461,9 +459,9 @@ public class PreferencesFragment extends Fragment {
         protected PreferenceFile doInBackground(Void... params) {
             long start = System.currentTimeMillis();
             Log.d(Utils.TAG, "Start reading " + mFile);
-            Data data = App.getRoot().file.read(mFile);
+            String content = Utils.readFile(mFile);
             Log.d(Utils.TAG, "End reading " + mFile + " --> " + (System.currentTimeMillis() - start) + " ms");
-            return PreferenceFile.fromXml(data == null ? null : data.toString());
+            return PreferenceFile.fromXml(content);
         }
 
         @Override
