@@ -46,8 +46,6 @@ import java.util.List;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.model.Backup;
 import fr.simon.marquis.preferencesmanager.model.BackupContainer;
-import fr.simon.marquis.preferencesmanager.model.File;
-import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.ui.RootDialog;
 
 public class Utils {
@@ -58,6 +56,9 @@ public class Utils {
     private static final String PREF_SHOW_SYSTEM_APPS = "SHOW_SYSTEM_APPS";
     public static final String CMD_FIND_XML_FILES = "find /data/data/%s -type f -name \\*.xml";
     public static final String CMD_CAT_FILE = "cat %s";
+    public static final String FILE_SEPARATOR = System.getProperty("file.separator");
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
     private static ArrayList<AppEntry> applications;
     private static HashSet<String> favorites;
 
@@ -175,16 +176,15 @@ public class Utils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     }
 
-    public static Files findXmlFiles(final String packageName) {
+    public static ArrayList<String> findXmlFiles(final String packageName) {
         Log.d(TAG, String.format("findXmlFiles(%s)", packageName));
-        final String separator = System.getProperty("file.separator");
-        final Files files = new Files();
+        final ArrayList<String> files = new ArrayList<String>();
         CommandCapture cmd = new CommandCapture(CMD_FIND_XML_FILES.hashCode(), false, String.format(CMD_FIND_XML_FILES, packageName)) {
             @Override
             public void commandOutput(int i, String s) {
-                String filename = s.substring(s.lastIndexOf(separator) + 1);
-                String path = s.replace(filename, "");
-                files.add(new File(filename, path));
+                if (!files.contains(s)) {
+                    files.add(s);
+                }
             }
         };
 
@@ -195,18 +195,17 @@ public class Utils {
                 Log.e(TAG, "Error in findXmlFiles", e);
             }
         }
-        Log.d(TAG, "files: " + files.toJSON().toString());
+        Log.d(TAG, "files: " + Arrays.toString(files.toArray()));
         return files;
     }
 
     public static String readFile(String file) {
         Log.d(TAG, String.format("readFile(%s)", file));
-        final String ln = System.getProperty("line.separator");
         final StringBuilder sb = new StringBuilder();
         CommandCapture cmd = new CommandCapture(0, false, String.format(CMD_CAT_FILE, file)) {
             @Override
             public void commandOutput(int i, String s) {
-                sb.append(s).append(ln);
+                sb.append(s).append(LINE_SEPARATOR);
             }
         };
 
@@ -264,14 +263,13 @@ public class Utils {
 
     public static String getBackupContent(Backup backup, Context ctx) {
         Log.d(TAG, String.format("getBackupContent(%s)", String.valueOf(backup.getTime())));
-        String eol = System.getProperty("line.separator");
         BufferedReader input = null;
         StringBuilder buffer = new StringBuilder();
         try {
             input = new BufferedReader(new InputStreamReader(ctx.openFileInput(String.valueOf(backup.getTime()))));
             String line;
             while ((line = input.readLine()) != null) {
-                buffer.append(line).append(eol);
+                buffer.append(line).append(LINE_SEPARATOR);
             }
         } catch (FileNotFoundException e) {
             Log.e(TAG, "File not found: " + e.toString());
@@ -319,4 +317,21 @@ public class Utils {
         return null;
     }
 
+    public static String extractFileName(String s) {
+        if (TextUtils.isEmpty(s)) {
+            return null;
+        }
+        return s.substring(s.lastIndexOf(FILE_SEPARATOR) + 1);
+    }
+
+    public static String extractFilePath(String s) {
+        if (TextUtils.isEmpty(s)) {
+            return null;
+        }
+        return s.substring(0, Math.max(s.length(), s.lastIndexOf(FILE_SEPARATOR)));
+    }
+
+
+    // String filename = s.substring(s.lastIndexOf(separator) + 1);
+    // String path = s.replace(filename, "");
 }
