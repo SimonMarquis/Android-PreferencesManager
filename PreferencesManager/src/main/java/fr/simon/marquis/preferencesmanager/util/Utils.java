@@ -35,10 +35,10 @@ import org.json.JSONException;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -90,10 +90,12 @@ public class Utils {
             Collections.sort(entries, new MyComparator());
             applications = new ArrayList<AppEntry>(entries);
         }
+        Log.d(TAG, "Applications: " + Arrays.toString(applications.toArray()));
         return applications;
     }
 
     public static void setFavorite(String packageName, boolean favorite, Context ctx) {
+        Log.d(TAG, String.format("setFavorite(%s, %b)", packageName, favorite));
         if (favorites == null) {
             initFavorites(ctx);
         }
@@ -123,6 +125,7 @@ public class Utils {
     }
 
     private static void updateApplicationInfo(String packageName, boolean favorite) {
+        Log.d(TAG, String.format("updateApplicationInfo(%s, %d)", packageName, favorite));
         for (AppEntry a : applications) {
             if (a.getApplicationInfo().packageName.equals(packageName)) {
                 a.setFavorite(favorite);
@@ -162,14 +165,10 @@ public class Utils {
     }
 
     public static void setShowSystemApps(Context ctx, boolean show) {
+        Log.d(TAG, String.format("setShowSystemApps(%b)", show));
         Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         e.putBoolean(PREF_SHOW_SYSTEM_APPS, show);
         e.commit();
-    }
-
-
-    public static void debugFile(String file) {
-        //TODO:
     }
 
     public static boolean hasHONEYCOMB() {
@@ -177,6 +176,7 @@ public class Utils {
     }
 
     public static Files findXmlFiles(final String packageName) {
+        Log.d(TAG, String.format("findXmlFiles(%s)", packageName));
         final String separator = System.getProperty("file.separator");
         final Files files = new Files();
         CommandCapture cmd = new CommandCapture(CMD_FIND_XML_FILES.hashCode(), false, String.format(CMD_FIND_XML_FILES, packageName)) {
@@ -195,11 +195,12 @@ public class Utils {
                 Log.e(TAG, "Error in findXmlFiles", e);
             }
         }
-
+        Log.d(TAG, "files: " + files.toJSON().toString());
         return files;
     }
 
     public static String readFile(String file) {
+        Log.d(TAG, String.format("readFile(%s)", file));
         final String ln = System.getProperty("line.separator");
         final StringBuilder sb = new StringBuilder();
         CommandCapture cmd = new CommandCapture(0, false, String.format(CMD_CAT_FILE, file)) {
@@ -221,6 +222,7 @@ public class Utils {
     }
 
     public static BackupContainer getBackups(Context ctx, String packageName) {
+        Log.d(TAG, String.format("getBackups(%s)", packageName));
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
         BackupContainer container = null;
         try {
@@ -230,10 +232,12 @@ public class Utils {
         if (container == null) {
             container = new BackupContainer();
         }
+        Log.d(TAG, "backups: " + container.toJSON().toString());
         return container;
     }
 
     public static void saveBackups(Context ctx, String packageName, BackupContainer container) {
+        Log.d(TAG, String.format("saveBackups(%s, %s)", packageName, container.toJSON().toString()));
         Editor ed = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         String str = container.toJSON().toString();
         ed.putString(packageName, str);
@@ -245,22 +249,21 @@ public class Utils {
         }
     }
 
-    public static boolean backupFile(Backup backup, String content, Context ctx) {
-        String filename = String.valueOf(backup.getTime());
-        FileOutputStream outputStream;
-        try {
-            outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream.write(content.getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            Log.e(TAG, "Error in backupFile", e);
+    public static boolean backupFile(Backup backup, String fileName, Context ctx) {
+        Log.d(TAG, String.format("backupFile(%s, %s)", String.valueOf(backup.getTime()), fileName));
+        java.io.File filesDir = ctx.getFilesDir();
+        if (filesDir == null) {
             return false;
         }
+        java.io.File destination = new java.io.File(ctx.getFilesDir(), String.valueOf(backup.getTime()));
+        RootTools.copyFile(fileName, destination.getAbsolutePath(), true, true);
+        Log.d(TAG, String.format("backupFile --> " + destination));
         return true;
     }
 
 
     public static String getBackupContent(Backup backup, Context ctx) {
+        Log.d(TAG, String.format("getBackupContent(%s)", String.valueOf(backup.getTime())));
         String eol = System.getProperty("line.separator");
         BufferedReader input = null;
         StringBuilder buffer = new StringBuilder();
