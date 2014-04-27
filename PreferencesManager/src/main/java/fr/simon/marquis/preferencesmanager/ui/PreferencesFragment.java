@@ -60,14 +60,11 @@ import fr.simon.marquis.preferencesmanager.util.Utils;
 public class PreferencesFragment extends Fragment {
     private static final int CODE_EDIT_FILE = 666;
 
-    public static final String ARG_NAME = "NAME";
-    public static final String ARG_PATH = "PATH";
+    public static final String ARG_FILE = "FILE";
     public static final String ARG_PACKAGE_NAME = "PACKAGE_NAME";
 
-    private String mName;
-    private String mPath;
+    private String mFile;
     private String mPackageName;
-    private String mFullPath;
 
     private SearchView mSearchView;
 
@@ -79,11 +76,10 @@ public class PreferencesFragment extends Fragment {
     private View loadingView, emptyView;
     private TextView emptyViewText;
 
-    public static PreferencesFragment newInstance(String paramName, String paramPath, String paramPackageName) {
+    public static PreferencesFragment newInstance(String paramFile, String paramPackageName) {
         PreferencesFragment fragment = new PreferencesFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_NAME, paramName);
-        args.putString(ARG_PATH, paramPath);
+        args.putString(ARG_FILE, paramFile);
         args.putString(ARG_PACKAGE_NAME, paramPackageName);
         fragment.setArguments(args);
         return fragment;
@@ -97,9 +93,7 @@ public class PreferencesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mName = getArguments().getString(ARG_NAME);
-            mPath = getArguments().getString(ARG_PATH);
-            mFullPath = mPath + "/" + mName;
+            mFile = getArguments().getString(ARG_FILE);
             mPackageName = getArguments().getString(ARG_PACKAGE_NAME);
         }
 
@@ -131,7 +125,7 @@ public class PreferencesFragment extends Fragment {
     }
 
     private void launchTask() {
-        ParsingTask task = new ParsingTask(mFullPath);
+        ParsingTask task = new ParsingTask(mFile);
         if (Utils.hasHONEYCOMB()) {
             task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else {
@@ -186,7 +180,7 @@ public class PreferencesFragment extends Fragment {
         menu.findItem(R.id.action_add).setIcon(preferenceFile != null && preferenceFile.isValidPreferenceFile() ? R.drawable.ic_action_add : R.drawable.ic_action_add_disabled);
         menu.findItem(R.id.action_sort_alpha).setChecked(PreferencesActivity.preferenceSortType == PreferenceSortType.ALPHANUMERIC);
         menu.findItem(R.id.action_sort_type).setChecked(PreferencesActivity.preferenceSortType == PreferenceSortType.TYPE_AND_ALPHANUMERIC);
-        menu.findItem(R.id.action_restore_file).setVisible(mListener != null && mListener.canRestoreFile(mFullPath));
+        menu.findItem(R.id.action_restore_file).setVisible(mListener != null && mListener.canRestoreFile(mFile));
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -218,8 +212,7 @@ public class PreferencesFragment extends Fragment {
                     }
                 }
                 Intent intent = new Intent(getActivity(), FileEditorActivity.class);
-                intent.putExtra(ARG_NAME, mName);
-                intent.putExtra(ARG_PATH, mPath);
+                intent.putExtra(ARG_FILE, mFile);
                 intent.putExtra(ARG_PACKAGE_NAME, mPackageName);
                 startActivityForResult(intent, CODE_EDIT_FILE);
                 return true;
@@ -231,7 +224,7 @@ public class PreferencesFragment extends Fragment {
                 return true;
             case R.id.action_backup_file:
                 if (mListener != null) {
-                    mListener.onBackupFile(mFullPath);
+                    mListener.onBackupFile(mFile);
                 }
                 return true;
             case R.id.action_restore_file:
@@ -244,7 +237,7 @@ public class PreferencesFragment extends Fragment {
 
     private void restoreBackup() {
         if (mListener != null) {
-            RestoreDialogFragment.show(this, getFragmentManager(), mFullPath, mListener.getBackups(mFullPath));
+            RestoreDialogFragment.show(this, getFragmentManager(), mFile, mListener.getBackups(mFile));
         }
     }
 
@@ -301,10 +294,10 @@ public class PreferencesFragment extends Fragment {
 
     private void showPrefDialog(PreferenceType type, boolean editMode, String key, Object obj) {
         PreferenceDialog newFragment = PreferenceDialog.newInstance(type, editMode, key, obj);
-        newFragment.setTargetFragment(this, ("Fragment:" + mFullPath).hashCode());
+        newFragment.setTargetFragment(this, ("Fragment:" + mFile).hashCode());
         FragmentManager fm = getFragmentManager();
         if (fm != null) {
-            newFragment.show(fm, mFullPath + "#" + key);
+            newFragment.show(fm, mFile + "#" + key);
         }
     }
 
@@ -313,7 +306,7 @@ public class PreferencesFragment extends Fragment {
             return;
         }
         preferenceFile.add(previousKey, newKey, value, editMode);
-        PreferenceFile.saveFast(preferenceFile, mFullPath, mPackageName);
+        PreferenceFile.saveFast(preferenceFile, mFile, mPackageName, getActivity());
         ((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
     }
 
@@ -322,7 +315,7 @@ public class PreferencesFragment extends Fragment {
             return;
         }
         preferenceFile.removeValue(key);
-        PreferenceFile.saveFast(preferenceFile, mFullPath, mPackageName);
+        PreferenceFile.saveFast(preferenceFile, mFile, mPackageName, getActivity());
         ((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
     }
 
@@ -347,9 +340,7 @@ public class PreferencesFragment extends Fragment {
             return;
         }
         if (p == null) {
-            if (getActivity() != null) {
-                getActivity().finish();
-            }
+            getActivity().finish();
             return;
         }
         preferenceFile = p;
@@ -399,7 +390,7 @@ public class PreferencesFragment extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.action_delete:
                         ((PreferenceAdapter) gridView.getAdapter()).deleteSelection();
-                        PreferenceFile.saveFast(preferenceFile, mFullPath, mPackageName);
+                        PreferenceFile.saveFast(preferenceFile, mFile, mPackageName, getActivity());
                         ((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
                         mode.finish();
                         return true;

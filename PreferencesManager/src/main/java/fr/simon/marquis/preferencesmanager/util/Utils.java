@@ -34,7 +34,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -50,7 +52,7 @@ import fr.simon.marquis.preferencesmanager.ui.RootDialog;
 
 public class Utils {
 
-    public static final String TAG = "PreferencesManager";
+    public static final String TAG = Utils.class.getSimpleName();
     private static final String FAVORITES_KEY = "FAVORITES_KEY";
     private static final String TAG_ROOT_DIALOG = "RootDialog";
     private static final String PREF_SHOW_SYSTEM_APPS = "SHOW_SYSTEM_APPS";
@@ -331,7 +333,37 @@ public class Utils {
         return s.substring(0, Math.max(s.length(), s.lastIndexOf(FILE_SEPARATOR)));
     }
 
+    public static boolean updatePreferences(Context ctx, String preferences, String mFile) {
+        Log.d(TAG, String.format("updatePreferences(%s", mFile));
+        File filesDir = ctx.getFilesDir();
+        if (filesDir == null) {
+            return false;
+        }
+        File destination = new File(ctx.getFilesDir(), "tmp");
+        try {
 
-    // String filename = s.substring(s.lastIndexOf(separator) + 1);
-    // String path = s.replace(filename, "");
+            if (!destination.exists()) {
+                if (!destination.createNewFile()) {
+                    return false;
+                }
+            }
+        } catch (IOException e) {
+            Log.e(TAG, "Error while creating tmp file", e);
+            return false;
+        }
+
+        RootTools.copyFile(mFile, destination.getAbsolutePath(), true, true);
+        FileWriter fw;
+        try {
+            fw = new FileWriter(destination, true);
+            fw.write(preferences);
+            fw.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Error while writing tmp file", e);
+            return false;
+        }
+        RootTools.copyFile(destination.getAbsolutePath(), mFile, true, true);
+        Log.d(TAG, "Preferences correctly updated");
+        return true;
+    }
 }

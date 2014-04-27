@@ -15,6 +15,7 @@
  */
 package fr.simon.marquis.preferencesmanager.model;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import com.stericson.RootTools.RootTools;
@@ -34,10 +35,12 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import fr.simon.marquis.preferencesmanager.ui.PreferencesActivity;
+import fr.simon.marquis.preferencesmanager.util.Utils;
 import fr.simon.marquis.preferencesmanager.util.XmlUtils;
 
 public class PreferenceFile {
 
+    public static final String TAG = PreferenceFile.class.getSimpleName();
     private boolean isValidPreferenceFile = true;
     private Map<String, Object> mPreferences;
     private List<Entry<String, Object>> mList;
@@ -159,8 +162,8 @@ public class PreferenceFile {
         }
     }
 
-    public static boolean saveFast(PreferenceFile prefFile, String mFile, String packageName) {
-        return saveFast(prefFile.toXml(), mFile, packageName);
+    public static boolean saveFast(PreferenceFile prefFile, String mFile, String packageName, Context ctx) {
+        return saveFast(prefFile.toXml(), mFile, packageName, ctx);
     }
 
     /**
@@ -171,20 +174,15 @@ public class PreferenceFile {
      * @param packageName .
      * @return .
      */
-    public static boolean saveFast(String preferences, String mFile, String packageName) {
+    public static boolean saveFast(String preferences, String mFile, String packageName, Context ctx) {
         if (!isValid(preferences)) {
             return false;
         }
-        try {
-            //TODO
-            // Save to tmp file
-            // Copy file
-            // Delete tmp file
-            //App.getRoot().file.write(mFile, preferences.replace("'", "'\"'\"'"), false);
-            RootTools.killProcess(packageName);
-        } catch (Exception e) {
+
+        if (!Utils.updatePreferences(ctx, preferences, mFile)) {
             return false;
         }
+        RootTools.killProcess(packageName);
         return true;
     }
 

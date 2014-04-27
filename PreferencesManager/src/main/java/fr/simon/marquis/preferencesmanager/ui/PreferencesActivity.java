@@ -38,13 +38,13 @@ import com.stericson.RootTools.RootTools;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.Backup;
 import fr.simon.marquis.preferencesmanager.model.BackupContainer;
-import fr.simon.marquis.preferencesmanager.model.Files;
 import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnPreferenceFragmentInteractionListener;
 import fr.simon.marquis.preferencesmanager.util.Ui;
@@ -64,7 +64,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
     private View mLoadingView;
     private View mEmptyView;
 
-    private Files files;
+    private ArrayList<String> files;
     private String packageName;
     private String title;
 
@@ -113,7 +113,12 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
             findFilesAndBackupsTask.execute();
         } else {
             try {
-                updateFindFiles(Files.fromJSON(new JSONArray(savedInstanceState.getString(KEY_FILES))));
+                ArrayList<String> tmp = new ArrayList<String>();
+                JSONArray array = new JSONArray(savedInstanceState.getString(KEY_FILES));
+                for (int i = 0; i < array.length(); i++) {
+                    tmp.add(array.getString(i));
+                }
+                updateFindFiles(tmp);
                 updateFindBackups(Utils.getBackups(getApplicationContext(), packageName));
             } catch (Exception e) {
                 findFilesAndBackupsTask = new FindFilesAndBackupsTask(packageName);
@@ -125,7 +130,11 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         if (files != null) {
-            outState.putString(KEY_FILES, files.toJSON().toString());
+            JSONArray json = new JSONArray();
+            for (String file : files) {
+                json.put(file);
+            }
+            outState.putString(KEY_FILES, json.toString());
         }
         super.onSaveInstanceState(outState);
     }
@@ -194,7 +203,8 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         Backup backup = new Backup(new Date().getTime());
         backupContainer.put(fullPath, backup);
 
-        if (Utils.backupFile(backup, Utils.readFile(fullPath), this)) {
+        //TODO: asynctask
+        if (Utils.backupFile(backup, fullPath, this)) {
             Utils.saveBackups(this, packageName, backupContainer);
             Toast.makeText(this, R.string.toast_backup_success, Toast.LENGTH_SHORT).show();
         } else {
@@ -230,9 +240,9 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         return backupContainer.get(fullPath);
     }
 
-    private void updateFindFiles(Files f) {
-        files = f;
-        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager());
+    private void updateFindFiles(ArrayList<String> tmp) {
+        files = tmp;
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), files);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         Animation fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
         Animation fadeOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
@@ -261,28 +271,30 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        private ArrayList<String> mFiles;
 
-        public SectionsPagerAdapter(FragmentManager fm) {
+        public SectionsPagerAdapter(FragmentManager fm, ArrayList<String> files) {
             super(fm);
+            this.mFiles = files;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return PreferencesFragment.newInstance(files.get(position).getName(), files.get(position).getPath(), packageName);
+            return PreferencesFragment.newInstance(mFiles.get(position), packageName);
         }
 
         @Override
         public int getCount() {
-            return files.size();
+            return mFiles.size();
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return Ui.applyCustomTypeFace(files.get(position).getName(), PreferencesActivity.this);
+            return Ui.applyCustomTypeFace(Utils.extractFileName(mFiles.get(position)), PreferencesActivity.this);
         }
     }
 
-    public class FindFilesAndBackupsTask extends AsyncTask<Void, Void, Pair<Files, BackupContainer>> {
+    public class FindFilesAndBackupsTask extends AsyncTask<Void, Void, Pair<ArrayList<String>, BackupContainer>> {
         private final String mPackageName;
 
         public FindFilesAndBackupsTask(String packageName) {
@@ -290,12 +302,12 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         }
 
         @Override
-        protected Pair<Files, BackupContainer> doInBackground(Void... params) {
+        protected Pair<ArrayList<String>, BackupContainer> doInBackground(Void... params) {
             return Pair.create(Utils.findXmlFiles(mPackageName), Utils.getBackups(getApplicationContext(), mPackageName));
         }
 
         @Override
-        protected void onPostExecute(Pair<Files, BackupContainer> result) {
+        protected void onPostExecute(Pair<ArrayList<String>, BackupContainer> result) {
             updateFindFiles(result.first);
             updateFindBackups(result.second);
             super.onPostExecute(result);
