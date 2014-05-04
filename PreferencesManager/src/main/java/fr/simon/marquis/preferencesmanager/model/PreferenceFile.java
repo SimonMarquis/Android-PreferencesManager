@@ -15,10 +15,7 @@
  */
 package fr.simon.marquis.preferencesmanager.model;
 
-import android.content.Context;
 import android.text.TextUtils;
-
-import com.stericson.RootTools.RootTools;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -35,12 +32,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import fr.simon.marquis.preferencesmanager.ui.PreferencesActivity;
-import fr.simon.marquis.preferencesmanager.util.Utils;
 import fr.simon.marquis.preferencesmanager.util.XmlUtils;
 
 public class PreferenceFile {
 
-    public static final String TAG = PreferenceFile.class.getSimpleName();
     private boolean isValidPreferenceFile = true;
     private Map<String, Object> mPreferences;
     private List<Entry<String, Object>> mList;
@@ -82,7 +77,7 @@ public class PreferenceFile {
         updateSort();
     }
 
-    private String toXml() {
+    public String toXml() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
             XmlUtils.writeMapXml(mPreferences, out);
@@ -162,33 +157,9 @@ public class PreferenceFile {
         }
     }
 
-    public static boolean saveFast(PreferenceFile prefFile, String mFile, String packageName, Context ctx) {
-        return saveFast(prefFile.toXml(), mFile, packageName, ctx);
-    }
-
-    /**
-     * Nicer way to save the preferences because we don't change permissions
-     *
-     * @param preferences .
-     * @param mFile       .
-     * @param packageName .
-     * @return .
-     */
-    public static boolean saveFast(String preferences, String mFile, String packageName, Context ctx) {
-        if (!isValid(preferences)) {
-            return false;
-        }
-
-        if (!Utils.updatePreferences(ctx, preferences, mFile, packageName)) {
-            return false;
-        }
-        RootTools.killProcess(packageName);
-        return true;
-    }
-
-    private static boolean isValid(String xml) {
+    public boolean isValid() {
         try {
-            XmlUtils.readMapXml(new ByteArrayInputStream(xml.getBytes()));
+            XmlUtils.readMapXml(new ByteArrayInputStream(toXml().getBytes()));
         } catch (Exception e) {
             return false;
         }

@@ -32,11 +32,8 @@ import com.stericson.RootTools.execution.CommandCapture;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,6 +43,7 @@ import java.util.List;
 
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.model.BackupContainer;
+import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.ui.RootDialog;
 
 public class Utils {
@@ -248,45 +246,19 @@ public class Utils {
             Log.e(TAG, "Error copyFile");
             return false;
         }
+
         if (!fixUserAndGroupId(ctx, fileName, packageName)) {
             Log.e(TAG, "Error fixUserAndGroupId");
             return false;
         }
+
         if (!RootTools.killProcess(packageName)) {
             Log.e(TAG, "Error killProcess");
             return false;
         }
+
         Log.d(TAG, String.format("restoreFile --> " + fileName));
         return true;
-    }
-
-
-    public static String getBackupContent(String backup, Context ctx) {
-        Log.d(TAG, String.format("getBackupContent(%s)", backup));
-        BufferedReader input = null;
-        StringBuilder buffer = new StringBuilder();
-        try {
-            input = new BufferedReader(new InputStreamReader(ctx.openFileInput(backup)));
-            String line;
-            while ((line = input.readLine()) != null) {
-                buffer.append(line).append(LINE_SEPARATOR);
-            }
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "File not found: " + e.toString());
-            return null;
-        } catch (IOException e) {
-            Log.e(TAG, "Can not read file: " + e.toString());
-            return null;
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return buffer.toString();
     }
 
     public static Drawable findDrawable(String packageName, Context ctx) {
@@ -331,8 +303,23 @@ public class Utils {
         return s.substring(0, Math.max(s.length(), s.lastIndexOf(FILE_SEPARATOR)));
     }
 
-    public static boolean updatePreferences(Context ctx, String preferences, String mFile, String packageName) {
-        Log.d(TAG, String.format("updatePreferences(%s, %s)", mFile, packageName));
+    public static boolean savePreferences(PreferenceFile preferenceFile, String file, String packageName, Context ctx) {
+        Log.d(TAG, String.format("savePreferences(%s, %s)", file, packageName));
+        if (preferenceFile == null) {
+            Log.e(TAG, "Error preferenceFile is null");
+            return false;
+        }
+
+        if (!preferenceFile.isValid()) {
+            Log.e(TAG, "Error preferenceFile is not valid");
+            return false;
+        }
+
+        String preferences = preferenceFile.toXml();
+        if (TextUtils.isEmpty(preferences)) {
+            Log.e(TAG, "Error preferences is empty");
+            return false;
+        }
 
         File tmpFile = new File(ctx.getFilesDir(), TMP_FILE);
         try {
@@ -344,12 +331,12 @@ public class Utils {
             return false;
         }
 
-        if (!RootTools.copyFile(tmpFile.getAbsolutePath(), mFile, true, false)) {
+        if (!RootTools.copyFile(tmpFile.getAbsolutePath(), file, true, false)) {
             Log.e(TAG, "Error copyFile from temporary file");
             return false;
         }
 
-        if (!fixUserAndGroupId(ctx, mFile, packageName)) {
+        if (!fixUserAndGroupId(ctx, file, packageName)) {
             Log.e(TAG, "Error fixUserAndGroupId");
             return false;
         }
@@ -358,9 +345,11 @@ public class Utils {
             Log.e(TAG, "Error deleting temporary file");
         }
 
+        RootTools.killProcess(packageName);
         Log.d(TAG, "Preferences correctly updated");
         return true;
     }
+
 
     /**
      * Put User id and Group id back to the corresponding app with this cmd: `chown uid.gid filename`

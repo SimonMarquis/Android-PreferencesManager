@@ -301,7 +301,7 @@ public class PreferencesFragment extends Fragment {
             return;
         }
         preferenceFile.add(previousKey, newKey, value, editMode);
-        PreferenceFile.saveFast(preferenceFile, mFile, mPackageName, getActivity());
+        Utils.savePreferences(preferenceFile, mFile, mPackageName, getActivity());
         ((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
     }
 
@@ -310,7 +310,7 @@ public class PreferencesFragment extends Fragment {
             return;
         }
         preferenceFile.removeValue(key);
-        PreferenceFile.saveFast(preferenceFile, mFile, mPackageName, getActivity());
+        Utils.savePreferences(preferenceFile, mFile, mPackageName, getActivity());
         ((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
     }
 
@@ -385,7 +385,7 @@ public class PreferencesFragment extends Fragment {
                 switch (item.getItemId()) {
                     case R.id.action_delete:
                         ((PreferenceAdapter) gridView.getAdapter()).deleteSelection();
-                        PreferenceFile.saveFast(preferenceFile, mFile, mPackageName, getActivity());
+                        Utils.savePreferences(preferenceFile, mFile, mPackageName, getActivity());
                         ((PreferenceAdapter) gridView.getAdapter()).notifyDataSetChanged();
                         mode.finish();
                         return true;

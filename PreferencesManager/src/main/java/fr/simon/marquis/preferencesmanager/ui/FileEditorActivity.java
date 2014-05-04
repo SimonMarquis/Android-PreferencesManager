@@ -295,7 +295,8 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
     private boolean save() {
         Editable editable = mEditText.getText();
         String preferences = editable == null ? "" : editable.toString();
-        if (PreferenceFile.saveFast(preferences, mFile, mPackageName, this)) {
+        PreferenceFile pref = PreferenceFile.fromXml(preferences);
+        if (Utils.savePreferences(pref, mFile, mPackageName, this)) {
             mNeedUpdateOnActivityFinish = true;
             setResult(RESULT_OK);
             Toast.makeText(this, R.string.save_success, Toast.LENGTH_SHORT).show();
