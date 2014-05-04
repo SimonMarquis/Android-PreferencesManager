@@ -22,7 +22,6 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -65,12 +64,12 @@ public class Utils {
     private static ArrayList<AppEntry> applications;
     private static HashSet<String> favorites;
 
-    public static ArrayList<AppEntry> getPreviousApps() {
-        return applications;
-    }
-
     public static void displayNoRoot(FragmentManager fm) {
         RootDialog.newInstance().show(fm, TAG_ROOT_DIALOG);
+    }
+
+    public static ArrayList<AppEntry> getPreviousApps() {
+        return applications;
     }
 
     public static ArrayList<AppEntry> getApplications(Context ctx) {
@@ -100,9 +99,7 @@ public class Utils {
 
     public static void setFavorite(String packageName, boolean favorite, Context ctx) {
         Log.d(TAG, String.format("setFavorite(%s, %s)", packageName, favorite));
-        if (favorites == null) {
-            initFavorites(ctx);
-        }
+        initFavorites(ctx);
 
         if (favorite) {
             favorites.add(packageName);
@@ -111,20 +108,13 @@ public class Utils {
         }
 
         Editor ed = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
-
-        if (favorites.size() == 0) {
+        if (favorites.isEmpty()) {
             ed.remove(FAVORITES_KEY);
         } else {
-            JSONArray array = new JSONArray(favorites);
-            ed.putString(FAVORITES_KEY, array.toString());
+            ed.putString(FAVORITES_KEY, new JSONArray(favorites).toString());
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
-            ed.apply();
-        } else {
-            ed.commit();
-        }
-
+        ed.apply();
         updateApplicationInfo(packageName, favorite);
     }
 
@@ -139,9 +129,7 @@ public class Utils {
     }
 
     public static boolean isFavorite(String packageName, Context ctx) {
-        if (favorites == null) {
-            initFavorites(ctx);
-        }
+        initFavorites(ctx);
         return favorites.contains(packageName);
     }
 
@@ -173,10 +161,6 @@ public class Utils {
         Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         e.putBoolean(PREF_SHOW_SYSTEM_APPS, show);
         e.commit();
-    }
-
-    public static boolean hasHONEYCOMB() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     }
 
     public static ArrayList<String> findXmlFiles(final String packageName) {
@@ -243,23 +227,36 @@ public class Utils {
         Editor ed = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         String str = container.toJSON().toString();
         ed.putString(packageName, str);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
-            ed.apply();
-        } else {
-            ed.commit();
-        }
+        ed.apply();
     }
 
     public static boolean backupFile(String backup, String fileName, Context ctx) {
         Log.d(TAG, String.format("backupFile(%s, %s)", backup, fileName));
-        java.io.File filesDir = ctx.getFilesDir();
-        if (filesDir == null) {
+        File destination = new File(ctx.getFilesDir(), backup);
+        if (!RootTools.copyFile(fileName, destination.getAbsolutePath(), true, true)) {
+            Log.e(TAG, "Error copyFile");
             return false;
         }
-        java.io.File destination = new java.io.File(ctx.getFilesDir(), backup);
-        RootTools.copyFile(fileName, destination.getAbsolutePath(), true, true);
         Log.d(TAG, String.format("backupFile --> " + destination));
+        return true;
+    }
+
+    public static boolean restoreFile(Context ctx, String backup, String fileName, String packageName) {
+        Log.d(TAG, String.format("restoreFile(%s, %s, %s)", backup, fileName, packageName));
+        File backupFile = new File(ctx.getFilesDir(), backup);
+        if (!RootTools.copyFile(backupFile.getAbsolutePath(), fileName, true, true)) {
+            Log.e(TAG, "Error copyFile");
+            return false;
+        }
+        if (!fixUserAndGroupId(ctx, fileName, packageName)) {
+            Log.e(TAG, "Error fixUserAndGroupId");
+            return false;
+        }
+        if (!RootTools.killProcess(packageName)) {
+            Log.e(TAG, "Error killProcess");
+            return false;
+        }
+        Log.d(TAG, String.format("restoreFile --> " + fileName));
         return true;
     }
 
@@ -374,6 +371,7 @@ public class Utils {
      * @return true if success
      */
     private static boolean fixUserAndGroupId(Context ctx, String file, String packageName) {
+        Log.d(TAG, String.format("fixUserAndGroupId(%s, %s)", file, packageName));
         String uid;
         PackageManager pm = ctx.getPackageManager();
         if (pm == null) {

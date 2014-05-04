@@ -125,11 +125,7 @@ public class PreferencesFragment extends Fragment {
 
     private void launchTask() {
         ParsingTask task = new ParsingTask(mFile);
-        if (Utils.hasHONEYCOMB()) {
-            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        } else {
-            task.execute();
-        }
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     @Override

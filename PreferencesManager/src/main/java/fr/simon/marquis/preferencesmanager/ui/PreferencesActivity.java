@@ -26,6 +26,7 @@ import android.preference.PreferenceManager;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,8 +34,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
-
-import com.stericson.RootTools.RootTools;
 
 import org.json.JSONArray;
 
@@ -51,6 +50,7 @@ import fr.simon.marquis.preferencesmanager.util.Utils;
 
 public class PreferencesActivity extends ActionBarActivity implements OnPreferenceFragmentInteractionListener, RestoreDialogFragment.OnRestoreFragmentInteractionListener {
 
+    private static final String TAG = PreferencesActivity.class.getSimpleName();
     public final static String KEY_SORT_TYPE = "KEY_SORT_TYPE";
     public final static String EXTRA_PACKAGE_NAME = "EXTRA_PACKAGE_NAME";
     public final static String EXTRA_TITLE = "EXTRA_TITLE";
@@ -223,10 +223,10 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
 
     @Override
     public String onRestoreFile(String backup, String fullPath) {
-        final String separator = System.getProperty("file.separator");
-        RootTools.copyFile(getFilesDir().getAbsolutePath() + separator + Float.valueOf(backup), fullPath, true, true);
-        RootTools.killProcess(packageName);
-        Toast.makeText(this, R.string.file_restored, Toast.LENGTH_SHORT).show();
+        Log.d(TAG, String.format("onRestoreFile(%s, %s)", backup, fullPath));
+        if (Utils.restoreFile(this, backup, fullPath, packageName)) {
+            Toast.makeText(this, R.string.file_restored, Toast.LENGTH_SHORT).show();
+        }
         return Utils.readFile(fullPath);
     }
 

@@ -108,11 +108,7 @@ public class AppListActivity extends ActionBarActivity {
     private boolean startTask() {
         if (task == null || task.isCancelled()) {
             task = new GetApplicationsTask(this);
-            if (Utils.hasHONEYCOMB()) {
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
-            } else {
-                task.execute();
-            }
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
             return true;
         }
         return false;
