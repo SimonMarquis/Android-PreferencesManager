@@ -51,6 +51,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="typeface">robotoslab_light</item>
     </style>
@@ -64,16 +65,30 @@
         <item name="typeface">robotoslab_regular</item>
     </style>
 
-    <style name="EditTextKey">
+    <style name="FloatLabelContainerKey">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">20dp</item>
         <item name="android:layout_marginRight">20dp</item>
-        <item name="android:layout_marginTop">20dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+
+    <style name="FloatLabelContainerValue">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+
+    <style name="EditTextKey">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:maxLines">2</item>
         <item name="android:ems">10</item>
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">left</item>
         <item name="android:hint">@string/hint_key</item>
         <item name="android:inputType">textNoSuggestions</item>
         <item name="typeface">robotoslab_regular</item>
@@ -82,14 +97,39 @@
     <style name="EditTextValue">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">20dp</item>
-        <item name="android:layout_marginRight">20dp</item>
-        <item name="android:layout_marginBottom">20dp</item>
-        <item name="android:layout_marginTop">5dp</item>
         <item name="android:ems">10</item>
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">left</item>
         <item name="android:hint">@string/hint_value</item>
         <item name="typeface">robotoslab_regular</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel" parent="android:TextAppearance.Small">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel.Red" parent="TextAppearance.PreferencesManager.FloatLabel">
+        <item name="android:textColor">@drawable/float_label_red</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel.Green" parent="TextAppearance.PreferencesManager.FloatLabel">
+        <item name="android:textColor">@drawable/float_label_green</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel.Purple" parent="TextAppearance.PreferencesManager.FloatLabel">
+        <item name="android:textColor">@drawable/float_label_purple</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel.Navy" parent="TextAppearance.PreferencesManager.FloatLabel">
+        <item name="android:textColor">@drawable/float_label_navy</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel.Teal" parent="TextAppearance.PreferencesManager.FloatLabel">
+        <item name="android:textColor">@drawable/float_label_teal</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel.Gold" parent="TextAppearance.PreferencesManager.FloatLabel">
+        <item name="android:textColor">@drawable/float_label_gold</item>
     </style>
 
 </resources>
