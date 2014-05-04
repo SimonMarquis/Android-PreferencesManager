@@ -22,26 +22,26 @@
 
     <fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout
         style="@style/FloatLabelContainerKey"
-        app:floatLabelTextAppearance="@style/TextAppearance.PreferencesManager.FloatLabel.Purple">
+        app:floatLabelTextAppearance="@style/TextAppearance.PreferencesManager.FloatLabel.Teal">
 
         <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
             android:id="@+id/key"
             style="@style/EditTextKey"
-            android:background="@drawable/edittext_purple_edit_text_holo_light" />
+            android:background="@drawable/edittext_teal_edit_text_holo_light" />
 
     </fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout>
 
-    <Switch
-        android:id="@+id/value"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="5dp"
-        android:checked="true"
-        android:textOff="false"
-        android:textOn="true" />
+    <fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout
+        style="@style/FloatLabelContainerValue"
+        app:floatLabelTextAppearance="@style/TextAppearance.PreferencesManager.FloatLabel.Teal">
+
+        <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
+            android:id="@+id/value"
+            style="@style/EditTextValue"
+            android:inputType="numberSigned|numberDecimal"
+            android:background="@drawable/edittext_teal_edit_text_holo_light" />
+
+    </fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout>
 
     <include layout="@layout/dialog_pref_btn_bar_add" />
 

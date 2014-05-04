@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,20 +13,35 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/PreferenceDialogContainer" >
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    style="@style/PreferenceDialogContainer">
 
     <fr.simon.marquis.preferencesmanager.roboto.RobotoTextView
         android:id="@+id/title"
         style="@style/PreferenceDialogTitle" />
 
-    <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
-        android:id="@+id/key"
-        style="@style/EditTextKey" />
+    <fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout
+        style="@style/FloatLabelContainerKey"
+        app:floatLabelTextAppearance="@style/TextAppearance.PreferencesManager.FloatLabel.Red">
 
-    <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
-        android:id="@+id/value"
-        style="@style/EditTextValue"
-        android:inputType="numberSigned" />
+        <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
+            android:id="@+id/key"
+            style="@style/EditTextKey"
+            android:background="@drawable/edittext_red_edit_text_holo_light" />
+
+    </fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout>
+
+    <fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout
+        style="@style/FloatLabelContainerValue"
+        app:floatLabelTextAppearance="@style/TextAppearance.PreferencesManager.FloatLabel.Red">
+
+        <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
+            android:id="@+id/value"
+            style="@style/EditTextValue"
+            android:inputType="numberSigned"
+            android:background="@drawable/edittext_red_edit_text_holo_light" />
+
+    </fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout>
 
     <include layout="@layout/dialog_pref_btn_bar_add" />
 
