@@ -36,9 +36,9 @@ import org.json.JSONException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -57,7 +57,9 @@ public class Utils {
     private static final String TAG_ROOT_DIALOG = "RootDialog";
     private static final String PREF_SHOW_SYSTEM_APPS = "SHOW_SYSTEM_APPS";
     public static final String CMD_FIND_XML_FILES = "find /data/data/%s -type f -name \\*.xml";
+    public static final String CMD_CHOWN = "chown %s.%s %s";
     public static final String CMD_CAT_FILE = "cat %s";
+    public static final String TMP_FILE = ".temp";
     public static final String FILE_SEPARATOR = System.getProperty("file.separator");
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
@@ -98,7 +100,7 @@ public class Utils {
     }
 
     public static void setFavorite(String packageName, boolean favorite, Context ctx) {
-        Log.d(TAG, String.format("setFavorite(%s, %b)", packageName, favorite));
+        Log.d(TAG, String.format("setFavorite(%s, %s)", packageName, favorite));
         if (favorites == null) {
             initFavorites(ctx);
         }
@@ -128,7 +130,7 @@ public class Utils {
     }
 
     private static void updateApplicationInfo(String packageName, boolean favorite) {
-        Log.d(TAG, String.format("updateApplicationInfo(%s, %d)", packageName, favorite));
+        Log.d(TAG, String.format("updateApplicationInfo(%s, %s)", packageName, favorite));
         for (AppEntry a : applications) {
             if (a.getApplicationInfo().packageName.equals(packageName)) {
                 a.setFavorite(favorite);
@@ -168,7 +170,7 @@ public class Utils {
     }
 
     public static void setShowSystemApps(Context ctx, boolean show) {
-        Log.d(TAG, String.format("setShowSystemApps(%b)", show));
+        Log.d(TAG, String.format("setShowSystemApps(%s)", show));
         Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         e.putBoolean(PREF_SHOW_SYSTEM_APPS, show);
         e.commit();
@@ -333,37 +335,73 @@ public class Utils {
         return s.substring(0, Math.max(s.length(), s.lastIndexOf(FILE_SEPARATOR)));
     }
 
-    public static boolean updatePreferences(Context ctx, String preferences, String mFile) {
-        Log.d(TAG, String.format("updatePreferences(%s", mFile));
-        File filesDir = ctx.getFilesDir();
-        if (filesDir == null) {
-            return false;
-        }
-        File destination = new File(ctx.getFilesDir(), "tmp");
-        try {
+    public static boolean updatePreferences(Context ctx, String preferences, String mFile, String packageName) {
+        Log.d(TAG, String.format("updatePreferences(%s, %s)", mFile, packageName));
 
-            if (!destination.exists()) {
-                if (!destination.createNewFile()) {
-                    return false;
-                }
-            }
+        File tmpFile = new File(ctx.getFilesDir(), TMP_FILE);
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(ctx.openFileOutput(TMP_FILE, Context.MODE_PRIVATE));
+            outputStreamWriter.write(preferences);
+            outputStreamWriter.close();
         } catch (IOException e) {
-            Log.e(TAG, "Error while creating tmp file", e);
+            Log.e(TAG, "Error writing temporary file", e);
             return false;
         }
 
-        RootTools.copyFile(mFile, destination.getAbsolutePath(), true, true);
-        FileWriter fw;
-        try {
-            fw = new FileWriter(destination, true);
-            fw.write(preferences);
-            fw.close();
-        } catch (IOException e) {
-            Log.e(TAG, "Error while writing tmp file", e);
+        if (!RootTools.copyFile(tmpFile.getAbsolutePath(), mFile, true, false)) {
+            Log.e(TAG, "Error copyFile from temporary file");
             return false;
         }
-        RootTools.copyFile(destination.getAbsolutePath(), mFile, true, true);
+
+        if (!fixUserAndGroupId(ctx, mFile, packageName)) {
+            Log.e(TAG, "Error fixUserAndGroupId");
+            return false;
+        }
+
+        if (!tmpFile.delete()) {
+            Log.e(TAG, "Error deleting temporary file");
+        }
+
         Log.d(TAG, "Preferences correctly updated");
+        return true;
+    }
+
+    /**
+     * Put User id and Group id back to the corresponding app with this cmd: `chown uid.gid filename`
+     *
+     * @param ctx         Context
+     * @param file        The file to fix
+     * @param packageName The packageName of the app
+     * @return true if success
+     */
+    private static boolean fixUserAndGroupId(Context ctx, String file, String packageName) {
+        String uid;
+        PackageManager pm = ctx.getPackageManager();
+        if (pm == null) {
+            return false;
+        }
+        try {
+            ApplicationInfo appInfo = pm.getApplicationInfo(packageName, 0);
+            uid = String.valueOf(appInfo.uid);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "error while getting uid", e);
+            return false;
+        }
+
+        if (TextUtils.isEmpty(uid)) {
+            Log.d(TAG, "uid is undefined");
+            return false;
+        }
+
+        CommandCapture cmd = new CommandCapture(CMD_CHOWN.hashCode(), false, String.format(CMD_CHOWN, uid, uid, file));
+        synchronized (cmd) {
+            try {
+                RootTools.getShell(true).add(cmd).wait();
+            } catch (Exception e) {
+                Log.e(TAG, "Error in fixPermissions", e);
+                return false;
+            }
+        }
         return true;
     }
 }

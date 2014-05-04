@@ -179,7 +179,7 @@ public class PreferenceFile {
             return false;
         }
 
-        if (!Utils.updatePreferences(ctx, preferences, mFile)) {
+        if (!Utils.updatePreferences(ctx, preferences, mFile, packageName)) {
             return false;
         }
         RootTools.killProcess(packageName);
