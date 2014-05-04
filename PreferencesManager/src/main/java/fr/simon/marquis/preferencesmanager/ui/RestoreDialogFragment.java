@@ -20,6 +20,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.simon.marquis.preferencesmanager.R;
-import fr.simon.marquis.preferencesmanager.model.Backup;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 
 public class RestoreDialogFragment extends DialogFragment implements AdapterView.OnItemClickListener {
@@ -43,10 +43,10 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
     private static final String ARG_BACKUPS = "BACKUPS";
 
     private OnRestoreFragmentInteractionListener listener;
-    private List<Backup> backups;
+    private List<String> backups;
     private String mFullPath;
 
-    public static void show(PreferencesFragment target, FragmentManager fm, String fullPath, List<Backup> backups) {
+    public static void show(PreferencesFragment target, FragmentManager fm, String fullPath, List<String> backups) {
         dismiss(fm);
         RestoreDialogFragment restoreDialogFragment = RestoreDialogFragment.newInstance(fullPath, backups);
         restoreDialogFragment.setTargetFragment(target, ("Fragment:" + fullPath).hashCode());
@@ -54,13 +54,10 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
 
     }
 
-    private static RestoreDialogFragment newInstance(String fullPath, List<Backup> backups) {
+    private static RestoreDialogFragment newInstance(String fullPath, List<String> backups) {
         RestoreDialogFragment dialog = new RestoreDialogFragment();
         Bundle args = new Bundle();
-        JSONArray array = new JSONArray();
-        for (Backup backup : backups) {
-            array.put(backup.toJSON());
-        }
+        JSONArray array = new JSONArray(backups);
         args.putString(ARG_FULL_PATH, fullPath);
         args.putString(ARG_BACKUPS, array.toString());
         dialog.setArguments(args);
@@ -72,12 +69,12 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mFullPath = getArguments().getString(ARG_FULL_PATH);
-            backups = new ArrayList<Backup>();
+            backups = new ArrayList<String>();
             try {
                 JSONArray array = new JSONArray(getArguments().getString(ARG_BACKUPS));
                 for (int i = 0; i < array.length(); i++) {
-                    Backup backup = Backup.fromJSON(array.optJSONObject(i));
-                    if (backup != null) {
+                    String backup = array.optString(i);
+                    if (!TextUtils.isEmpty(backup)) {
                         backups.add(backup);
                     }
                 }
@@ -156,8 +153,8 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
 
 
     public interface OnRestoreFragmentInteractionListener {
-        public String onRestoreFile(Backup backup, String fullPath);
+        public String onRestoreFile(String backup, String fullPath);
 
-        public List<Backup> onDeleteBackup(Backup backup, String fullPath);
+        public List<String> onDeleteBackup(String backup, String fullPath);
     }
 }

@@ -15,6 +15,8 @@
  */
 package fr.simon.marquis.preferencesmanager.model;
 
+import android.text.TextUtils;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -30,11 +32,11 @@ public class BackupContainer {
     private final static String KEY_FILE = "FILE";
     private final static String KEY_BACKUPS = "BACKUPS";
 
-    private final Map<String, List<Backup>> backups;
+    private final Map<String, List<String>> backups;
 
     public BackupContainer() {
         super();
-        this.backups = new HashMap<String, List<Backup>>();
+        this.backups = new HashMap<String, List<String>>();
     }
 
     public static BackupContainer fromJSON(JSONArray filesArray) {
@@ -46,8 +48,8 @@ public class BackupContainer {
                 JSONArray backupsArray = obj.optJSONArray(KEY_BACKUPS);
                 if (backupsArray != null) {
                     for (int j = 0; j < backupsArray.length(); j++) {
-                        Backup _backup = Backup.fromJSON(backupsArray.optJSONObject(j));
-                        if (_backup != null) {
+                        String _backup = backupsArray.optString(j);
+                        if (!TextUtils.isEmpty(_backup)) {
                             container.put(file, _backup);
                         }
                     }
@@ -59,16 +61,10 @@ public class BackupContainer {
 
     public JSONArray toJSON() {
         JSONArray array = new JSONArray();
-        Set<Map.Entry<String, List<Backup>>> entries = backups.entrySet();
-        for (Map.Entry<String, List<Backup>> entry : entries) {
+        Set<Map.Entry<String, List<String>>> entries = backups.entrySet();
+        for (Map.Entry<String, List<String>> entry : entries) {
             JSONObject obj = new JSONObject();
-            JSONArray arrayBackups = new JSONArray();
-            for (Backup backup : entry.getValue()) {
-                JSONObject _b = backup.toJSON();
-                if (_b != null) {
-                    arrayBackups.put(_b);
-                }
-            }
+            JSONArray arrayBackups = new JSONArray(entry.getValue());
             try {
                 obj.put(KEY_BACKUPS, arrayBackups);
                 obj.put(KEY_FILE, entry.getKey());
@@ -82,19 +78,19 @@ public class BackupContainer {
         return array;
     }
 
-    public void put(String key, Backup value) {
+    public void put(String key, String value) {
         if (backups.containsKey(key)) {
             backups.get(key).add(value);
         } else {
-            List<Backup> list = new ArrayList<Backup>();
+            List<String> list = new ArrayList<String>();
             list.add(value);
             backups.put(key, list);
         }
     }
 
-    public void remove(String key, Backup value) {
+    public void remove(String key, String value) {
         if (backups.containsKey(key)) {
-            List<Backup> list = backups.get(key);
+            List<String> list = backups.get(key);
             list.remove(value);
             if(list.isEmpty()){
                 backups.remove(key);
@@ -106,7 +102,7 @@ public class BackupContainer {
         return backups.containsKey(key);
     }
 
-    public List<Backup> get(String key) {
+    public List<String> get(String key) {
         return backups.get(key);
     }
 

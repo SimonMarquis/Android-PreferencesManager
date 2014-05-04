@@ -43,7 +43,6 @@ import java.util.Date;
 import java.util.List;
 
 import fr.simon.marquis.preferencesmanager.R;
-import fr.simon.marquis.preferencesmanager.model.Backup;
 import fr.simon.marquis.preferencesmanager.model.BackupContainer;
 import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnPreferenceFragmentInteractionListener;
@@ -200,7 +199,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
 
     @Override
     public void onBackupFile(String fullPath) {
-        Backup backup = new Backup(new Date().getTime());
+        String backup = String.valueOf(new Date().getTime());
         backupContainer.put(fullPath, backup);
 
         //TODO: asynctask
@@ -218,23 +217,23 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
     }
 
     @Override
-    public List<Backup> getBackups(String fullPath) {
+    public List<String> getBackups(String fullPath) {
         return backupContainer == null ? null : backupContainer.get(fullPath);
     }
 
     @Override
-    public String onRestoreFile(Backup backup, String fullPath) {
+    public String onRestoreFile(String backup, String fullPath) {
         final String separator = System.getProperty("file.separator");
-        RootTools.copyFile(getFilesDir().getAbsolutePath() + separator + backup.getTime(), fullPath, true, true);
+        RootTools.copyFile(getFilesDir().getAbsolutePath() + separator + Float.valueOf(backup), fullPath, true, true);
         RootTools.killProcess(packageName);
         Toast.makeText(this, R.string.file_restored, Toast.LENGTH_SHORT).show();
         return Utils.readFile(fullPath);
     }
 
     @Override
-    public List<Backup> onDeleteBackup(Backup backup, String fullPath) {
+    public List<String> onDeleteBackup(String backup, String fullPath) {
         backupContainer.remove(fullPath, backup);
-        deleteFile(String.valueOf(backup.getTime()));
+        deleteFile(backup);
         Utils.saveBackups(this, packageName, backupContainer);
         invalidateOptionsMenu();
         return backupContainer.get(fullPath);

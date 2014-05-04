@@ -50,7 +50,6 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import fr.simon.marquis.preferencesmanager.R;
-import fr.simon.marquis.preferencesmanager.model.Backup;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.model.PreferenceSortType;
 import fr.simon.marquis.preferencesmanager.model.PreferenceType;
@@ -435,7 +434,7 @@ public class PreferencesFragment extends Fragment {
 
         public boolean canRestoreFile(String fullPath);
 
-        public List<Backup> getBackups(String fullPath);
+        public List<String> getBackups(String fullPath);
     }
 
     public class ParsingTask extends AsyncTask<Void, Void, PreferenceFile> {

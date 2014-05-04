@@ -46,7 +46,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
-import fr.simon.marquis.preferencesmanager.model.Backup;
 import fr.simon.marquis.preferencesmanager.model.BackupContainer;
 import fr.simon.marquis.preferencesmanager.ui.RootDialog;
 
@@ -252,25 +251,25 @@ public class Utils {
         }
     }
 
-    public static boolean backupFile(Backup backup, String fileName, Context ctx) {
-        Log.d(TAG, String.format("backupFile(%s, %s)", String.valueOf(backup.getTime()), fileName));
+    public static boolean backupFile(String backup, String fileName, Context ctx) {
+        Log.d(TAG, String.format("backupFile(%s, %s)", backup, fileName));
         java.io.File filesDir = ctx.getFilesDir();
         if (filesDir == null) {
             return false;
         }
-        java.io.File destination = new java.io.File(ctx.getFilesDir(), String.valueOf(backup.getTime()));
+        java.io.File destination = new java.io.File(ctx.getFilesDir(), backup);
         RootTools.copyFile(fileName, destination.getAbsolutePath(), true, true);
         Log.d(TAG, String.format("backupFile --> " + destination));
         return true;
     }
 
 
-    public static String getBackupContent(Backup backup, Context ctx) {
-        Log.d(TAG, String.format("getBackupContent(%s)", String.valueOf(backup.getTime())));
+    public static String getBackupContent(String backup, Context ctx) {
+        Log.d(TAG, String.format("getBackupContent(%s)", backup));
         BufferedReader input = null;
         StringBuilder buffer = new StringBuilder();
         try {
-            input = new BufferedReader(new InputStreamReader(ctx.openFileInput(String.valueOf(backup.getTime()))));
+            input = new BufferedReader(new InputStreamReader(ctx.openFileInput(backup)));
             String line;
             while ((line = input.readLine()) != null) {
                 buffer.append(line).append(LINE_SEPARATOR);
