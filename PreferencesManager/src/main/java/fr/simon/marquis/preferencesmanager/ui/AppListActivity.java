@@ -208,10 +208,14 @@ public class AppListActivity extends ActionBarActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         boolean show = Utils.isShowSystemApps(this);
-        MenuItem item = menu.findItem(R.id.show_system_apps);
-        if (item != null) {
-            item.setTitle(show ? R.string.hide_system_apps : R.string.show_system_apps);
-            item.setIcon(show ? R.drawable.ic_action_show : R.drawable.ic_action_hide);
+        MenuItem showItem = menu.findItem(R.id.show_system_apps);
+        if (showItem != null) {
+            showItem.setTitle(show ? R.string.hide_system_apps : R.string.show_system_apps);
+            showItem.setIcon(show ? R.drawable.ic_action_show : R.drawable.ic_action_hide);
+        }
+        MenuItem themeItem = menu.findItem(R.id.switch_theme);
+        if (themeItem != null) {
+            themeItem.setTitle(App.theme.title);
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -228,6 +232,10 @@ public class AppListActivity extends ActionBarActivity {
                     Utils.setShowSystemApps(this, !Utils.isShowSystemApps(this));
                 }
                 invalidateOptionsMenu();
+                break;
+            case R.id.switch_theme:
+                ((App) getApplication()).switchTheme();
+                recreate();
                 break;
         }
         return super.onOptionsItemSelected(item);

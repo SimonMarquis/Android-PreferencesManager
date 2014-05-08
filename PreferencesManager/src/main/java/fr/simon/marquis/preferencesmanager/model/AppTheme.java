@@ -18,12 +18,17 @@ package fr.simon.marquis.preferencesmanager.model;
 import fr.simon.marquis.preferencesmanager.R;
 
 public enum AppTheme {
-    LIGHT(R.style.AppThemeLight), DARK(R.style.AppThemeDark);
+    LIGHT(R.style.AppThemeLight, R.string.dark_theme), DARK(R.style.AppThemeDark, R.string.light_theme);
 
     public static final AppTheme DEFAULT_THEME = DARK;
     public final int theme;
+    /**
+     * This is the title displayed in menu, so it's normal that's inverted
+     */
+    public final int title;
 
-    AppTheme(int theme) {
+    AppTheme(int theme, int title) {
         this.theme = theme;
+        this.title = title;
     }
 }

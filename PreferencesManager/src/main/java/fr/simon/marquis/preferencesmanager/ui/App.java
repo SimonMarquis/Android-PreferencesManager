@@ -44,6 +44,10 @@ public class App extends Application {
         }
     }
 
+    public void switchTheme() {
+        theme = theme == AppTheme.DARK ? AppTheme.LIGHT : AppTheme.DARK;
+    }
+
     public static RootFW getRoot() {
         if (root == null)
             root = new RootFW();

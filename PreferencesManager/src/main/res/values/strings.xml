@@ -97,6 +97,8 @@
     <string name="action_search">Search an app</string>
     <string name="show_system_apps">Show system apps</string>
     <string name="hide_system_apps">Hide system apps</string>
+    <string name="light_theme">Light theme</string>
+    <string name="dark_theme">Dark theme</string>
     <string name="show_popup">About</string>
 
     <string name="empty_preference_file_valid">No preference for this file</string>

@@ -93,6 +93,8 @@
     <string name="action_search">Chercher une application</string>
     <string name="show_system_apps">Afficher les applications Système</string>
     <string name="hide_system_apps">Cacher les applications Système</string>
+    <string name="light_theme">Thème clair</string>
+    <string name="dark_theme">Thème sombre</string>
     <string name="show_popup">A propos</string>
 
     <string name="empty_preference_file_valid">Aucune préférence pour ce fichier</string>
