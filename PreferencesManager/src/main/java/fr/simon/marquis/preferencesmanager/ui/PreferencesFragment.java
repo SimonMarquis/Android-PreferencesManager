@@ -186,8 +186,15 @@ public class PreferencesFragment extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.action_add).setEnabled(preferenceFile != null && preferenceFile.isValidPreferenceFile());
         menu.findItem(R.id.action_add).setIcon(preferenceFile != null && preferenceFile.isValidPreferenceFile() ? R.drawable.ic_action_add : R.drawable.ic_action_add_disabled);
-        menu.findItem(R.id.action_sort_alpha).setChecked(PreferencesActivity.preferenceSortType == PreferenceSortType.ALPHANUMERIC);
-        menu.findItem(R.id.action_sort_type).setChecked(PreferencesActivity.preferenceSortType == PreferenceSortType.TYPE_AND_ALPHANUMERIC);
+        MenuItem sortAlpha = menu.findItem(R.id.action_sort_alpha);
+        MenuItem sortType = menu.findItem(R.id.action_sort_type);
+        sortAlpha.setChecked(false);
+        sortType.setChecked(false);
+        if (PreferencesActivity.preferenceSortType == PreferenceSortType.ALPHANUMERIC) {
+            sortAlpha.setChecked(true);
+        } else if (PreferencesActivity.preferenceSortType == PreferenceSortType.TYPE_AND_ALPHANUMERIC) {
+            sortType.setChecked(true);
+        }
         menu.findItem(R.id.action_restore_file).setVisible(mListener != null && mListener.canRestoreFile(mFullPath));
         super.onPrepareOptionsMenu(menu);
     }
