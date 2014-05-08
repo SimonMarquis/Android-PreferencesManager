@@ -54,6 +54,9 @@ android {
     }
 
     buildTypes {
+        debug {
+            packageNameSuffix '.debug'
+        }
         release {
             runProguard false
             signingConfig signingConfigs.release
