@@ -34,6 +34,14 @@
 
     <color name="blue">#33b5e5</color>
 
+    <!-- Button colors -->
+    <color name="btn_background_light_normal">#ffffff</color>
+    <color name="btn_background_light_pressed">#e5e5e5</color>
+    <color name="btn_shadow_light">#cccccc</color>
+    <color name="btn_background_dark_normal">#474747</color>
+    <color name="btn_background_dark_pressed">#7e7e7e</color>
+    <color name="btn_shadow_dark">#2e2e2e</color>
+
     <!--     Default theme from eclipse -->
     <color name="xml_eclipse_tag">#3F7F7F</color>
     <color name="xml_eclipse_attribute_name">#7F007F</color>
