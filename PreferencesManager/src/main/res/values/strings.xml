@@ -32,7 +32,6 @@
     <string name="no_root_title">Problem detected</string>
     <string name="no_root_message">"Your device doesn't seem to be rooted!\nIn order to run this app, your device needs to be rooted."</string>
     <string name="no_root_button">Continue</string>
-    <string name="action_settings">Settings</string>
 
     <string name="popup_edit_message">This file has been modified.\nWould you like to save the changes?</string>
     <string name="toast_shortcut">Shortcut created</string>
@@ -98,6 +97,8 @@
     <string name="action_search">Search an app</string>
     <string name="show_system_apps">Show system apps</string>
     <string name="hide_system_apps">Hide system apps</string>
+    <string name="light_theme">Light theme</string>
+    <string name="dark_theme">Dark theme</string>
     <string name="show_popup">About</string>
 
     <string name="empty_preference_file_valid">No preference for this file</string>

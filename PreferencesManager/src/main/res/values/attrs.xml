@@ -105,4 +105,21 @@
         <attr name="floatLabelTextAppearance" format="reference" />
         <attr name="floatLabelSidePadding" format="reference|dimension" />
     </declare-styleable>
+
+    <attr name="color_btn_background_normal" format="color" />
+    <attr name="color_btn_background_pressed" format="color" />
+    <attr name="color_btn_shadow" format="color" />
+
+    <attr name="ic_action_cancel" format="reference" />
+
+    <attr name="custom_btn_drawable" format="reference" />
+
+    <attr name="card_purple" format="reference" />
+    <attr name="card_green" format="reference" />
+    <attr name="card_red" format="reference" />
+    <attr name="card_navy" format="reference" />
+    <attr name="card_teal" format="reference" />
+    <attr name="card_gold" format="reference" />
+    <attr name="card_unknown" format="reference" />
+
 </resources>

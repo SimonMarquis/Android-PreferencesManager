@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -17,7 +16,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="horizontal">
 
     <fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout
         style="@style/FloatLabelContainerValue"
@@ -42,10 +41,10 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@drawable/abc_list_selector_holo_light"
+        android:background="@drawable/selectable_background"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:scaleType="centerInside"
-        android:src="@drawable/abc_ic_clear_search_api_holo_light" />
+        android:src="?ic_action_cancel" />
 
 </LinearLayout>

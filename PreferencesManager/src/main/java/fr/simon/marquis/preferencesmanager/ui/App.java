@@ -16,11 +16,37 @@
 package fr.simon.marquis.preferencesmanager.ui;
 
 import android.app.Application;
+import android.preference.PreferenceManager;
+import android.util.Log;
 
 import com.spazedog.lib.rootfw.RootFW;
 
+import fr.simon.marquis.preferencesmanager.model.AppTheme;
+
 public class App extends Application {
     private static RootFW root;
+
+    public static AppTheme theme = AppTheme.DEFAULT_THEME;
+
+    @Override
+    public void onCreate() {
+        initTheme();
+        setTheme(theme.theme);
+        super.onCreate();
+    }
+
+    private void initTheme() {
+        try {
+            theme = AppTheme.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString(AppTheme.class.getSimpleName(), AppTheme.DEFAULT_THEME.name()));
+        } catch (IllegalArgumentException iae) {
+            Log.d(App.class.getSimpleName(), "No theme specified, using the default one");
+            theme = AppTheme.DEFAULT_THEME;
+        }
+    }
+
+    public void switchTheme() {
+        theme = theme == AppTheme.DARK ? AppTheme.LIGHT : AppTheme.DARK;
+    }
 
     public static RootFW getRoot() {
         if (root == null)

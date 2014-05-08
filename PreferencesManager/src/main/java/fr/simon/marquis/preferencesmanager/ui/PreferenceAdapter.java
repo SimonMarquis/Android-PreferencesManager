@@ -93,7 +93,7 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
         holder.background.setBackgroundResource(PreferenceType.getDialogLayout(item.getValue()));
         holder.name.setText(Ui.createSpannable(pattern, color, item.getKey()));
         holder.value.setText((item.getValue() == null ? null : Ui.createSpannable(pattern, color, item.getValue().toString())));
-        holder.selector.setBackgroundResource((checked != null && checked) ? R.drawable.abc_list_pressed_holo_light : R.drawable.abc_list_selector_holo_light);
+        holder.selector.setBackgroundResource((checked != null && checked) ? R.drawable.list_focused : R.drawable.selectable_background);
 
         return convertView;
     }

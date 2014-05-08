@@ -24,7 +24,7 @@
         android:id="@+id/item_selector"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/abc_list_selector_holo_light"
+        android:background="@drawable/selectable_background"
         android:orientation="vertical"
         tools:ignore="UselessParent">
 

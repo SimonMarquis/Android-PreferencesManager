@@ -76,6 +76,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setTheme(App.theme.theme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
 

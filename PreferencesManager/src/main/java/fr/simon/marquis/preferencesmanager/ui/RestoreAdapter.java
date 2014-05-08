@@ -15,7 +15,6 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -82,7 +81,7 @@ public class RestoreAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 backups = listener.onDeleteBackup(backup, fullPath);
-                if(backups == null || backups.isEmpty()){
+                if (backups == null || backups.isEmpty()) {
                     dialog.noMoreBackup();
                 } else {
                     notifyDataSetChanged();
