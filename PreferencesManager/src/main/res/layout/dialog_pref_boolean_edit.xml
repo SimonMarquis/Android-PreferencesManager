@@ -13,15 +13,23 @@
      limitations under the License.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     style="@style/PreferenceDialogContainer">
 
     <fr.simon.marquis.preferencesmanager.roboto.RobotoTextView
         android:id="@+id/title"
         style="@style/PreferenceDialogTitle" />
 
-    <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
-        android:id="@+id/key"
-        style="@style/EditTextKey" />
+    <fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout
+        style="@style/FloatLabelContainerKey"
+        app:floatLabelTextAppearance="@style/TextAppearance.PreferencesManager.FloatLabel.Purple">
+
+        <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
+            android:id="@+id/key"
+            style="@style/EditTextKey"
+            android:background="@drawable/edittext_purple_edit_text_holo_light" />
+
+    </fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout>
 
     <Switch
         android:id="@+id/value"

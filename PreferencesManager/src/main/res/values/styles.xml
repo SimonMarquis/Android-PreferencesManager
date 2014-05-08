@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,24 +14,32 @@
 -->
 <resources>
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+    <style name="AppThemeDark" parent="@style/Theme.AppCompat">
+        <item name="android:actionOverflowButtonStyle">@style/OverFlowStyle</item>
 
-    -->
-    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light">
-    <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-
-        -->
+        <item name="ic_action_cancel">@drawable/ic_action_cancel_dark</item>
+        <item name="custom_btn_drawable">@drawable/custom_btn_dark</item>
+        <item name="card_purple">@drawable/card_purpleborder_dark</item>
+        <item name="card_green">@drawable/card_greenborder_dark</item>
+        <item name="card_red">@drawable/card_redborder_dark</item>
+        <item name="card_navy">@drawable/card_navyborder_dark</item>
+        <item name="card_teal">@drawable/card_tealborder_dark</item>
+        <item name="card_gold">@drawable/card_goldborder_dark</item>
+        <item name="card_unknown">@drawable/card_unknown_dark</item>
     </style>
 
-    <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+    <style name="AppThemeLight" parent="@style/Theme.AppCompat.Light">
         <item name="android:actionOverflowButtonStyle">@style/OverFlowStyle</item>
+
+        <item name="ic_action_cancel">@drawable/ic_action_cancel_light</item>
+        <item name="custom_btn_drawable">@drawable/custom_btn_light</item>
+        <item name="card_purple">@drawable/card_purpleborder_light</item>
+        <item name="card_green">@drawable/card_greenborder_light</item>
+        <item name="card_red">@drawable/card_redborder_light</item>
+        <item name="card_navy">@drawable/card_navyborder_light</item>
+        <item name="card_teal">@drawable/card_tealborder_light</item>
+        <item name="card_gold">@drawable/card_goldborder_light</item>
+        <item name="card_unknown">@drawable/card_unknown_light</item>
     </style>
 
     <style name="OverFlowStyle" parent="Widget.AppCompat.ActionButton.Overflow">
@@ -51,29 +58,44 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
         <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
         <item name="typeface">robotoslab_light</item>
     </style>
-    
+
     <style name="PreferenceDialogBtn">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_margin">4dp</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:background">@drawable/btn</item>
+        <item name="android:background">?custom_btn_drawable</item>
         <item name="typeface">robotoslab_regular</item>
+    </style>
+
+    <style name="FloatLabelContainerKey">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
+    </style>
+
+    <style name="FloatLabelContainerValue">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginBottom">4dp</item>
+        <item name="android:layout_marginTop">4dp</item>
     </style>
 
     <style name="EditTextKey">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">20dp</item>
-        <item name="android:layout_marginRight">20dp</item>
-        <item name="android:layout_marginTop">20dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
         <item name="android:maxLines">2</item>
         <item name="android:ems">10</item>
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">left</item>
         <item name="android:hint">@string/hint_key</item>
         <item name="android:inputType">textNoSuggestions</item>
         <item name="typeface">robotoslab_regular</item>
@@ -82,14 +104,39 @@
     <style name="EditTextValue">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">20dp</item>
-        <item name="android:layout_marginRight">20dp</item>
-        <item name="android:layout_marginBottom">20dp</item>
-        <item name="android:layout_marginTop">5dp</item>
         <item name="android:ems">10</item>
-        <item name="android:gravity">center</item>
+        <item name="android:gravity">left</item>
         <item name="android:hint">@string/hint_value</item>
         <item name="typeface">robotoslab_regular</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel" parent="android:TextAppearance.Small">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel.Red" parent="TextAppearance.PreferencesManager.FloatLabel">
+        <item name="android:textColor">@drawable/float_label_red</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel.Green" parent="TextAppearance.PreferencesManager.FloatLabel">
+        <item name="android:textColor">@drawable/float_label_green</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel.Purple" parent="TextAppearance.PreferencesManager.FloatLabel">
+        <item name="android:textColor">@drawable/float_label_purple</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel.Navy" parent="TextAppearance.PreferencesManager.FloatLabel">
+        <item name="android:textColor">@drawable/float_label_navy</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel.Teal" parent="TextAppearance.PreferencesManager.FloatLabel">
+        <item name="android:textColor">@drawable/float_label_teal</item>
+    </style>
+
+    <style name="TextAppearance.PreferencesManager.FloatLabel.Gold" parent="TextAppearance.PreferencesManager.FloatLabel">
+        <item name="android:textColor">@drawable/float_label_gold</item>
     </style>
 
 </resources>

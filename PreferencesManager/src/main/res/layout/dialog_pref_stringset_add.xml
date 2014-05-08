@@ -21,9 +21,16 @@
         android:id="@+id/title"
         style="@style/PreferenceDialogTitle" />
 
-    <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
-        android:id="@+id/key"
-        style="@style/EditTextKey" />
+    <fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout
+        style="@style/FloatLabelContainerKey"
+        app:floatLabelTextAppearance="@style/TextAppearance.PreferencesManager.FloatLabel.Gold">
+
+        <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
+            android:id="@+id/key"
+            style="@style/EditTextKey"
+            android:background="@drawable/edittext_gold_edit_text_holo_light" />
+
+    </fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout>
 
     <ScrollView
         android:layout_width="wrap_content"
@@ -36,16 +43,15 @@
             android:id="@+id/value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical" />
     </ScrollView>
 
     <fr.simon.marquis.preferencesmanager.roboto.RobotoButton
         android:id="@+id/action_add_stringset_entry"
+        style="@style/PreferenceDialogBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn"
-        android:paddingLeft="4dp"
-        android:paddingRight="4dp"
+        android:layout_weight="0"
         android:text="@string/action_add_stringset_entry"
         app:typeface="robotoslab_regular" />
 

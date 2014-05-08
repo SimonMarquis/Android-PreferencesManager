@@ -78,6 +78,7 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
 
     @Override
     protected void onCreate(Bundle arg0) {
+        setTheme(App.theme.theme);
         super.onCreate(arg0);
         setContentView(R.layout.activity_file_editor);
 

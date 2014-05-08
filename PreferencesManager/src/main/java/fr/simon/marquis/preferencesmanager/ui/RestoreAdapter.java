@@ -82,7 +82,7 @@ public class RestoreAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 backups = listener.onDeleteBackup(backup, fullPath);
-                if(backups == null || backups.isEmpty()){
+                if (backups == null || backups.isEmpty()) {
                     dialog.noMoreBackup();
                 } else {
                     notifyDataSetChanged();

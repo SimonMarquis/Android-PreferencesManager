@@ -201,13 +201,13 @@ public class PreferenceDialog extends DialogFragment {
         final LinearLayout item = (LinearLayout) inflater.inflate(R.layout.row_stringset, null);
         assert item != null;
         layout.addView(item);
-        EditText editText = (EditText) item.getChildAt(0);
+        EditText editText = (EditText) ((ViewGroup) item.getChildAt(0)).getChildAt(1);
         View child = item.getChildAt(1);
         if (child != null) {
             child.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (((LinearLayout) mValue).getChildCount() > 1) {
+                    if (((LinearLayout) mValue).getChildCount() > 0) {
                         ((LinearLayout) mValue).removeView(item);
                     } else {
                         View childRoot = ((ViewGroup) mValue).getChildAt(0);
@@ -360,7 +360,7 @@ public class PreferenceDialog extends DialogFragment {
                     Set<String> set = new HashSet<String>();
                     LinearLayout container = (LinearLayout) mValue;
                     for (int i = 0; i < container.getChildCount(); i++) {
-                        set.add(((EditText) ((ViewGroup) container.getChildAt(i)).getChildAt(0)).getText().toString());
+                        set.add(((EditText) ((ViewGroup) ((ViewGroup) container.getChildAt(i)).getChildAt(0)).getChildAt(1)).getText().toString());
                     }
                     value = set;
                     break;
