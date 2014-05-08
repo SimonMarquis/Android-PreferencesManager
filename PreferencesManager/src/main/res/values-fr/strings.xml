@@ -28,7 +28,6 @@
     <string name="no_root_title">Problème détecté</string>
     <string name="no_root_message">"Votre système d'exploitation ne semble pas être root !\nPour faire fonctionner cette application, vous devez disposer des droits root."</string>
     <string name="no_root_button">Continuer</string>
-    <string name="action_settings">Paramètres</string>
 
     <string name="popup_edit_message">Ce fichier a été modifié.\nSouhaitez-vous sauvegarder ces changements ?</string>
     <string name="toast_shortcut">Raccourci créé</string>
