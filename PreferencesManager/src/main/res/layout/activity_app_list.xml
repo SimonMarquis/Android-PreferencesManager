@@ -29,6 +29,7 @@
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:scrollbarStyle="outsideOverlay"
+        android:listSelector="@drawable/selectable_background"
         android:visibility="gone" >
     </se.emilsjolander.stickylistheaders.StickyListHeadersListView>
 
