@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
@@ -31,6 +30,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+
+import com.stericson.RootTools.RootTools;
 
 import java.util.ArrayList;
 
@@ -50,12 +51,14 @@ public class AppListActivity extends ActionBarActivity {
     private View emptyView;
     private SearchView mSearchView;
     private GetApplicationsTask task;
+    private static boolean isRootAccessGiven = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setTheme(App.theme.theme);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list);
+        Utils.checkBackups(getApplicationContext());
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setTitle(Ui.applyCustomTypeFace(getString(R.string.app_name), this));
@@ -68,42 +71,43 @@ public class AppListActivity extends ActionBarActivity {
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                startPreferencesActivity((AppEntry) mAdapter.getItem(arg2));
+                if (isRootAccessGiven) {
+                    startPreferencesActivity((AppEntry) mAdapter.getItem(arg2));
+                } else {
+                    checkRoot();
+                }
             }
         });
+
+        if (savedInstanceState == null) {
+            checkRoot();
+        }
 
         if (savedInstanceState == null || Utils.getPreviousApps() == null) {
             startTask();
         } else {
             updateListView(Utils.getPreviousApps());
         }
-
-        if (savedInstanceState == null) {
-            checkIfIsRoot();
-        }
-
     }
 
-    private void checkIfIsRoot() {
-        new Handler().post(new Runnable() {
+    private void checkRoot() {
+        AsyncTask<Void, Void, Boolean> checking = new AsyncTask<Void, Void, Boolean>() {
+
             @Override
-            public void run() {
-                if (!App.getRoot().connected()) {
+            protected Boolean doInBackground(Void... params) {
+                return RootTools.isRootAvailable() && RootTools.isAccessGiven();
+            }
+
+            @Override
+            protected void onPostExecute(Boolean hasRoot) {
+                super.onPostExecute(hasRoot);
+                isRootAccessGiven = hasRoot;
+                if (!hasRoot) {
                     Utils.displayNoRoot(getFragmentManager());
                 }
             }
-        });
-    }
-
-    private void checkIfIsRootForce() {
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (!App.getRootForce().connected()) {
-                    Utils.displayNoRoot(getFragmentManager());
-                }
-            }
-        });
+        };
+        checking.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
     }
 
     /**
@@ -112,8 +116,8 @@ public class AppListActivity extends ActionBarActivity {
      * @param app to browse
      */
     private void startPreferencesActivity(AppEntry app) {
-        if (!App.getRoot().connected()) {
-            checkIfIsRootForce();
+        if (!RootTools.isRootAvailable() && RootTools.isAccessGiven()) {
+            Utils.displayNoRoot(getFragmentManager());
         } else {
             Intent i = new Intent(AppListActivity.this, PreferencesActivity.class);
             i.putExtra(PreferencesActivity.EXTRA_TITLE, app.getLabel());
@@ -128,11 +132,7 @@ public class AppListActivity extends ActionBarActivity {
     private boolean startTask() {
         if (task == null || task.isCancelled()) {
             task = new GetApplicationsTask(this);
-            if (Utils.hasHONEYCOMB()) {
-                task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
-            } else {
-                task.execute();
-            }
+            task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
             return true;
         }
         return false;

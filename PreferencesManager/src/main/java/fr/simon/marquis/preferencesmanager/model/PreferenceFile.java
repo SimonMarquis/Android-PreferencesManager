@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import fr.simon.marquis.preferencesmanager.ui.App;
 import fr.simon.marquis.preferencesmanager.ui.PreferencesActivity;
 import fr.simon.marquis.preferencesmanager.util.XmlUtils;
 
@@ -78,7 +77,7 @@ public class PreferenceFile {
         updateSort();
     }
 
-    private String toXml() {
+    public String toXml() {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         try {
             XmlUtils.writeMapXml(mPreferences, out);
@@ -158,34 +157,9 @@ public class PreferenceFile {
         }
     }
 
-    public static boolean saveFast(PreferenceFile prefFile, String mFile, String packageName) {
-        return saveFast(prefFile.toXml(), mFile, packageName);
-    }
-
-    /**
-     * Nicer way to save the preferences because we don't change permissions
-     *
-     * @param preferences .
-     * @param mFile       .
-     * @param packageName .
-     * @return .
-     */
-    public static boolean saveFast(String preferences, String mFile, String packageName) {
-        if (!isValid(preferences)) {
-            return false;
-        }
+    public boolean isValid() {
         try {
-            App.getRoot().file.write(mFile, preferences.replace("'", "'\"'\"'"), false);
-            App.getRoot().processes.kill(packageName);
-        } catch (Exception e) {
-            return false;
-        }
-        return true;
-    }
-
-    private static boolean isValid(String xml) {
-        try {
-            XmlUtils.readMapXml(new ByteArrayInputStream(xml.getBytes()));
+            XmlUtils.readMapXml(new ByteArrayInputStream(toXml().getBytes()));
         } catch (Exception e) {
             return false;
         }

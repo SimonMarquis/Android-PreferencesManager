@@ -40,7 +40,7 @@ If you want to start to create a new feature or have any other questions regardi
 
 ## Credits
 
- * [SpazeDog][2] - Author of [RootFW][3], an Android Root Shell Framework.
+ * [Stericson][2] - Author of [RootTools][3], an Android Root Shell Framework.
 
 ## License
 
@@ -60,8 +60,8 @@ If you want to start to create a new feature or have any other questions regardi
 
 
  [1]: http://www.simon-marquis.fr
- [2]: https://github.com/SpazeDog
- [3]: https://github.com/SpazeDog/rootfw
+ [2]: https://github.com/Stericson
+ [3]: https://github.com/Stericson/RootTools
  
  [screen1]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/1%20-%20resized.png "List of applications"
  [screen2]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/2%20-%20resized.png "List of preferences"
