@@ -19,12 +19,9 @@ import android.app.Application;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.spazedog.lib.rootfw.RootFW;
-
 import fr.simon.marquis.preferencesmanager.model.AppTheme;
 
 public class App extends Application {
-    private static RootFW root;
 
     public static AppTheme theme = AppTheme.DEFAULT_THEME;
 
@@ -48,21 +45,4 @@ public class App extends Application {
         theme = theme == AppTheme.DARK ? AppTheme.LIGHT : AppTheme.DARK;
     }
 
-    public static RootFW getRoot() {
-        if (root == null)
-            root = new RootFW();
-        return root;
-    }
-
-    public static RootFW getRootForce() {
-        if (root == null) {
-            return getRoot();
-        }
-
-        if (!root.connected()) {
-            root = new RootFW();
-        }
-
-        return root;
-    }
 }

@@ -22,51 +22,57 @@ import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.spazedog.lib.rootfw.container.Data;
-import com.spazedog.lib.rootfw.container.FileStat;
+import com.stericson.RootTools.RootTools;
+import com.stericson.RootTools.execution.CommandCapture;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
-import fr.simon.marquis.preferencesmanager.model.Backup;
 import fr.simon.marquis.preferencesmanager.model.BackupContainer;
-import fr.simon.marquis.preferencesmanager.model.File;
-import fr.simon.marquis.preferencesmanager.model.Files;
-import fr.simon.marquis.preferencesmanager.ui.App;
+import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
 import fr.simon.marquis.preferencesmanager.ui.RootDialog;
 
 public class Utils {
 
-    public static final String TAG = "PreferencesManager";
+    public static final String TAG = Utils.class.getSimpleName();
     private static final String FAVORITES_KEY = "FAVORITES_KEY";
+    private static final String VERSION_CODE_KEY = "VERSION_CODE";
+    public static final String BACKUP_PREFIX = "BACKUP_";
     private static final String TAG_ROOT_DIALOG = "RootDialog";
     private static final String PREF_SHOW_SYSTEM_APPS = "SHOW_SYSTEM_APPS";
-    private static final String BASE_PATH = "data/data/";
+    public static final String CMD_FIND_XML_FILES = "find /data/data/%s -type f -name \\*.xml";
+    public static final String CMD_CHOWN = "chown %s.%s %s";
+    public static final String CMD_CAT_FILE = "cat %s";
+    public static final String TMP_FILE = ".temp";
+    public static final String FILE_SEPARATOR = System.getProperty("file.separator");
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    private static final String PACKAGE_NAME_PATTERN = "^[a-zA-Z_\\$][\\w\\$]*(?:\\.[a-zA-Z_\\$][\\w\\$]*)*$";
+
     private static ArrayList<AppEntry> applications;
     private static HashSet<String> favorites;
 
-    public static ArrayList<AppEntry> getPreviousApps() {
-        return applications;
+    public static void displayNoRoot(FragmentManager fm) {
+        fm.beginTransaction().add(RootDialog.newInstance(), TAG_ROOT_DIALOG).commitAllowingStateLoss();
     }
 
-    public static void displayNoRoot(FragmentManager fm) {
-        RootDialog.newInstance().show(fm, TAG_ROOT_DIALOG);
+    public static ArrayList<AppEntry> getPreviousApps() {
+        return applications;
     }
 
     public static ArrayList<AppEntry> getApplications(Context ctx) {
@@ -90,13 +96,13 @@ public class Utils {
             Collections.sort(entries, new MyComparator());
             applications = new ArrayList<AppEntry>(entries);
         }
+        Log.d(TAG, "Applications: " + Arrays.toString(applications.toArray()));
         return applications;
     }
 
     public static void setFavorite(String packageName, boolean favorite, Context ctx) {
-        if (favorites == null) {
-            initFavorites(ctx);
-        }
+        Log.d(TAG, String.format("setFavorite(%s, %s)", packageName, favorite));
+        initFavorites(ctx);
 
         if (favorite) {
             favorites.add(packageName);
@@ -105,24 +111,18 @@ public class Utils {
         }
 
         Editor ed = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
-
-        if (favorites.size() == 0) {
+        if (favorites.isEmpty()) {
             ed.remove(FAVORITES_KEY);
         } else {
-            JSONArray array = new JSONArray(favorites);
-            ed.putString(FAVORITES_KEY, array.toString());
+            ed.putString(FAVORITES_KEY, new JSONArray(favorites).toString());
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
-            ed.apply();
-        } else {
-            ed.commit();
-        }
-
+        ed.apply();
         updateApplicationInfo(packageName, favorite);
     }
 
     private static void updateApplicationInfo(String packageName, boolean favorite) {
+        Log.d(TAG, String.format("updateApplicationInfo(%s, %s)", packageName, favorite));
         for (AppEntry a : applications) {
             if (a.getApplicationInfo().packageName.equals(packageName)) {
                 a.setFavorite(favorite);
@@ -132,9 +132,7 @@ public class Utils {
     }
 
     public static boolean isFavorite(String packageName, Context ctx) {
-        if (favorites == null) {
-            initFavorites(ctx);
-        }
+        initFavorites(ctx);
         return favorites.contains(packageName);
     }
 
@@ -162,114 +160,184 @@ public class Utils {
     }
 
     public static void setShowSystemApps(Context ctx, boolean show) {
+        Log.d(TAG, String.format("setShowSystemApps(%s)", show));
         Editor e = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
         e.putBoolean(PREF_SHOW_SYSTEM_APPS, show);
         e.commit();
     }
 
-    public static void debugFile(String file) {
-        FileStat fileStat = App.getRoot().file.stat(file);
-        Log.d(Utils.TAG, file + " [ `" + fileStat.access() + "` , `" + fileStat.link() + "` , `" + fileStat.mm() + "` , `" + fileStat.name() + "` , `" + fileStat.permission() + "` , `" + fileStat.type() + "` , `" + fileStat.group() + "` , `" + fileStat.size() + "` , `" + fileStat.user() + "` ]");
-    }
-
-    public static boolean hasHONEYCOMB() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
-    }
-
-    public static Files findXmlFiles(String packageName) {
-        String path = BASE_PATH + packageName;
-        ArrayList<FileStat> files = App.getRoot().file.statList(path);
-        return findFiles(files, path, new Files());
-    }
-
-    private static Files findFiles(ArrayList<FileStat> files, String path, Files list) {
-        if (files == null)
-            return list;
-
-        for (FileStat file : files) {
-            if (file == null || TextUtils.isEmpty(file.name()))
-                continue;
-            if (".".equals(file.name()) || "..".equals(file.name()))
-                continue;
-            if ("d".equals(file.type())) {
-                String p = path + "/" + file.name();
-                findFiles(App.getRoot().file.statList(p), p, list);
-                continue;
+    public static ArrayList<String> findXmlFiles(final String packageName) {
+        Log.d(TAG, String.format("findXmlFiles(%s)", packageName));
+        final ArrayList<String> files = new ArrayList<String>();
+        CommandCapture cmd = new CommandCapture(CMD_FIND_XML_FILES.hashCode(), false, String.format(CMD_FIND_XML_FILES, packageName)) {
+            @Override
+            public void commandOutput(int i, String s) {
+                if (!files.contains(s)) {
+                    files.add(s);
+                }
             }
-            if ("f".equals(file.type()) && file.name().endsWith(".xml")) {
-                list.add(new File(file.name(), path));
+        };
+
+        synchronized (cmd) {
+            try {
+                RootTools.getShell(true).add(cmd).wait();
+            } catch (Exception e) {
+                Log.e(TAG, "Error in findXmlFiles", e);
+            }
+        }
+        Log.d(TAG, "files: " + Arrays.toString(files.toArray()));
+        return files;
+    }
+
+    public static String readFile(String file) {
+        Log.d(TAG, String.format("readFile(%s)", file));
+        final StringBuilder sb = new StringBuilder();
+        CommandCapture cmd = new CommandCapture(0, false, String.format(CMD_CAT_FILE, file)) {
+            @Override
+            public void commandOutput(int i, String s) {
+                sb.append(s).append(LINE_SEPARATOR);
+            }
+        };
+
+        synchronized (cmd) {
+            try {
+                RootTools.getShell(true).add(cmd).wait();
+            } catch (Exception e) {
+                Log.e(TAG, "Error in readFile", e);
             }
         }
 
-        return list;
+        return sb.toString();
+    }
+
+    public static void checkBackups(Context ctx) {
+        Log.d(TAG, "checkBackups");
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
+        boolean needToBackport = needToBackport(sp);
+        Log.d(TAG, "needToBackport ? " + needToBackport);
+        saveVersionCode(ctx, sp);
+        if (!needToBackport) {
+            return;
+        }
+        backportBackups(ctx);
+    }
+
+    private static void backportBackups(Context ctx) {
+        Log.d(TAG, "backportBackups");
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
+        Editor editor = sp.edit();
+        Map<String, ?> keys = sp.getAll();
+        if (keys == null) {
+            return;
+        }
+
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            String key = entry.getKey();
+            String value = String.valueOf(entry.getValue());
+
+            Log.d(TAG, "key: " + key);
+
+            if (!key.startsWith(BACKUP_PREFIX) && key.matches(PACKAGE_NAME_PATTERN) && value.contains("FILE") && value.contains("BACKUPS")) {
+                Log.d(TAG, " need to be updated");
+                JSONArray array = null;
+                try {
+                    array = new JSONArray(value);
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject container = array.getJSONObject(i);
+                        String file = container.getString("FILE");
+                        if (!file.startsWith(FILE_SEPARATOR)) {
+                            container.put("FILE", FILE_SEPARATOR + file);
+                        }
+                        JSONArray backups = container.getJSONArray("BACKUPS");
+                        ArrayList<String> values = new ArrayList<String>(backups.length());
+                        for (int j = 0; j < backups.length(); j++) {
+                            values.add(String.valueOf(backups.getJSONObject(j).getLong("TIME")));
+                        }
+                        container.put("BACKUPS", new JSONArray(values));
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error trying to backport Backups", e);
+                }
+                if (array != null) {
+                    editor.putString(BACKUP_PREFIX + key, array.toString());
+                }
+                editor.remove(key);
+            }
+        }
+
+        editor.commit();
+    }
+
+    private static boolean needToBackport(SharedPreferences sp) {
+        // 18 was the latest version code release with old Backup system
+        return sp.getInt(VERSION_CODE_KEY, 0) <= 18;
+    }
+
+    private static void saveVersionCode(Context ctx, SharedPreferences sp) {
+        try {
+            sp.edit().putInt(VERSION_CODE_KEY, ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode).commit();
+        } catch (Exception e) {
+            Log.e(TAG, "Error trying to save the version code", e);
+        }
     }
 
     public static BackupContainer getBackups(Context ctx, String packageName) {
+        Log.d(TAG, String.format("getBackups(%s)", packageName));
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
         BackupContainer container = null;
         try {
-            container = BackupContainer.fromJSON(new JSONArray(sp.getString(packageName, "[]")));
+            container = BackupContainer.fromJSON(new JSONArray(sp.getString(BACKUP_PREFIX + packageName, "[]")));
         } catch (JSONException ignore) {
         }
         if (container == null) {
             container = new BackupContainer();
         }
+        Log.d(TAG, "backups: " + container.toJSON().toString());
         return container;
     }
 
     public static void saveBackups(Context ctx, String packageName, BackupContainer container) {
+        Log.d(TAG, String.format("saveBackups(%s, %s)", packageName, container.toJSON().toString()));
         Editor ed = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
-        String str = container.toJSON().toString();
-        ed.putString(packageName, str);
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.GINGERBREAD) {
-            ed.apply();
+        if (container.isEmpty()) {
+            ed.remove(BACKUP_PREFIX + packageName);
         } else {
-            ed.commit();
+            ed.putString(BACKUP_PREFIX + packageName, container.toJSON().toString());
         }
+        ed.apply();
     }
 
-    public static boolean backupFile(Backup backup, Data data, Context ctx) {
-        String filename = String.valueOf(backup.getTime());
-        FileOutputStream outputStream;
-        try {
-            outputStream = ctx.openFileOutput(filename, Context.MODE_PRIVATE);
-            outputStream.write(data.toString().getBytes());
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+    public static boolean backupFile(String backup, String fileName, Context ctx) {
+        Log.d(TAG, String.format("backupFile(%s, %s)", backup, fileName));
+        File destination = new File(ctx.getFilesDir(), backup);
+        if (!RootTools.copyFile(fileName, destination.getAbsolutePath(), true, true)) {
+            Log.e(TAG, "Error copyFile");
             return false;
         }
+        Log.d(TAG, String.format("backupFile --> " + destination));
         return true;
     }
 
-
-    public static String getBackupContent(Backup backup, Context ctx) {
-        String eol = System.getProperty("line.separator");
-        BufferedReader input = null;
-        StringBuilder buffer = new StringBuilder();
-        try {
-            input = new BufferedReader(new InputStreamReader(ctx.openFileInput(String.valueOf(backup.getTime()))));
-            String line;
-            while ((line = input.readLine()) != null) {
-                buffer.append(line).append(eol);
-            }
-        } catch (FileNotFoundException e) {
-            Log.e(TAG, "File not found: " + e.toString());
-            return null;
-        } catch (IOException e) {
-            Log.e(TAG, "Can not read file: " + e.toString());
-            return null;
-        } finally {
-            if (input != null) {
-                try {
-                    input.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+    public static boolean restoreFile(Context ctx, String backup, String fileName, String packageName) {
+        Log.d(TAG, String.format("restoreFile(%s, %s, %s)", backup, fileName, packageName));
+        File backupFile = new File(ctx.getFilesDir(), backup);
+        if (!RootTools.copyFile(backupFile.getAbsolutePath(), fileName, true, true)) {
+            Log.e(TAG, "Error copyFile");
+            return false;
         }
-        return buffer.toString();
+
+        if (!fixUserAndGroupId(ctx, fileName, packageName)) {
+            Log.e(TAG, "Error fixUserAndGroupId");
+            return false;
+        }
+
+        if (!RootTools.killProcess(packageName)) {
+            Log.e(TAG, "Error killProcess");
+            return false;
+        }
+
+        Log.d(TAG, String.format("restoreFile --> " + fileName));
+        return true;
     }
 
     public static Drawable findDrawable(String packageName, Context ctx) {
@@ -300,4 +368,105 @@ public class Utils {
         return null;
     }
 
+    public static String extractFileName(String s) {
+        if (TextUtils.isEmpty(s)) {
+            return null;
+        }
+        return s.substring(s.lastIndexOf(FILE_SEPARATOR) + 1);
+    }
+
+    public static String extractFilePath(String s) {
+        if (TextUtils.isEmpty(s)) {
+            return null;
+        }
+        return s.substring(0, Math.max(s.length(), s.lastIndexOf(FILE_SEPARATOR)));
+    }
+
+    public static boolean savePreferences(PreferenceFile preferenceFile, String file, String packageName, Context ctx) {
+        Log.d(TAG, String.format("savePreferences(%s, %s)", file, packageName));
+        if (preferenceFile == null) {
+            Log.e(TAG, "Error preferenceFile is null");
+            return false;
+        }
+
+        if (!preferenceFile.isValid()) {
+            Log.e(TAG, "Error preferenceFile is not valid");
+            return false;
+        }
+
+        String preferences = preferenceFile.toXml();
+        if (TextUtils.isEmpty(preferences)) {
+            Log.e(TAG, "Error preferences is empty");
+            return false;
+        }
+
+        File tmpFile = new File(ctx.getFilesDir(), TMP_FILE);
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(ctx.openFileOutput(TMP_FILE, Context.MODE_PRIVATE));
+            outputStreamWriter.write(preferences);
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            Log.e(TAG, "Error writing temporary file", e);
+            return false;
+        }
+
+        if (!RootTools.copyFile(tmpFile.getAbsolutePath(), file, true, false)) {
+            Log.e(TAG, "Error copyFile from temporary file");
+            return false;
+        }
+
+        if (!fixUserAndGroupId(ctx, file, packageName)) {
+            Log.e(TAG, "Error fixUserAndGroupId");
+            return false;
+        }
+
+        if (!tmpFile.delete()) {
+            Log.e(TAG, "Error deleting temporary file");
+        }
+
+        RootTools.killProcess(packageName);
+        Log.d(TAG, "Preferences correctly updated");
+        return true;
+    }
+
+
+    /**
+     * Put User id and Group id back to the corresponding app with this cmd: `chown uid.gid filename`
+     *
+     * @param ctx         Context
+     * @param file        The file to fix
+     * @param packageName The packageName of the app
+     * @return true if success
+     */
+    private static boolean fixUserAndGroupId(Context ctx, String file, String packageName) {
+        Log.d(TAG, String.format("fixUserAndGroupId(%s, %s)", file, packageName));
+        String uid;
+        PackageManager pm = ctx.getPackageManager();
+        if (pm == null) {
+            return false;
+        }
+        try {
+            ApplicationInfo appInfo = pm.getApplicationInfo(packageName, 0);
+            uid = String.valueOf(appInfo.uid);
+        } catch (PackageManager.NameNotFoundException e) {
+            Log.e(TAG, "error while getting uid", e);
+            return false;
+        }
+
+        if (TextUtils.isEmpty(uid)) {
+            Log.d(TAG, "uid is undefined");
+            return false;
+        }
+
+        CommandCapture cmd = new CommandCapture(CMD_CHOWN.hashCode(), false, String.format(CMD_CHOWN, uid, uid, file));
+        synchronized (cmd) {
+            try {
+                RootTools.getShell(true).add(cmd).wait();
+            } catch (Exception e) {
+                Log.e(TAG, "Error in fixPermissions", e);
+                return false;
+            }
+        }
+        return true;
+    }
 }

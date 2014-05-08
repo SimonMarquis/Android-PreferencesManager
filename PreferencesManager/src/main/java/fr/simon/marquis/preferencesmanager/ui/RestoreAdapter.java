@@ -16,6 +16,7 @@
 package fr.simon.marquis.preferencesmanager.ui;
 
 import android.content.Context;
+import android.text.format.DateUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +25,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import fr.simon.marquis.preferencesmanager.R;
-import fr.simon.marquis.preferencesmanager.model.Backup;
 
 public class RestoreAdapter extends BaseAdapter {
 
@@ -35,9 +36,9 @@ public class RestoreAdapter extends BaseAdapter {
     private final String fullPath;
     private final RestoreDialogFragment.OnRestoreFragmentInteractionListener listener;
     private final RestoreDialogFragment dialog;
-    private List<Backup> backups;
+    private List<String> backups;
 
-    public RestoreAdapter(Context ctx, RestoreDialogFragment dialog, List<Backup> backups, RestoreDialogFragment.OnRestoreFragmentInteractionListener listener, String fullPath) {
+    public RestoreAdapter(Context ctx, RestoreDialogFragment dialog, List<String> backups, RestoreDialogFragment.OnRestoreFragmentInteractionListener listener, String fullPath) {
         Collections.sort(backups);
         this.ctx = ctx;
         this.backups = backups;
@@ -75,8 +76,8 @@ public class RestoreAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final Backup backup = backups.get(position);
-        holder.label.setText(backup.getDisplayLabel(ctx));
+        final String backup = backups.get(position);
+        holder.label.setText(getDisplayLabel(ctx, Long.valueOf(backup)));
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,5 +96,23 @@ public class RestoreAdapter extends BaseAdapter {
     private static class ViewHolder {
         private ImageButton delete;
         private TextView label;
+    }
+
+    public String getDisplayLabel(Context ctx, long time) {
+        return upperFirstLetter(DateUtils.formatDateTime(ctx, time, DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_WEEKDAY)) + " (" + lowerFirstLetter(DateUtils.getRelativeTimeSpanString(time, new Date().getTime(), DateUtils.SECOND_IN_MILLIS).toString()) + ")";
+    }
+
+    private String upperFirstLetter(String original) {
+        if (original.length() == 0) {
+            return original;
+        }
+        return original.substring(0, 1).toUpperCase() + original.substring(1);
+    }
+
+    private String lowerFirstLetter(String original) {
+        if (original.length() == 0) {
+            return original;
+        }
+        return original.substring(0, 1).toLowerCase() + original.substring(1);
     }
 }
