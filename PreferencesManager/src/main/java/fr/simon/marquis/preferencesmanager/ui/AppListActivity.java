@@ -51,6 +51,7 @@ public class AppListActivity extends ActionBarActivity {
     private View emptyView;
     private SearchView mSearchView;
     private GetApplicationsTask task;
+    private boolean isRootAccessGiven = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,22 +69,43 @@ public class AppListActivity extends ActionBarActivity {
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                startPreferencesActivity((AppEntry) mAdapter.getItem(arg2));
+                if (isRootAccessGiven) {
+                    startPreferencesActivity((AppEntry) mAdapter.getItem(arg2));
+                } else {
+                    checkRoot();
+                }
             }
         });
+
+        if (savedInstanceState == null) {
+            checkRoot();
+        }
 
         if (savedInstanceState == null || Utils.getPreviousApps() == null) {
             startTask();
         } else {
             updateListView(Utils.getPreviousApps());
         }
+    }
 
-        if (savedInstanceState == null) {
-            if (!RootTools.isRootAvailable() && RootTools.isAccessGiven()) {
-                Utils.displayNoRoot(getFragmentManager());
+    private void checkRoot() {
+        AsyncTask<Void, Void, Boolean> checking = new AsyncTask<Void, Void, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return RootTools.isRootAvailable() && RootTools.isAccessGiven();
             }
-        }
 
+            @Override
+            protected void onPostExecute(Boolean hasRoot) {
+                super.onPostExecute(hasRoot);
+                isRootAccessGiven = hasRoot;
+                if (!hasRoot) {
+                    Utils.displayNoRoot(getFragmentManager());
+                }
+            }
+        };
+        checking.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, (Void[]) null);
     }
 
     /**

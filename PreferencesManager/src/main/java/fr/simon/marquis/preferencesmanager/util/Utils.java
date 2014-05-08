@@ -63,7 +63,7 @@ public class Utils {
     private static HashSet<String> favorites;
 
     public static void displayNoRoot(FragmentManager fm) {
-        RootDialog.newInstance().show(fm, TAG_ROOT_DIALOG);
+        fm.beginTransaction().add(RootDialog.newInstance(), TAG_ROOT_DIALOG).commitAllowingStateLoss();
     }
 
     public static ArrayList<AppEntry> getPreviousApps() {
