@@ -31,6 +31,7 @@ import com.stericson.RootTools.execution.CommandCapture;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.model.BackupContainer;
@@ -50,6 +52,8 @@ public class Utils {
 
     public static final String TAG = Utils.class.getSimpleName();
     private static final String FAVORITES_KEY = "FAVORITES_KEY";
+    private static final String VERSION_CODE_KEY = "VERSION_CODE";
+    public static final String BACKUP_PREFIX = "BACKUP_";
     private static final String TAG_ROOT_DIALOG = "RootDialog";
     private static final String PREF_SHOW_SYSTEM_APPS = "SHOW_SYSTEM_APPS";
     public static final String CMD_FIND_XML_FILES = "find /data/data/%s -type f -name \\*.xml";
@@ -58,6 +62,7 @@ public class Utils {
     public static final String TMP_FILE = ".temp";
     public static final String FILE_SEPARATOR = System.getProperty("file.separator");
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+    private static final String PACKAGE_NAME_PATTERN = "^[a-zA-Z_\\$][\\w\\$]*(?:\\.[a-zA-Z_\\$][\\w\\$]*)*$";
 
     private static ArrayList<AppEntry> applications;
     private static HashSet<String> favorites;
@@ -205,12 +210,83 @@ public class Utils {
         return sb.toString();
     }
 
+    public static void checkBackups(Context ctx) {
+        Log.d(TAG, "checkBackups");
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
+        boolean needToBackport = needToBackport(sp);
+        Log.d(TAG, "needToBackport ? " + needToBackport);
+        saveVersionCode(ctx, sp);
+        if (!needToBackport) {
+            return;
+        }
+        backportBackups(ctx);
+    }
+
+    private static void backportBackups(Context ctx) {
+        Log.d(TAG, "backportBackups");
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
+        Editor editor = sp.edit();
+        Map<String, ?> keys = sp.getAll();
+        if (keys == null) {
+            return;
+        }
+
+        for (Map.Entry<String, ?> entry : keys.entrySet()) {
+            String key = entry.getKey();
+            String value = String.valueOf(entry.getValue());
+
+            Log.d(TAG, "key: " + key);
+
+            if (!key.startsWith(BACKUP_PREFIX) && key.matches(PACKAGE_NAME_PATTERN) && value.contains("FILE") && value.contains("BACKUPS")) {
+                Log.d(TAG, " need to be updated");
+                JSONArray array = null;
+                try {
+                    array = new JSONArray(value);
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject container = array.getJSONObject(i);
+                        String file = container.getString("FILE");
+                        if (!file.startsWith(FILE_SEPARATOR)) {
+                            container.put("FILE", FILE_SEPARATOR + file);
+                        }
+                        JSONArray backups = container.getJSONArray("BACKUPS");
+                        ArrayList<String> values = new ArrayList<String>(backups.length());
+                        for (int j = 0; j < backups.length(); j++) {
+                            values.add(String.valueOf(backups.getJSONObject(j).getLong("TIME")));
+                        }
+                        container.put("BACKUPS", new JSONArray(values));
+                    }
+                } catch (JSONException e) {
+                    Log.e(TAG, "Error trying to backport Backups", e);
+                }
+                if (array != null) {
+                    editor.putString(BACKUP_PREFIX + key, array.toString());
+                }
+                editor.remove(key);
+            }
+        }
+
+        editor.commit();
+    }
+
+    private static boolean needToBackport(SharedPreferences sp) {
+        // 18 was the latest version code release with old Backup system
+        return sp.getInt(VERSION_CODE_KEY, 0) <= 18;
+    }
+
+    private static void saveVersionCode(Context ctx, SharedPreferences sp) {
+        try {
+            sp.edit().putInt(VERSION_CODE_KEY, ctx.getPackageManager().getPackageInfo(ctx.getPackageName(), 0).versionCode).commit();
+        } catch (Exception e) {
+            Log.e(TAG, "Error trying to save the version code", e);
+        }
+    }
+
     public static BackupContainer getBackups(Context ctx, String packageName) {
         Log.d(TAG, String.format("getBackups(%s)", packageName));
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
         BackupContainer container = null;
         try {
-            container = BackupContainer.fromJSON(new JSONArray(sp.getString(packageName, "[]")));
+            container = BackupContainer.fromJSON(new JSONArray(sp.getString(BACKUP_PREFIX + packageName, "[]")));
         } catch (JSONException ignore) {
         }
         if (container == null) {
@@ -223,8 +299,11 @@ public class Utils {
     public static void saveBackups(Context ctx, String packageName, BackupContainer container) {
         Log.d(TAG, String.format("saveBackups(%s, %s)", packageName, container.toJSON().toString()));
         Editor ed = PreferenceManager.getDefaultSharedPreferences(ctx).edit();
-        String str = container.toJSON().toString();
-        ed.putString(packageName, str);
+        if (container.isEmpty()) {
+            ed.remove(BACKUP_PREFIX + packageName);
+        } else {
+            ed.putString(BACKUP_PREFIX + packageName, container.toJSON().toString());
+        }
         ed.apply();
     }
 

@@ -106,4 +106,7 @@ public class BackupContainer {
         return backups.get(key);
     }
 
+    public boolean isEmpty() {
+        return backups.isEmpty();
+    }
 }

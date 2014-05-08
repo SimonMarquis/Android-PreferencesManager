@@ -57,6 +57,7 @@ public class AppListActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_app_list);
+        Utils.checkBackups(getApplicationContext());
         ActionBar actionBar = getActionBar();
         if (actionBar != null) {
             actionBar.setTitle(Ui.applyCustomTypeFace(getString(R.string.app_name), this));
