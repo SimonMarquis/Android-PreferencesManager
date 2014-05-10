@@ -56,6 +56,7 @@ android {
     buildTypes {
         debug {
             packageNameSuffix '.debug'
+            versionNameSuffix '-debug'
         }
         release {
             runProguard false
