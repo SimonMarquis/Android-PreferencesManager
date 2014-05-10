@@ -20,7 +20,7 @@
     android:descendantFocusability="blocksDescendants"
     android:showDividers="middle"
     android:gravity="center_vertical"
-    android:divider="?android:attr/listDivider"
+    android:divider="?android:dividerVertical"
     android:dividerPadding="8dp"
     android:minHeight="?android:attr/listPreferredItemHeight">
 
@@ -38,6 +38,7 @@
 
 
     <ImageButton
+        style="?android:borderlessButtonStyle"
         android:id="@+id/item_delete"
         android:focusable="false"
         android:focusableInTouchMode="false"
@@ -45,7 +46,6 @@
         android:layout_height="match_parent"
         android:minWidth="48dp"
         android:minHeight="48dp"
-        android:src="@drawable/ic_action_trash"
-        android:background="?android:selectableItemBackground" />
+        android:src="@drawable/ic_action_trash" />
 
 </LinearLayout>
