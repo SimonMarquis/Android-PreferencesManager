@@ -20,6 +20,7 @@ import fr.simon.marquis.preferencesmanager.R;
 public enum AppTheme {
     LIGHT(R.style.AppThemeLight, R.string.dark_theme), DARK(R.style.AppThemeDark, R.string.light_theme);
 
+    public static final String APP_THEME_KEY = "APP_THEME_KEY";
     public static final AppTheme DEFAULT_THEME = LIGHT;
     public final int theme;
     /**

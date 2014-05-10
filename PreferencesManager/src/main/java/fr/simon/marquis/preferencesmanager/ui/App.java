@@ -34,7 +34,7 @@ public class App extends Application {
 
     private void initTheme() {
         try {
-            theme = AppTheme.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString(AppTheme.class.getSimpleName(), AppTheme.DEFAULT_THEME.name()));
+            theme = AppTheme.valueOf(PreferenceManager.getDefaultSharedPreferences(this).getString(AppTheme.APP_THEME_KEY, AppTheme.DEFAULT_THEME.name()));
         } catch (IllegalArgumentException iae) {
             Log.d(App.class.getSimpleName(), "No theme specified, using the default one");
             theme = AppTheme.DEFAULT_THEME;
@@ -43,6 +43,7 @@ public class App extends Application {
 
     public void switchTheme() {
         theme = theme == AppTheme.DARK ? AppTheme.LIGHT : AppTheme.DARK;
+        PreferenceManager.getDefaultSharedPreferences(this).edit().putString(AppTheme.APP_THEME_KEY, theme.name()).commit();
     }
 
 }
