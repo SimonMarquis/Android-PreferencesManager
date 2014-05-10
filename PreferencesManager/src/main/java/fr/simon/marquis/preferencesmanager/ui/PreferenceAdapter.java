@@ -92,7 +92,7 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
         Boolean checked = mCheckedPositions.get(item);
         holder.background.setBackgroundResource(PreferenceType.getDialogLayout(item.getValue()));
         holder.name.setText(Ui.createSpannable(pattern, color, item.getKey()));
-        holder.value.setText((item.getValue() == null ? null : Ui.createSpannable(pattern, color, item.getValue().toString())));
+        holder.value.setText((item.getValue() == null ? null : Ui.createSpannable(pattern, color, truncate(item.getValue().toString(), 100))));
         holder.selector.setBackgroundResource((checked != null && checked) ? R.drawable.list_focused : R.drawable.selectable_background);
 
         return convertView;
@@ -103,6 +103,10 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
         private TextView name;
         private TextView value;
         private LinearLayout selector;
+    }
+
+    public static String truncate(String str, int length) {
+        return str != null && str.length() > length ? str.substring(0, length) : str;
     }
 
     public void setFilter(String filter) {
