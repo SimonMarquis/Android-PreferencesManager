@@ -26,6 +26,10 @@ Test it, have fun, and please submit any feedback you have!
 ![Screenshot][screen5]
 ![Screenshot][screen6]
 
+## Video
+
+[![Youtube Video](http://img.youtube.com/vi/P2wV3gJ4ndo/0.jpg)](http://www.youtube.com/watch?v=P2wV3gJ4ndo)
+
 ## Pull requests
 
 Feel free to contribute to PreferencesManager.
