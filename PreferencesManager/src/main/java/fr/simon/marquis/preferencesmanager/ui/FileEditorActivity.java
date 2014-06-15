@@ -20,7 +20,7 @@ import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
@@ -35,6 +35,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,26 +84,18 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
         super.onCreate(arg0);
         setContentView(R.layout.activity_file_editor);
 
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle b = getIntent().getExtras();
         if (b == null) {
             finish();
             return;
         }
+        Picasso.with(this).load(b.<Uri>getParcelable(PreferencesFragment.ARG_ICON_URI)).error(R.drawable.ic_launcher).into((android.widget.ImageView) findViewById(android.R.id.home));
 
         mFile = b.getString(PreferencesFragment.ARG_FILE);
         mTitle = Utils.extractFileName(mFile);
         mPackageName = b.getString(PreferencesFragment.ARG_PACKAGE_NAME);
-
-        Drawable drawable = Utils.findDrawable(mPackageName, this);
-        if (drawable != null) {
-            getSupportActionBar().setIcon(drawable);
-        }
-
         mEditText = (EditText) findViewById(R.id.editText);
         //Hack to prevent EditText to request focus when the Activity is created
         mEditText.post(new Runnable() {
@@ -111,7 +105,6 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
                 mEditText.setFocusableInTouchMode(true);
             }
         });
-
 
         if (arg0 == null) {
             mEditText.setText(Utils.readFile(mFile));

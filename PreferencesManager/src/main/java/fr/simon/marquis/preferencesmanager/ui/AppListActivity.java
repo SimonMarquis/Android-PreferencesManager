@@ -95,7 +95,7 @@ public class AppListActivity extends ActionBarActivity {
 
             @Override
             protected Boolean doInBackground(Void... params) {
-                return RootTools.isRootAvailable() && RootTools.isAccessGiven();
+                return RootTools.isRootAvailable() && RootTools.isAccessGiven() && RootTools.isBusyboxAvailable();
             }
 
             @Override
@@ -120,6 +120,7 @@ public class AppListActivity extends ActionBarActivity {
             Utils.displayNoRoot(getFragmentManager());
         } else {
             Intent i = new Intent(AppListActivity.this, PreferencesActivity.class);
+            i.putExtra(PreferencesActivity.KEY_ICON_URI, app.getIconUri());
             i.putExtra(PreferencesActivity.EXTRA_TITLE, app.getLabel());
             i.putExtra(PreferencesActivity.EXTRA_PACKAGE_NAME, app.getApplicationInfo().packageName);
             startActivityForResult(i, REQUEST_CODE_PREFERENCES_ACTIVITY);

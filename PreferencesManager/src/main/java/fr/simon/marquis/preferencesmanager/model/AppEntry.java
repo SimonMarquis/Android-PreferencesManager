@@ -15,10 +15,11 @@
  */
 package fr.simon.marquis.preferencesmanager.model;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.TextUtils;
 
 import java.io.File;
@@ -44,10 +45,6 @@ public class AppEntry {
      */
     private String mSortingValue;
     /**
-     * Icon drawable displayed in the list
-     */
-    private Drawable mIcon;
-    /**
      * Detect if app is starred by user
      */
     private boolean isFavorite;
@@ -55,6 +52,10 @@ public class AppEntry {
      * Char value used by indexed ListView
      */
     private char headerChar;
+    /**
+     * Uri of the app icon
+     */
+    private Uri mIconUri;
 
 
     public AppEntry(ApplicationInfo info, Context context) {
@@ -62,8 +63,7 @@ public class AppEntry {
         isFavorite = Utils.isFavorite(mInfo.packageName, context);
         mApkFile = new File(info.sourceDir);
         loadLabels(context);
-        // Pre-load the icons for smooth scrolling
-        getIcon(context);
+        buildIconUri(mInfo);
     }
 
     public ApplicationInfo getApplicationInfo() {
@@ -78,18 +78,16 @@ public class AppEntry {
         return mSortingValue;
     }
 
-    public Drawable getIcon(Context ctx) {
-        if (mIcon == null) {
-            PackageManager pm = ctx.getPackageManager();
-            if (pm != null && mApkFile.exists()) {
-                mIcon = mInfo.loadIcon(pm);
-            } else {
-                mIcon = ctx.getResources().getDrawable(android.R.drawable.sym_def_app_icon);
-            }
-            return mIcon;
-        } else {
-            return mIcon;
-        }
+    private void buildIconUri(ApplicationInfo info) {
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme(ContentResolver.SCHEME_ANDROID_RESOURCE);
+        builder.authority(info.packageName);
+        builder.appendPath(Integer.toString(info.icon));
+        mIconUri = builder.build();
+    }
+
+    public Uri getIconUri() {
+        return mIconUri;
     }
 
     @Override

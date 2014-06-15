@@ -21,7 +21,6 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -338,34 +337,6 @@ public class Utils {
 
         Log.d(TAG, String.format("restoreFile --> " + fileName));
         return true;
-    }
-
-    public static Drawable findDrawable(String packageName, Context ctx) {
-        if (TextUtils.isEmpty(packageName)) {
-            return null;
-        }
-
-        if (applications != null) {
-            for (AppEntry app : applications) {
-                if (packageName.equals(app.getApplicationInfo().packageName)) {
-                    return app.getIcon(ctx);
-                }
-            }
-        } else {
-            try {
-                PackageManager pm = ctx.getPackageManager();
-                if (pm == null) {
-                    return null;
-                }
-                ApplicationInfo applicationInfo = pm.getApplicationInfo(packageName, 0);
-                if (applicationInfo != null) {
-                    AppEntry appEntry = new AppEntry(applicationInfo, ctx);
-                    return appEntry.getIcon(ctx);
-                }
-            } catch (PackageManager.NameNotFoundException ignored) {
-            }
-        }
-        return null;
     }
 
     public static String extractFileName(String s) {

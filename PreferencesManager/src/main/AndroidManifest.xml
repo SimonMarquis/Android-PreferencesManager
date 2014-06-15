@@ -25,7 +25,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppThemeLight">
-    <activity
+        <activity
             android:name="fr.simon.marquis.preferencesmanager.ui.AppListActivity"
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize">
@@ -38,10 +38,12 @@
         <activity
             android:exported="true"
             android:name="fr.simon.marquis.preferencesmanager.ui.PreferencesActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize"
+            android:icon="@null" />
         <activity
             android:name="fr.simon.marquis.preferencesmanager.ui.FileEditorActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:icon="@null" />
     </application>
 
 </manifest>

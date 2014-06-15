@@ -15,11 +15,10 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
-import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -34,6 +33,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 
@@ -53,6 +54,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
     private static final String TAG = PreferencesActivity.class.getSimpleName();
     public final static String KEY_SORT_TYPE = "KEY_SORT_TYPE";
     public final static String EXTRA_PACKAGE_NAME = "EXTRA_PACKAGE_NAME";
+    public final static String KEY_ICON_URI = "KEY_ICON_URI";
     public final static String EXTRA_TITLE = "EXTRA_TITLE";
     private final static String KEY_FILES = "KEY_FILES";
     private final static String INSTALL_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
@@ -63,6 +65,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
     private View mLoadingView;
     private View mEmptyView;
 
+    private Uri iconUri;
     private ArrayList<String> files;
     private String packageName;
     private String title;
@@ -79,10 +82,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_preferences);
 
-        ActionBar actionBar = getActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle b = getIntent().getExtras();
         if (b == null) {
@@ -97,16 +97,14 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         mLoadingView = findViewById(R.id.loadingView);
         mEmptyView = findViewById(R.id.emptyView);
 
+        iconUri = b.getParcelable(KEY_ICON_URI);
         packageName = b.getString(EXTRA_PACKAGE_NAME);
         title = b.getString(EXTRA_TITLE);
         launchedFromShortcut = b.getBoolean(EXTRA_SHORTCUT, false);
 
-        getActionBar().setTitle(Ui.applyCustomTypeFace(title, this));
-        getActionBar().setSubtitle(Ui.applyCustomTypeFace(packageName, this));
-        Drawable drawable = Utils.findDrawable(packageName, this);
-        if (drawable != null) {
-            getActionBar().setIcon(drawable);
-        }
+        getSupportActionBar().setTitle(Ui.applyCustomTypeFace(title, this));
+        getSupportActionBar().setSubtitle(Ui.applyCustomTypeFace(packageName, this));
+        Picasso.with(this).load(iconUri).error(R.drawable.ic_launcher).into((android.widget.ImageView) findViewById(android.R.id.home));
 
         if (savedInstanceState == null) {
             findFilesAndBackupsTask = new FindFilesAndBackupsTask(packageName);
@@ -280,7 +278,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
 
         @Override
         public Fragment getItem(int position) {
-            return PreferencesFragment.newInstance(mFiles.get(position), packageName);
+            return PreferencesFragment.newInstance(mFiles.get(position), packageName, iconUri);
         }
 
         @Override

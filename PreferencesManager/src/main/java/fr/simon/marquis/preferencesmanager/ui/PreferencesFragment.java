@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -59,9 +60,11 @@ import fr.simon.marquis.preferencesmanager.util.Utils;
 public class PreferencesFragment extends Fragment {
     private static final int CODE_EDIT_FILE = 666;
 
+    public static final String ARG_ICON_URI = "ICON_URI";
     public static final String ARG_FILE = "FILE";
     public static final String ARG_PACKAGE_NAME = "PACKAGE_NAME";
 
+    private Uri mIconUri;
     private String mFile;
     private String mPackageName;
 
@@ -75,9 +78,10 @@ public class PreferencesFragment extends Fragment {
     private View loadingView, emptyView;
     private TextView emptyViewText;
 
-    public static PreferencesFragment newInstance(String paramFile, String paramPackageName) {
+    public static PreferencesFragment newInstance(String paramFile, String paramPackageName, Uri paramIconUri) {
         PreferencesFragment fragment = new PreferencesFragment();
         Bundle args = new Bundle();
+        args.putParcelable(ARG_ICON_URI, paramIconUri);
         args.putString(ARG_FILE, paramFile);
         args.putString(ARG_PACKAGE_NAME, paramPackageName);
         fragment.setArguments(args);
@@ -92,6 +96,7 @@ public class PreferencesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            mIconUri = getArguments().getParcelable(ARG_ICON_URI);
             mFile = getArguments().getString(ARG_FILE);
             mPackageName = getArguments().getString(ARG_PACKAGE_NAME);
         }
@@ -146,11 +151,7 @@ public class PreferencesFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String s) {
-                if (mSearchView.hasFocus()) {
-                    return updateFilter(s);
-                } else {
-                    return false;
-                }
+                return mSearchView.hasFocus() && updateFilter(s);
             }
         });
 
@@ -214,6 +215,7 @@ public class PreferencesFragment extends Fragment {
                     }
                 }
                 Intent intent = new Intent(getActivity(), FileEditorActivity.class);
+                intent.putExtra(ARG_ICON_URI, mIconUri);
                 intent.putExtra(ARG_FILE, mFile);
                 intent.putExtra(ARG_PACKAGE_NAME, mPackageName);
                 startActivityForResult(intent, CODE_EDIT_FILE);
