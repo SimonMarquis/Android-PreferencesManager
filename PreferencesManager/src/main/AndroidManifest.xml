@@ -38,12 +38,10 @@
         <activity
             android:exported="true"
             android:name="fr.simon.marquis.preferencesmanager.ui.PreferencesActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:icon="@null" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="fr.simon.marquis.preferencesmanager.ui.FileEditorActivity"
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:icon="@null" />
+            android:windowSoftInputMode="stateHidden|adjustResize" />
     </application>
 
 </manifest>
