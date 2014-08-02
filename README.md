@@ -11,11 +11,7 @@ You can for instance increase your highscores, modify your progression, or just 
 *Disclaimer : I take no responsibility for any fault or damage caused by any procedures within this application. Do only use it if you really know what you are doing. I don't assume any liability if you brick your device or any application. If an application does not work properly anymore, you can clear its data from the Settings app.
 You may not use the application for any illegal or unauthorized purpose!*
 
-## Beta testing
-
-If you want to opt-in to the Beta program, you need to join this **[Google+ Community](https://plus.google.com/u/0/communities/112244514442534711821)**.
-
-Test it, have fun, and please submit any feedback you have!
+[![Android-PreferencesManager on Google Play Store](http://developer.android.com/images/brand/en_generic_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=fr.simon.marquis.preferencesmanager)
 
 ## Screenshots
 
@@ -32,10 +28,8 @@ Test it, have fun, and please submit any feedback you have!
 
 ## Pull requests
 
-Feel free to contribute to PreferencesManager.
-
-Either you found a bug or have created a new and awesome feature, just create a pull request.
-
+Feel free to contribute to PreferencesManager.  
+Either you found a bug or have created a new and awesome feature, just create a pull request.  
 If you want to start to create a new feature or have any other questions regarding PreferencesManager, [file an issue](https://github.com/SimonMarquis/Android-PreferencesManager/issues/new).
 
 ## Developed By
