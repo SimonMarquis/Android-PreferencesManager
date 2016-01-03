@@ -15,14 +15,14 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
-import android.app.Fragment;
-import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v13.app.FragmentPagerAdapter;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -66,7 +66,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
     private View mEmptyView;
 
     private Uri iconUri;
-    private ArrayList<String> files;
+    private List<String> files;
     private String packageName;
     private String title;
 
@@ -238,9 +238,9 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         return backupContainer.get(fullPath);
     }
 
-    private void updateFindFiles(ArrayList<String> tmp) {
+    private void updateFindFiles(List<String> tmp) {
         files = tmp;
-        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getFragmentManager(), files);
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager(), files);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         Animation fadeIn = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
         Animation fadeOut = AnimationUtils.loadAnimation(this, android.R.anim.fade_out);
@@ -269,9 +269,9 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
     }
 
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
-        private ArrayList<String> mFiles;
+        private List<String> mFiles;
 
-        public SectionsPagerAdapter(FragmentManager fm, ArrayList<String> files) {
+        public SectionsPagerAdapter(FragmentManager fm, List<String> files) {
             super(fm);
             this.mFiles = files;
         }
@@ -292,7 +292,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         }
     }
 
-    public class FindFilesAndBackupsTask extends AsyncTask<Void, Void, Pair<ArrayList<String>, BackupContainer>> {
+    public class FindFilesAndBackupsTask extends AsyncTask<Void, Void, Pair<List<String>, BackupContainer>> {
         private final String mPackageName;
 
         public FindFilesAndBackupsTask(String packageName) {
@@ -300,12 +300,12 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         }
 
         @Override
-        protected Pair<ArrayList<String>, BackupContainer> doInBackground(Void... params) {
+        protected Pair<List<String>, BackupContainer> doInBackground(Void... params) {
             return Pair.create(Utils.findXmlFiles(mPackageName), Utils.getBackups(getApplicationContext(), mPackageName));
         }
 
         @Override
-        protected void onPostExecute(Pair<ArrayList<String>, BackupContainer> result) {
+        protected void onPostExecute(Pair<List<String>, BackupContainer> result) {
             updateFindFiles(result.first);
             updateFindBackups(result.second);
             super.onPostExecute(result);

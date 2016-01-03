@@ -31,10 +31,9 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 
-import com.stericson.RootTools.RootTools;
-
 import java.util.ArrayList;
 
+import eu.chainfire.libsuperuser.Shell;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.util.Ui;
@@ -95,7 +94,7 @@ public class AppListActivity extends ActionBarActivity {
 
             @Override
             protected Boolean doInBackground(Void... params) {
-                return RootTools.isRootAvailable() && RootTools.isAccessGiven() && RootTools.isBusyboxAvailable();
+                return Shell.SU.available();
             }
 
             @Override
@@ -103,7 +102,7 @@ public class AppListActivity extends ActionBarActivity {
                 super.onPostExecute(hasRoot);
                 isRootAccessGiven = hasRoot;
                 if (!hasRoot) {
-                    Utils.displayNoRoot(getFragmentManager());
+                    Utils.displayNoRoot(getSupportFragmentManager());
                 }
             }
         };
@@ -116,8 +115,8 @@ public class AppListActivity extends ActionBarActivity {
      * @param app to browse
      */
     private void startPreferencesActivity(AppEntry app) {
-        if (!RootTools.isRootAvailable() && RootTools.isAccessGiven()) {
-            Utils.displayNoRoot(getFragmentManager());
+        if (!Shell.SU.available()) {
+            Utils.displayNoRoot(getSupportFragmentManager());
         } else {
             Intent i = new Intent(AppListActivity.this, PreferencesActivity.class);
             i.putExtra(PreferencesActivity.KEY_ICON_URI, app.getIconUri());
@@ -225,7 +224,7 @@ public class AppListActivity extends ActionBarActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.show_popup:
-                AboutDialog.show(getFragmentManager(), false);
+                AboutDialog.show(getSupportFragmentManager(), false);
                 break;
             case R.id.show_system_apps:
                 Utils.setShowSystemApps(this, !Utils.isShowSystemApps(this));
@@ -258,7 +257,7 @@ public class AppListActivity extends ActionBarActivity {
         if (AboutDialog.alreadyDisplayed(this)) {
             super.onBackPressed();
         } else {
-            AboutDialog.show(getFragmentManager(), true);
+            AboutDialog.show(getSupportFragmentManager(), true);
         }
     }
 

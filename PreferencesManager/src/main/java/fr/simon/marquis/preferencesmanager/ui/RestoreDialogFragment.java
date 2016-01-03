@@ -17,9 +17,9 @@ package fr.simon.marquis.preferencesmanager.ui;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
-import android.app.FragmentManager;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -119,14 +119,14 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
         listener = null;
     }
 
-    private static void dismiss(android.app.FragmentManager fm) {
+    private static void dismiss(FragmentManager fm) {
         RestoreDialogFragment dialog = find(fm);
         if (dialog != null) {
             dialog.dismiss();
         }
     }
 
-    private static RestoreDialogFragment find(android.app.FragmentManager fm) {
+    private static RestoreDialogFragment find(FragmentManager fm) {
         return (RestoreDialogFragment) fm.findFragmentByTag(TAG);
     }
 

@@ -15,18 +15,16 @@
  */
 package fr.simon.marquis.preferencesmanager.util;
 
-import android.app.FragmentManager;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Log;
-
-import com.stericson.RootTools.RootTools;
-import com.stericson.RootTools.execution.CommandCapture;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -42,6 +40,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import eu.chainfire.libsuperuser.Shell;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.model.BackupContainer;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
@@ -80,7 +79,7 @@ public class Utils {
             applications = new ArrayList<AppEntry>();
         } else {
             boolean showSystemApps = isShowSystemApps(ctx);
-            List<ApplicationInfo> appsInfo = pm.getInstalledApplications(PackageManager.GET_UNINSTALLED_PACKAGES | PackageManager.GET_DISABLED_COMPONENTS);
+            List<ApplicationInfo> appsInfo = pm.getInstalledApplications(0);
             if (appsInfo == null) {
                 appsInfo = new ArrayList<ApplicationInfo>();
             }
@@ -165,25 +164,9 @@ public class Utils {
         e.commit();
     }
 
-    public static ArrayList<String> findXmlFiles(final String packageName) {
+    public static List<String> findXmlFiles(final String packageName) {
         Log.d(TAG, String.format("findXmlFiles(%s)", packageName));
-        final ArrayList<String> files = new ArrayList<String>();
-        CommandCapture cmd = new CommandCapture(CMD_FIND_XML_FILES.hashCode(), false, String.format(CMD_FIND_XML_FILES, packageName)) {
-            @Override
-            public void commandOutput(int i, String s) {
-                if (!files.contains(s)) {
-                    files.add(s);
-                }
-            }
-        };
-
-        synchronized (cmd) {
-            try {
-                RootTools.getShell(true).add(cmd).wait();
-            } catch (Exception e) {
-                Log.e(TAG, "Error in findXmlFiles", e);
-            }
-        }
+        List<String> files = Shell.SU.run(String.format(CMD_FIND_XML_FILES, packageName));
         Log.d(TAG, "files: " + Arrays.toString(files.toArray()));
         return files;
     }
@@ -191,21 +174,12 @@ public class Utils {
     public static String readFile(String file) {
         Log.d(TAG, String.format("readFile(%s)", file));
         final StringBuilder sb = new StringBuilder();
-        CommandCapture cmd = new CommandCapture(0, false, String.format(CMD_CAT_FILE, file)) {
-            @Override
-            public void commandOutput(int i, String s) {
-                sb.append(s).append(LINE_SEPARATOR);
-            }
-        };
-
-        synchronized (cmd) {
-            try {
-                RootTools.getShell(true).add(cmd).wait();
-            } catch (Exception e) {
-                Log.e(TAG, "Error in readFile", e);
+        List<String> lines = Shell.SU.run(String.format(CMD_CAT_FILE, file));
+        if(lines != null) {
+            for (String line : lines) {
+                sb.append(line).append(LINE_SEPARATOR);
             }
         }
-
         return sb.toString();
     }
 
@@ -309,10 +283,7 @@ public class Utils {
     public static boolean backupFile(String backup, String fileName, Context ctx) {
         Log.d(TAG, String.format("backupFile(%s, %s)", backup, fileName));
         File destination = new File(ctx.getFilesDir(), backup);
-        if (!RootTools.copyFile(fileName, destination.getAbsolutePath(), true, true)) {
-            Log.e(TAG, "Error copyFile");
-            return false;
-        }
+        Shell.SU.run("cp " + fileName + " " + destination.getAbsolutePath());
         Log.d(TAG, String.format("backupFile --> " + destination));
         return true;
     }
@@ -320,20 +291,14 @@ public class Utils {
     public static boolean restoreFile(Context ctx, String backup, String fileName, String packageName) {
         Log.d(TAG, String.format("restoreFile(%s, %s, %s)", backup, fileName, packageName));
         File backupFile = new File(ctx.getFilesDir(), backup);
-        if (!RootTools.copyFile(backupFile.getAbsolutePath(), fileName, true, true)) {
-            Log.e(TAG, "Error copyFile");
-            return false;
-        }
+        Shell.SU.run("cp " + backupFile.getAbsolutePath() + " " + fileName);
 
         if (!fixUserAndGroupId(ctx, fileName, packageName)) {
             Log.e(TAG, "Error fixUserAndGroupId");
             return false;
         }
 
-        if (!RootTools.killProcess(packageName)) {
-            Log.e(TAG, "Error killProcess");
-            return false;
-        }
+        ((ActivityManager)ctx.getSystemService(Context.ACTIVITY_SERVICE)).killBackgroundProcesses(packageName);
 
         Log.d(TAG, String.format("restoreFile --> " + fileName));
         return true;
@@ -381,10 +346,7 @@ public class Utils {
             return false;
         }
 
-        if (!RootTools.copyFile(tmpFile.getAbsolutePath(), file, true, false)) {
-            Log.e(TAG, "Error copyFile from temporary file");
-            return false;
-        }
+        Shell.SU.run("cp " + tmpFile.getAbsolutePath() + " " + file);
 
         if (!fixUserAndGroupId(ctx, file, packageName)) {
             Log.e(TAG, "Error fixUserAndGroupId");
@@ -395,7 +357,7 @@ public class Utils {
             Log.e(TAG, "Error deleting temporary file");
         }
 
-        RootTools.killProcess(packageName);
+        ((ActivityManager)ctx.getSystemService(Context.ACTIVITY_SERVICE)).killBackgroundProcesses(packageName);
         Log.d(TAG, "Preferences correctly updated");
         return true;
     }
@@ -429,15 +391,7 @@ public class Utils {
             return false;
         }
 
-        CommandCapture cmd = new CommandCapture(CMD_CHOWN.hashCode(), false, String.format(CMD_CHOWN, uid, uid, file));
-        synchronized (cmd) {
-            try {
-                RootTools.getShell(true).add(cmd).wait();
-            } catch (Exception e) {
-                Log.e(TAG, "Error in fixPermissions", e);
-                return false;
-            }
-        }
+        Shell.SU.run(String.format(CMD_CHOWN, uid, uid, file));
         return true;
     }
 }

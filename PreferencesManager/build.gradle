@@ -1,57 +1,15 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.+'
-    }
-}
-
-apply plugin: 'android'
-
-
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compile 'com.android.support:support-v4:19.1.+'
-    compile 'com.android.support:support-v13:19.0.+'
-    compile 'com.android.support:appcompat-v7:19.1.+'
-    compile 'se.emilsjolander:stickylistheaders:2.4.0'
-    compile 'com.squareup.picasso:picasso:2.3.2'
-    compile files('libs/RootTools.jar')
-    compile files('libs/RootTools-javadoc.jar')
-}
-
+apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1.0"
-
-    def Properties versionProps = new Properties()
-    versionProps.load(new FileInputStream(file('version.properties')))
+    compileSdkVersion 23
+    buildToolsVersion "23.0.3"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 19
+        targetSdkVersion 23
 
-        versionName versionProps['name']
-        versionCode versionProps['code'].toInteger()
-    }
-
-    signingConfigs {
-        release {
-            def Properties localProps = new Properties()
-            localProps.load(new FileInputStream(file('../local.properties')))
-            def Properties keyProps = new Properties()
-            assert localProps['keystore.props.file'];
-            keyProps.load(new FileInputStream(file(localProps['keystore.props.file'])))
-            storeFile file(keyProps["store"])
-            keyAlias keyProps["alias"]
-            storePassword keyProps["storePass"]
-            keyPassword keyProps["pass"]
-        }
+        versionName "1.8.2"
+        versionCode 182
     }
 
     buildTypes {
@@ -60,8 +18,15 @@ android {
             versionNameSuffix '-debug'
         }
         release {
-            runProguard false
-            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:20.+'
+    compile 'com.android.support:appcompat-v7:20.+'
+    compile 'se.emilsjolander:stickylistheaders:2.7.0'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'eu.chainfire:libsuperuser:1.0.0.+'
 }

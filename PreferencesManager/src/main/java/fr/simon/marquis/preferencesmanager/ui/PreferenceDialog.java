@@ -16,10 +16,10 @@
 package fr.simon.marquis.preferencesmanager.ui;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
