@@ -11,7 +11,8 @@ You can for instance increase your highscores, modify your progression, or just 
 *Disclaimer : I take no responsibility for any fault or damage caused by any procedures within this application. Do only use it if you really know what you are doing. I don't assume any liability if you brick your device or any application. If an application does not work properly anymore, you can clear its data from the Settings app.
 You may not use the application for any illegal or unauthorized purpose!*
 
-[![Android-PreferencesManager on Google Play Store](http://developer.android.com/images/brand/en_generic_rgb_wo_60.png)](https://play.google.com/store/apps/details?id=fr.simon.marquis.preferencesmanager)
+[![Android-PreferencesManager on Google Play Store](Resources/en-play-badge-border.png)](https://play.google.com/store/apps/details?id=fr.simon.marquis.preferencesmanager)
+[![Android-PreferencesManager on F-Droid](Resources/fdroid.png)](https://f-droid.org/repository/browse/?fdid=fr.simon.marquis.preferencesmanager)
 
 ## Screenshots
 
@@ -38,7 +39,7 @@ If you want to start to create a new feature or have any other questions regardi
 
 ## Credits
 
- * [Stericson][2] - Author of [RootTools][3], an Android Root Shell Framework.
+ * [Chainfire][2] - Author of [libsuperuser][3]
 
 ## License
 
@@ -58,8 +59,8 @@ If you want to start to create a new feature or have any other questions regardi
 
 
  [1]: http://www.simon-marquis.fr
- [2]: https://github.com/Stericson
- [3]: https://github.com/Stericson/RootTools
+ [2]: https://github.com/Chainfire
+ [3]: https://github.com/Chainfire/libsuperuser
  
  [screen1]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/1%20-%20resized.png "List of applications"
  [screen2]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/2%20-%20resized.png "List of preferences"
