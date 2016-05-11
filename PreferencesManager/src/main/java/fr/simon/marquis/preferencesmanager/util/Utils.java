@@ -55,8 +55,9 @@ public class Utils {
     private static final String TAG_ROOT_DIALOG = "RootDialog";
     private static final String PREF_SHOW_SYSTEM_APPS = "SHOW_SYSTEM_APPS";
     public static final String CMD_FIND_XML_FILES = "find /data/data/%s -type f -name \\*.xml";
-    public static final String CMD_CHOWN = "chown %s.%s %s";
-    public static final String CMD_CAT_FILE = "cat %s";
+    public static final String CMD_CHOWN = "chown %s.%s \"%s\"";
+    public static final String CMD_CAT_FILE = "cat \"%s\"";
+    public static final String CMD_CP = "cp \"%s\" \"%s\"";
     public static final String TMP_FILE = ".temp";
     public static final String FILE_SEPARATOR = System.getProperty("file.separator");
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
@@ -283,7 +284,7 @@ public class Utils {
     public static boolean backupFile(String backup, String fileName, Context ctx) {
         Log.d(TAG, String.format("backupFile(%s, %s)", backup, fileName));
         File destination = new File(ctx.getFilesDir(), backup);
-        Shell.SU.run("cp " + fileName + " " + destination.getAbsolutePath());
+        Shell.SU.run(String.format(CMD_CP, fileName, destination.getAbsolutePath()));
         Log.d(TAG, String.format("backupFile --> " + destination));
         return true;
     }
@@ -291,7 +292,7 @@ public class Utils {
     public static boolean restoreFile(Context ctx, String backup, String fileName, String packageName) {
         Log.d(TAG, String.format("restoreFile(%s, %s, %s)", backup, fileName, packageName));
         File backupFile = new File(ctx.getFilesDir(), backup);
-        Shell.SU.run("cp " + backupFile.getAbsolutePath() + " " + fileName);
+        Shell.SU.run(String.format(CMD_CP, backupFile.getAbsolutePath(), fileName));
 
         if (!fixUserAndGroupId(ctx, fileName, packageName)) {
             Log.e(TAG, "Error fixUserAndGroupId");
@@ -346,7 +347,7 @@ public class Utils {
             return false;
         }
 
-        Shell.SU.run("cp " + tmpFile.getAbsolutePath() + " " + file);
+        Shell.SU.run(String.format(CMD_CP, tmpFile.getAbsolutePath(), file));
 
         if (!fixUserAndGroupId(ctx, file, packageName)) {
             Log.e(TAG, "Error fixUserAndGroupId");
