@@ -17,6 +17,7 @@ package fr.simon.marquis.preferencesmanager.ui;
 
 import android.app.Application;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
 import fr.simon.marquis.preferencesmanager.model.AppTheme;
@@ -30,6 +31,7 @@ public class App extends Application {
         initTheme();
         setTheme(theme.theme);
         super.onCreate();
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
     }
 
     private void initTheme() {

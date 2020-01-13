@@ -1,13 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    compileSdkVersion 28
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 23
-
+        targetSdkVersion 28
+        vectorDrawables.useSupportLibrary = true
         versionName "1.8.3"
         versionCode 183
     }
@@ -18,15 +17,16 @@ android {
             versionNameSuffix '-debug'
         }
         release {
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:20.+'
-    compile 'com.android.support:appcompat-v7:20.+'
-    compile 'se.emilsjolander:stickylistheaders:2.7.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'eu.chainfire:libsuperuser:1.0.0.+'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:exifinterface:28.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'se.emilsjolander:stickylistheaders:2.7.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'eu.chainfire:libsuperuser:1.0.0.+'
 }

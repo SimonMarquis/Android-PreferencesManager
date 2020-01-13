@@ -77,15 +77,15 @@ public class Utils {
     public static ArrayList<AppEntry> getApplications(Context ctx) {
         PackageManager pm = ctx.getPackageManager();
         if (pm == null) {
-            applications = new ArrayList<AppEntry>();
+            applications = new ArrayList<>();
         } else {
             boolean showSystemApps = isShowSystemApps(ctx);
             List<ApplicationInfo> appsInfo = pm.getInstalledApplications(0);
             if (appsInfo == null) {
-                appsInfo = new ArrayList<ApplicationInfo>();
+                appsInfo = new ArrayList<>();
             }
 
-            List<AppEntry> entries = new ArrayList<AppEntry>(appsInfo.size());
+            List<AppEntry> entries = new ArrayList<>(appsInfo.size());
             for (ApplicationInfo a : appsInfo) {
                 if (showSystemApps || (a.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                     entries.add(new AppEntry(a, ctx));
@@ -93,7 +93,7 @@ public class Utils {
             }
 
             Collections.sort(entries, new MyComparator());
-            applications = new ArrayList<AppEntry>(entries);
+            applications = new ArrayList<>(entries);
         }
         Log.d(TAG, "Applications: " + Arrays.toString(applications.toArray()));
         return applications;
@@ -137,7 +137,7 @@ public class Utils {
 
     private static void initFavorites(Context ctx) {
         if (favorites == null) {
-            favorites = new HashSet<String>();
+            favorites = new HashSet<>();
 
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
 
@@ -223,7 +223,7 @@ public class Utils {
                             container.put("FILE", FILE_SEPARATOR + file);
                         }
                         JSONArray backups = container.getJSONArray("BACKUPS");
-                        ArrayList<String> values = new ArrayList<String>(backups.length());
+                        ArrayList<String> values = new ArrayList<>(backups.length());
                         for (int j = 0; j < backups.length(); j++) {
                             values.add(String.valueOf(backups.getJSONObject(j).getLong("TIME")));
                         }

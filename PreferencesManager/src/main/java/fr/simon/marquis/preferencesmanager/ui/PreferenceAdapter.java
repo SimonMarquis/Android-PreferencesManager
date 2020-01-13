@@ -53,7 +53,7 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
         this.layoutInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.mPreferencesFragment = f;
         this.color = ctx.getResources().getColor(R.color.blue);
-        this.mCheckedPositions = new HashMap<Entry<String, Object>, Boolean>();
+        this.mCheckedPositions = new HashMap<>();
         this.mListToDisplay = mPreferencesFragment.preferenceFile.getList();
     }
 
@@ -80,9 +80,9 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
             assert convertView != null;
             holder = new ViewHolder();
             holder.background = convertView;
-            holder.name = (TextView) convertView.findViewById(R.id.item_name);
-            holder.value = (TextView) convertView.findViewById(R.id.item_value);
-            holder.selector = (LinearLayout) convertView.findViewById(R.id.item_selector);
+            holder.name = convertView.findViewById(R.id.item_name);
+            holder.value = convertView.findViewById(R.id.item_value);
+            holder.selector = convertView.findViewById(R.id.item_selector);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -126,7 +126,7 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
                     }
                 } else {
                     String prefixString = charSequence.toString().toLowerCase(Locale.getDefault()).trim();
-                    ArrayList<Entry<String, Object>> filterResultsData = new ArrayList<Entry<String, Object>>();
+                    ArrayList<Entry<String, Object>> filterResultsData = new ArrayList<>();
                     synchronized (mLock) {
                         for (Entry<String, Object> data : mPreferencesFragment.preferenceFile.getList()) {
                             Pattern p = Pattern.compile(prefixString, Pattern.CASE_INSENSITIVE);
@@ -164,7 +164,7 @@ public class PreferenceAdapter extends BaseAdapter implements Filterable {
     }
 
     public void deleteSelection() {
-        ArrayList<Entry<String, Object>> temp = new ArrayList<Entry<String, Object>>();
+        ArrayList<Entry<String, Object>> temp = new ArrayList<>();
         for (Entry<String, Object> item : mListToDisplay) {
             if (!mCheckedPositions.containsKey(item) || !mCheckedPositions.get(item)) {
                 mCheckedPositions.remove(item);

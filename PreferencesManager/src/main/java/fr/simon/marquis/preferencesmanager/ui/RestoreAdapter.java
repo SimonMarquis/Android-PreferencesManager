@@ -38,7 +38,9 @@ public class RestoreAdapter extends BaseAdapter {
     private final RestoreDialogFragment dialog;
     private List<String> backups;
 
-    public RestoreAdapter(Context ctx, RestoreDialogFragment dialog, List<String> backups, RestoreDialogFragment.OnRestoreFragmentInteractionListener listener, String fullPath) {
+    public RestoreAdapter(Context ctx, RestoreDialogFragment dialog, List<String> backups,
+                          RestoreDialogFragment.OnRestoreFragmentInteractionListener listener,
+                          String fullPath) {
         Collections.sort(backups);
         this.ctx = ctx;
         this.backups = backups;
@@ -69,8 +71,8 @@ public class RestoreAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(ctx).inflate(R.layout.row_restore, parent, false);
             assert convertView != null;
             holder = new ViewHolder();
-            holder.label = (TextView) convertView.findViewById(R.id.item_label);
-            holder.delete = (ImageButton) convertView.findViewById(R.id.item_delete);
+            holder.label = convertView.findViewById(R.id.item_label);
+            holder.delete = convertView.findViewById(R.id.item_delete);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -99,7 +101,11 @@ public class RestoreAdapter extends BaseAdapter {
     }
 
     public String getDisplayLabel(Context ctx, long time) {
-        return upperFirstLetter(DateUtils.formatDateTime(ctx, time, DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME | DateUtils.FORMAT_SHOW_WEEKDAY)) + " (" + lowerFirstLetter(DateUtils.getRelativeTimeSpanString(time, new Date().getTime(), DateUtils.SECOND_IN_MILLIS).toString()) + ")";
+        return upperFirstLetter(DateUtils.formatDateTime(ctx, time,
+                DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_SHOW_TIME |
+                        DateUtils.FORMAT_SHOW_WEEKDAY)) + " (" +
+                lowerFirstLetter(DateUtils.getRelativeTimeSpanString(time,
+                        new Date().getTime(), DateUtils.SECOND_IN_MILLIS).toString()) + ")";
     }
 
     private String upperFirstLetter(String original) {

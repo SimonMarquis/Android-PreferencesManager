@@ -36,7 +36,7 @@ public class BackupContainer {
 
     public BackupContainer() {
         super();
-        this.backups = new HashMap<String, List<String>>();
+        this.backups = new HashMap<>();
     }
 
     public static BackupContainer fromJSON(JSONArray filesArray) {
@@ -82,7 +82,7 @@ public class BackupContainer {
         if (backups.containsKey(key)) {
             backups.get(key).add(value);
         } else {
-            List<String> list = new ArrayList<String>();
+            List<String> list = new ArrayList<>();
             list.add(value);
             backups.put(key, list);
         }

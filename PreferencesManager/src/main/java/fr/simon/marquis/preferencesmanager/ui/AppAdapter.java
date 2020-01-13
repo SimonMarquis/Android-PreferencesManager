@@ -102,7 +102,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter,
         AppEntry item = applicationsToDisplay.get(position);
         holder.textView.setText(Ui.createSpannable(pattern, color, item.getLabel()));
 
-        Picasso.with(context).load(item.getIconUri()).error(R.drawable.ic_action_settings).into(holder.imageView);
+        Picasso.get().load(item.getIconUri()).error(R.drawable.ic_action_settings).into(holder.imageView);
 
         return convertView;
     }
@@ -119,7 +119,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter,
             holder = new HeaderViewHolder();
             convertView = layoutInflater.inflate(R.layout.row_header, parent, false);
             assert convertView != null;
-            holder.text = (TextView) convertView.findViewById(R.id.text_header);
+            holder.text = convertView.findViewById(R.id.text_header);
             convertView.setTag(holder);
         } else {
             holder = (HeaderViewHolder) convertView.getTag();

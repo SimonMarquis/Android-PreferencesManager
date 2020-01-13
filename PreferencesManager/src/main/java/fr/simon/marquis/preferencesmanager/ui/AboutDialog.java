@@ -91,9 +91,9 @@ public class AboutDialog extends DialogFragment {
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         View rootView = layoutInflater.inflate(R.layout.dialog_about, null);
         assert rootView != null;
-        TextView nameAndVersionView = (TextView) rootView.findViewById(R.id.app_name_and_version);
+        TextView nameAndVersionView = rootView.findViewById(R.id.app_name_and_version);
         nameAndVersionView.setText(Html.fromHtml(getString(R.string.app_name_and_version, versionName)));
-        TextView aboutBodyView = (TextView) rootView.findViewById(R.id.about_body);
+        TextView aboutBodyView = rootView.findViewById(R.id.about_body);
         aboutBodyView.setText(Html.fromHtml(getString(R.string.about_body)));
         aboutBodyView.setMovementMethod(new LinkMovementMethod());
 

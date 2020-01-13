@@ -69,7 +69,7 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mFullPath = getArguments().getString(ARG_FULL_PATH);
-            backups = new ArrayList<String>();
+            backups = new ArrayList<>();
             try {
                 JSONArray array = new JSONArray(getArguments().getString(ARG_BACKUPS));
                 for (int i = 0; i < array.length(); i++) {
@@ -90,7 +90,7 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
         }
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_restore, null);
         assert view != null;
-        ListView listView = (ListView) view.findViewById(R.id.listView);
+        ListView listView = view.findViewById(R.id.listView);
         listView.setAdapter(new RestoreAdapter(getActivity(), this, backups, listener, mFullPath));
         listView.setOnItemClickListener(this);
         return view;
