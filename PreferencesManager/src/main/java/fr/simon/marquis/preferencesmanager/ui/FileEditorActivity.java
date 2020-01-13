@@ -91,7 +91,6 @@ public class FileEditorActivity extends AppCompatActivity implements TextWatcher
             finish();
             return;
         }
-        Picasso.get().load(b.<Uri>getParcelable(PreferencesFragment.ARG_ICON_URI)).error(R.drawable.ic_launcher).into((android.widget.ImageView) findViewById(android.R.id.home));
 
         mFile = b.getString(PreferencesFragment.ARG_FILE);
         mTitle = Utils.extractFileName(mFile);
