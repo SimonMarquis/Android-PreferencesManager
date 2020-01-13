@@ -92,8 +92,8 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter,
             convertView = layoutInflater.inflate(R.layout.row_application, parent, false);
             assert convertView != null;
             holder = new ViewHolder();
-            holder.textView = (TextView) convertView.findViewById(R.id.item_text);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.item_image);
+            holder.textView = convertView.findViewById(R.id.item_text);
+            holder.imageView = convertView.findViewById(R.id.item_image);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -175,7 +175,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter,
                     }
                 } else {
                     String prefixString = charSequence.toString().toLowerCase(Locale.getDefault()).trim();
-                    ArrayList<AppEntry> filterResultsData = new ArrayList<AppEntry>();
+                    ArrayList<AppEntry> filterResultsData = new ArrayList<>();
                     synchronized (mLock) {
                         for (AppEntry data : applications) {
                             Pattern p = Pattern.compile(prefixString, Pattern.CASE_INSENSITIVE);

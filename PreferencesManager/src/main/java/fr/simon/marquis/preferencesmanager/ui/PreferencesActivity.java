@@ -49,7 +49,9 @@ import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnPreferenceFr
 import fr.simon.marquis.preferencesmanager.util.Ui;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class PreferencesActivity extends AppCompatActivity implements OnPreferenceFragmentInteractionListener, RestoreDialogFragment.OnRestoreFragmentInteractionListener {
+public class PreferencesActivity extends AppCompatActivity implements
+        OnPreferenceFragmentInteractionListener,
+        RestoreDialogFragment.OnRestoreFragmentInteractionListener {
 
     private static final String TAG = PreferencesActivity.class.getSimpleName();
     public final static String KEY_SORT_TYPE = "KEY_SORT_TYPE";
@@ -93,7 +95,7 @@ public class PreferencesActivity extends AppCompatActivity implements OnPreferen
         int index = PreferenceManager.getDefaultSharedPreferences(this).getInt(KEY_SORT_TYPE, 0);
         preferenceSortType = PreferenceSortType.values()[index];
 
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = findViewById(R.id.pager);
         mLoadingView = findViewById(R.id.loadingView);
         mEmptyView = findViewById(R.id.emptyView);
 
@@ -111,7 +113,7 @@ public class PreferencesActivity extends AppCompatActivity implements OnPreferen
             findFilesAndBackupsTask.execute();
         } else {
             try {
-                ArrayList<String> tmp = new ArrayList<String>();
+                ArrayList<String> tmp = new ArrayList<>();
                 JSONArray array = new JSONArray(savedInstanceState.getString(KEY_FILES));
                 for (int i = 0; i < array.length(); i++) {
                     tmp.add(array.getString(i));

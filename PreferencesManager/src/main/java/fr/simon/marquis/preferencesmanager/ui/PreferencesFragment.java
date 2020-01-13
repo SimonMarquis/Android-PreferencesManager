@@ -115,8 +115,8 @@ public class PreferencesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         loadingView = view.findViewById(R.id.loadingView);
         emptyView = view.findViewById(R.id.emptyView);
-        emptyViewText = (TextView) view.findViewById(R.id.emptyViewText);
-        gridView = (GridView) view.findViewById(R.id.gridView);
+        emptyViewText = view.findViewById(R.id.emptyViewText);
+        gridView = view.findViewById(R.id.gridView);
         gridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
 
         updateFilter(null);
@@ -367,18 +367,14 @@ public class PreferencesFragment extends Fragment {
 
         gridView.setAdapter(new PreferenceAdapter(getActivity(), this));
         gridView.setEmptyView(emptyView);
-        gridView.setOnItemClickListener(new OnItemClickListener() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+        gridView.setOnItemClickListener((arg0, arg1, arg2, arg3) -> {
 
-                Entry<String, Object> item = (Entry<String, Object>) gridView.getAdapter().getItem(arg2);
-                PreferenceType type = PreferenceType.fromObject(item.getValue());
-                if (type == PreferenceType.UNSUPPORTED) {
-                    Toast.makeText(getActivity(), R.string.preference_unsupported, Toast.LENGTH_SHORT).show();
-                } else {
-                    showPrefDialog(type, true, item.getKey(), item.getValue());
-                }
+            Entry<String, Object> item = (Entry<String, Object>) gridView.getAdapter().getItem(arg2);
+            PreferenceType type = PreferenceType.fromObject(item.getValue());
+            if (type == PreferenceType.UNSUPPORTED) {
+                Toast.makeText(getActivity(), R.string.preference_unsupported, Toast.LENGTH_SHORT).show();
+            } else {
+                showPrefDialog(type, true, item.getKey(), item.getValue());
             }
         });
         gridView.setMultiChoiceModeListener(new MultiChoiceModeListener() {

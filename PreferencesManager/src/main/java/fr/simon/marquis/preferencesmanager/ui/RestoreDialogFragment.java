@@ -153,8 +153,8 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
 
 
     public interface OnRestoreFragmentInteractionListener {
-        public String onRestoreFile(String backup, String fullPath);
+        String onRestoreFile(String backup, String fullPath);
 
-        public List<String> onDeleteBackup(String backup, String fullPath);
+        List<String> onDeleteBackup(String backup, String fullPath);
     }
 }

@@ -80,15 +80,12 @@ public class RestoreAdapter extends BaseAdapter {
 
         final String backup = backups.get(position);
         holder.label.setText(getDisplayLabel(ctx, Long.valueOf(backup)));
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                backups = listener.onDeleteBackup(backup, fullPath);
-                if (backups == null || backups.isEmpty()) {
-                    dialog.noMoreBackup();
-                } else {
-                    notifyDataSetChanged();
-                }
+        holder.delete.setOnClickListener(v -> {
+            backups = listener.onDeleteBackup(backup, fullPath);
+            if (backups == null || backups.isEmpty()) {
+                dialog.noMoreBackup();
+            } else {
+                notifyDataSetChanged();
             }
         });
 

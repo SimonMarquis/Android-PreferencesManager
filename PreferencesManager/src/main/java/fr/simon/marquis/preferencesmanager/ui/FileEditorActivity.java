@@ -96,14 +96,11 @@ public class FileEditorActivity extends AppCompatActivity implements TextWatcher
         mFile = b.getString(PreferencesFragment.ARG_FILE);
         mTitle = Utils.extractFileName(mFile);
         mPackageName = b.getString(PreferencesFragment.ARG_PACKAGE_NAME);
-        mEditText = (EditText) findViewById(R.id.editText);
+        mEditText = findViewById(R.id.editText);
         //Hack to prevent EditText to request focus when the Activity is created
-        mEditText.post(new Runnable() {
-            @Override
-            public void run() {
-                mEditText.setFocusable(true);
-                mEditText.setFocusableInTouchMode(true);
-            }
+        mEditText.post(() -> {
+            mEditText.setFocusable(true);
+            mEditText.setFocusableInTouchMode(true);
         });
 
         if (arg0 == null) {
@@ -364,18 +361,10 @@ public class FileEditorActivity extends AppCompatActivity implements TextWatcher
 
     private void showSavePopup() {
         new AlertDialog.Builder(this).setTitle(mTitle).setMessage(R.string.popup_edit_message).setIcon(R.drawable.ic_action_edit)
-                .setNegativeButton(R.string.no, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                .setNegativeButton(R.string.no, (dialog, which) -> finish()).setPositiveButton(R.string.yes, (dialog, which) -> {
+                    if (save()) {
                         finish();
                     }
-                }).setPositiveButton(R.string.yes, new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (save()) {
-                    finish();
-                }
-            }
-        }).create().show();
+                }).create().show();
     }
 }

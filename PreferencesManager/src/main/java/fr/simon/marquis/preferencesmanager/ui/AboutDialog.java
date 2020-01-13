@@ -98,12 +98,10 @@ public class AboutDialog extends DialogFragment {
         aboutBodyView.setMovementMethod(new LinkMovementMethod());
 
         return new AlertDialog.Builder(getActivity()).setView(rootView)
-                .setPositiveButton(mExit ? R.string.exit : R.string.close, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.dismiss();
-                        if (mExit) {
-                            getActivity().finish();
-                        }
+                .setPositiveButton(mExit ? R.string.exit : R.string.close, (dialog, whichButton) -> {
+                    dialog.dismiss();
+                    if (mExit) {
+                        getActivity().finish();
                     }
                 }).create();
     }

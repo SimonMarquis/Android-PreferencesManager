@@ -65,16 +65,13 @@ public class AppListActivity extends AppCompatActivity {
 
         loadingView = findViewById(R.id.loadingView);
         emptyView = findViewById(R.id.emptyView);
-        listView = (StickyListHeadersListView) findViewById(R.id.listView);
+        listView = findViewById(R.id.listView);
         listView.setDrawingListUnderStickyHeader(false);
-        listView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                if (isRootAccessGiven) {
-                    startPreferencesActivity((AppEntry) mAdapter.getItem(arg2));
-                } else {
-                    checkRoot();
-                }
+        listView.setOnItemClickListener((arg0, arg1, arg2, arg3) -> {
+            if (isRootAccessGiven) {
+                startPreferencesActivity((AppEntry) mAdapter.getItem(arg2));
+            } else {
+                checkRoot();
             }
         });
 
@@ -264,7 +261,7 @@ public class AppListActivity extends AppCompatActivity {
     public class GetApplicationsTask extends AsyncTask<Void, Void, ArrayList<AppEntry>> {
         private final Context mContext;
 
-        public GetApplicationsTask(Context ctx) {
+        GetApplicationsTask(Context ctx) {
             this.mContext = ctx;
         }
 
