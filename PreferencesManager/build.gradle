@@ -8,7 +8,7 @@ android {
         targetSdkVersion 28
         vectorDrawables.useSupportLibrary = true
         versionName "2.0.0"
-        versionCode 183
+        versionCode 200
         resConfigs "en", "fr", "it"
     }
 
