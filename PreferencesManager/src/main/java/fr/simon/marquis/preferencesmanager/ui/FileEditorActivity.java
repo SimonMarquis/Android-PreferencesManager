@@ -17,12 +17,10 @@ package fr.simon.marquis.preferencesmanager.ui;
  */
 
 import android.app.ActionBar;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
@@ -49,6 +47,8 @@ import fr.simon.marquis.preferencesmanager.model.XmlColorTheme.ColorThemeEnum;
 import fr.simon.marquis.preferencesmanager.model.XmlFontSize;
 import fr.simon.marquis.preferencesmanager.util.Ui;
 import fr.simon.marquis.preferencesmanager.util.Utils;
+
+;
 
 public class FileEditorActivity extends AppCompatActivity implements TextWatcher {
 
@@ -360,11 +360,17 @@ public class FileEditorActivity extends AppCompatActivity implements TextWatcher
     }
 
     private void showSavePopup() {
-        new AlertDialog.Builder(this).setTitle(mTitle).setMessage(R.string.popup_edit_message).setIcon(R.drawable.ic_action_edit)
-                .setNegativeButton(R.string.no, (dialog, which) -> finish()).setPositiveButton(R.string.yes, (dialog, which) -> {
+        new AlertDialog.Builder(this)
+                .setTitle(mTitle)
+                .setMessage(R.string.popup_edit_message)
+                .setIcon(R.drawable.ic_action_edit)
+                .setNegativeButton(R.string.no, (dialog, which) -> finish())
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
                     if (save()) {
                         finish();
                     }
-                }).create().show();
+                })
+                .create()
+                .show();
     }
 }
