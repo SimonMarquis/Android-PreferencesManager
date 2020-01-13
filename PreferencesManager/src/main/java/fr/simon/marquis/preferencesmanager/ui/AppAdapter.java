@@ -92,8 +92,8 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter,
             convertView = layoutInflater.inflate(R.layout.row_application, parent, false);
             assert convertView != null;
             holder = new ViewHolder();
-            holder.textView = (TextView) convertView.findViewById(R.id.item_text);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.item_image);
+            holder.textView = convertView.findViewById(R.id.item_text);
+            holder.imageView = convertView.findViewById(R.id.item_image);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
@@ -102,7 +102,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter,
         AppEntry item = applicationsToDisplay.get(position);
         holder.textView.setText(Ui.createSpannable(pattern, color, item.getLabel()));
 
-        Picasso.with(context).load(item.getIconUri()).error(R.drawable.ic_action_settings).into(holder.imageView);
+        Picasso.get().load(item.getIconUri()).error(R.drawable.ic_action_settings).into(holder.imageView);
 
         return convertView;
     }
@@ -119,7 +119,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter,
             holder = new HeaderViewHolder();
             convertView = layoutInflater.inflate(R.layout.row_header, parent, false);
             assert convertView != null;
-            holder.text = (TextView) convertView.findViewById(R.id.text_header);
+            holder.text = convertView.findViewById(R.id.text_header);
             convertView.setTag(holder);
         } else {
             holder = (HeaderViewHolder) convertView.getTag();
@@ -175,7 +175,7 @@ public class AppAdapter extends BaseAdapter implements StickyListHeadersAdapter,
                     }
                 } else {
                     String prefixString = charSequence.toString().toLowerCase(Locale.getDefault()).trim();
-                    ArrayList<AppEntry> filterResultsData = new ArrayList<AppEntry>();
+                    ArrayList<AppEntry> filterResultsData = new ArrayList<>();
                     synchronized (mLock) {
                         for (AppEntry data : applications) {
                             Pattern p = Pattern.compile(prefixString, Pattern.CASE_INSENSITIVE);

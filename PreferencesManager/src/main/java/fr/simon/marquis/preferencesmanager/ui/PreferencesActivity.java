@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -24,7 +24,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Menu;
@@ -33,8 +33,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
-
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 
@@ -49,7 +47,9 @@ import fr.simon.marquis.preferencesmanager.ui.PreferencesFragment.OnPreferenceFr
 import fr.simon.marquis.preferencesmanager.util.Ui;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class PreferencesActivity extends ActionBarActivity implements OnPreferenceFragmentInteractionListener, RestoreDialogFragment.OnRestoreFragmentInteractionListener {
+public class PreferencesActivity extends AppCompatActivity implements
+        OnPreferenceFragmentInteractionListener,
+        RestoreDialogFragment.OnRestoreFragmentInteractionListener {
 
     private static final String TAG = PreferencesActivity.class.getSimpleName();
     public final static String KEY_SORT_TYPE = "KEY_SORT_TYPE";
@@ -93,7 +93,7 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
         int index = PreferenceManager.getDefaultSharedPreferences(this).getInt(KEY_SORT_TYPE, 0);
         preferenceSortType = PreferenceSortType.values()[index];
 
-        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager = findViewById(R.id.pager);
         mLoadingView = findViewById(R.id.loadingView);
         mEmptyView = findViewById(R.id.emptyView);
 
@@ -104,14 +104,13 @@ public class PreferencesActivity extends ActionBarActivity implements OnPreferen
 
         getSupportActionBar().setTitle(Ui.applyCustomTypeFace(title, this));
         getSupportActionBar().setSubtitle(Ui.applyCustomTypeFace(packageName, this));
-        Picasso.with(this).load(iconUri).error(R.drawable.ic_launcher).into((android.widget.ImageView) findViewById(android.R.id.home));
 
         if (savedInstanceState == null) {
             findFilesAndBackupsTask = new FindFilesAndBackupsTask(packageName);
             findFilesAndBackupsTask.execute();
         } else {
             try {
-                ArrayList<String> tmp = new ArrayList<String>();
+                ArrayList<String> tmp = new ArrayList<>();
                 JSONArray array = new JSONArray(savedInstanceState.getString(KEY_FILES));
                 for (int i = 0; i < array.length(); i++) {
                     tmp.add(array.getString(i));

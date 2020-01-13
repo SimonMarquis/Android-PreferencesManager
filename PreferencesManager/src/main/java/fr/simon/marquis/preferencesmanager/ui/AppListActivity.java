@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -21,26 +21,25 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
+
+import com.topjohnwu.superuser.Shell;
 
 import java.util.ArrayList;
 
-import eu.chainfire.libsuperuser.Shell;
 import fr.simon.marquis.preferencesmanager.R;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.util.Ui;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-public class AppListActivity extends ActionBarActivity {
+public class AppListActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_PREFERENCES_ACTIVITY = 123;
 
@@ -65,16 +64,13 @@ public class AppListActivity extends ActionBarActivity {
 
         loadingView = findViewById(R.id.loadingView);
         emptyView = findViewById(R.id.emptyView);
-        listView = (StickyListHeadersListView) findViewById(R.id.listView);
+        listView = findViewById(R.id.listView);
         listView.setDrawingListUnderStickyHeader(false);
-        listView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                if (isRootAccessGiven) {
-                    startPreferencesActivity((AppEntry) mAdapter.getItem(arg2));
-                } else {
-                    checkRoot();
-                }
+        listView.setOnItemClickListener((arg0, arg1, arg2, arg3) -> {
+            if (isRootAccessGiven) {
+                startPreferencesActivity((AppEntry) mAdapter.getItem(arg2));
+            } else {
+                checkRoot();
             }
         });
 
@@ -94,7 +90,7 @@ public class AppListActivity extends ActionBarActivity {
 
             @Override
             protected Boolean doInBackground(Void... params) {
-                return Shell.SU.available();
+                return Shell.rootAccess();
             }
 
             @Override
@@ -115,7 +111,7 @@ public class AppListActivity extends ActionBarActivity {
      * @param app to browse
      */
     private void startPreferencesActivity(AppEntry app) {
-        if (!Shell.SU.available()) {
+        if (!Shell.rootAccess()) {
             Utils.displayNoRoot(getSupportFragmentManager());
         } else {
             Intent i = new Intent(AppListActivity.this, PreferencesActivity.class);
@@ -264,7 +260,7 @@ public class AppListActivity extends ActionBarActivity {
     public class GetApplicationsTask extends AsyncTask<Void, Void, ArrayList<AppEntry>> {
         private final Context mContext;
 
-        public GetApplicationsTask(Context ctx) {
+        GetApplicationsTask(Context ctx) {
             this.mContext = ctx;
         }
 

@@ -2,13 +2,13 @@ package fr.simon.marquis.preferencesmanager.ui;
 
 /*
  * Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -17,13 +17,11 @@ package fr.simon.marquis.preferencesmanager.ui;
  */
 
 import android.app.ActionBar;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.DialogInterface.OnClickListener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spannable;
@@ -50,7 +48,9 @@ import fr.simon.marquis.preferencesmanager.model.XmlFontSize;
 import fr.simon.marquis.preferencesmanager.util.Ui;
 import fr.simon.marquis.preferencesmanager.util.Utils;
 
-public class FileEditorActivity extends ActionBarActivity implements TextWatcher {
+;
+
+public class FileEditorActivity extends AppCompatActivity implements TextWatcher {
 
     private XmlFontSize mXmlFontSize;
     private ColorThemeEnum mColorTheme;
@@ -91,19 +91,15 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
             finish();
             return;
         }
-        Picasso.with(this).load(b.<Uri>getParcelable(PreferencesFragment.ARG_ICON_URI)).error(R.drawable.ic_launcher).into((android.widget.ImageView) findViewById(android.R.id.home));
 
         mFile = b.getString(PreferencesFragment.ARG_FILE);
         mTitle = Utils.extractFileName(mFile);
         mPackageName = b.getString(PreferencesFragment.ARG_PACKAGE_NAME);
-        mEditText = (EditText) findViewById(R.id.editText);
+        mEditText = findViewById(R.id.editText);
         //Hack to prevent EditText to request focus when the Activity is created
-        mEditText.post(new Runnable() {
-            @Override
-            public void run() {
-                mEditText.setFocusable(true);
-                mEditText.setFocusableInTouchMode(true);
-            }
+        mEditText.post(() -> {
+            mEditText.setFocusable(true);
+            mEditText.setFocusableInTouchMode(true);
         });
 
         if (arg0 == null) {
@@ -170,19 +166,19 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
         menu.findItem(R.id.action_theme_notepad).setChecked(false);
         menu.findItem(R.id.action_theme_netbeans).setChecked(false);
 
-        if(mColorTheme == ColorThemeEnum.ECLIPSE) {
+        if (mColorTheme == ColorThemeEnum.ECLIPSE) {
             menu.findItem(R.id.action_theme_eclipse).setChecked(true);
         }
-        if(mColorTheme == ColorThemeEnum.GOOGLE) {
+        if (mColorTheme == ColorThemeEnum.GOOGLE) {
             menu.findItem(R.id.action_theme_google).setChecked(true);
         }
-        if(mColorTheme == ColorThemeEnum.ROBOTICKET) {
+        if (mColorTheme == ColorThemeEnum.ROBOTICKET) {
             menu.findItem(R.id.action_theme_roboticket).setChecked(true);
         }
-        if(mColorTheme == ColorThemeEnum.NOTEPAD) {
+        if (mColorTheme == ColorThemeEnum.NOTEPAD) {
             menu.findItem(R.id.action_theme_notepad).setChecked(true);
         }
-        if(mColorTheme == ColorThemeEnum.NETBEANS) {
+        if (mColorTheme == ColorThemeEnum.NETBEANS) {
             menu.findItem(R.id.action_theme_netbeans).setChecked(true);
         }
 
@@ -363,19 +359,17 @@ public class FileEditorActivity extends ActionBarActivity implements TextWatcher
     }
 
     private void showSavePopup() {
-        new AlertDialog.Builder(this).setTitle(mTitle).setMessage(R.string.popup_edit_message).setIcon(R.drawable.ic_action_edit)
-                .setNegativeButton(R.string.no, new OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+        new AlertDialog.Builder(this)
+                .setTitle(mTitle)
+                .setMessage(R.string.popup_edit_message)
+                .setIcon(R.drawable.ic_action_edit)
+                .setNegativeButton(R.string.no, (dialog, which) -> finish())
+                .setPositiveButton(R.string.yes, (dialog, which) -> {
+                    if (save()) {
                         finish();
                     }
-                }).setPositiveButton(R.string.yes, new OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                if (save()) {
-                    finish();
-                }
-            }
-        }).create().show();
+                })
+                .create()
+                .show();
     }
 }

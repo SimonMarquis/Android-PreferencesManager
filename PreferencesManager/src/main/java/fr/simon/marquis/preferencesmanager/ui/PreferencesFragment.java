@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -25,7 +25,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.text.Html;
@@ -115,8 +115,8 @@ public class PreferencesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         loadingView = view.findViewById(R.id.loadingView);
         emptyView = view.findViewById(R.id.emptyView);
-        emptyViewText = (TextView) view.findViewById(R.id.emptyViewText);
-        gridView = (GridView) view.findViewById(R.id.gridView);
+        emptyViewText = view.findViewById(R.id.emptyViewText);
+        gridView = view.findViewById(R.id.gridView);
         gridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
 
         updateFilter(null);
@@ -273,7 +273,7 @@ public class PreferencesFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CODE_EDIT_FILE && resultCode == ActionBarActivity.RESULT_OK) {
+        if (requestCode == CODE_EDIT_FILE && resultCode == AppCompatActivity.RESULT_OK) {
             loadingView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
 
@@ -367,18 +367,14 @@ public class PreferencesFragment extends Fragment {
 
         gridView.setAdapter(new PreferenceAdapter(getActivity(), this));
         gridView.setEmptyView(emptyView);
-        gridView.setOnItemClickListener(new OnItemClickListener() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+        gridView.setOnItemClickListener((arg0, arg1, arg2, arg3) -> {
 
-                Entry<String, Object> item = (Entry<String, Object>) gridView.getAdapter().getItem(arg2);
-                PreferenceType type = PreferenceType.fromObject(item.getValue());
-                if (type == PreferenceType.UNSUPPORTED) {
-                    Toast.makeText(getActivity(), R.string.preference_unsupported, Toast.LENGTH_SHORT).show();
-                } else {
-                    showPrefDialog(type, true, item.getKey(), item.getValue());
-                }
+            Entry<String, Object> item = (Entry<String, Object>) gridView.getAdapter().getItem(arg2);
+            PreferenceType type = PreferenceType.fromObject(item.getValue());
+            if (type == PreferenceType.UNSUPPORTED) {
+                Toast.makeText(getActivity(), R.string.preference_unsupported, Toast.LENGTH_SHORT).show();
+            } else {
+                showPrefDialog(type, true, item.getKey(), item.getValue());
             }
         });
         gridView.setMultiChoiceModeListener(new MultiChoiceModeListener() {

@@ -15,16 +15,15 @@
  */
 package fr.simon.marquis.preferencesmanager.ui;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AlertDialog;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
@@ -91,19 +90,17 @@ public class AboutDialog extends DialogFragment {
         LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         View rootView = layoutInflater.inflate(R.layout.dialog_about, null);
         assert rootView != null;
-        TextView nameAndVersionView = (TextView) rootView.findViewById(R.id.app_name_and_version);
+        TextView nameAndVersionView = rootView.findViewById(R.id.app_name_and_version);
         nameAndVersionView.setText(Html.fromHtml(getString(R.string.app_name_and_version, versionName)));
-        TextView aboutBodyView = (TextView) rootView.findViewById(R.id.about_body);
+        TextView aboutBodyView = rootView.findViewById(R.id.about_body);
         aboutBodyView.setText(Html.fromHtml(getString(R.string.about_body)));
         aboutBodyView.setMovementMethod(new LinkMovementMethod());
 
         return new AlertDialog.Builder(getActivity()).setView(rootView)
-                .setPositiveButton(mExit ? R.string.exit : R.string.close, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        dialog.dismiss();
-                        if (mExit) {
-                            getActivity().finish();
-                        }
+                .setPositiveButton(mExit ? R.string.exit : R.string.close, (dialog, whichButton) -> {
+                    dialog.dismiss();
+                    if (mExit) {
+                        getActivity().finish();
                     }
                 }).create();
     }

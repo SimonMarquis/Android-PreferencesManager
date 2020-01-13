@@ -26,6 +26,8 @@ import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.topjohnwu.superuser.Shell;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +42,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import eu.chainfire.libsuperuser.Shell;
 import fr.simon.marquis.preferencesmanager.model.AppEntry;
 import fr.simon.marquis.preferencesmanager.model.BackupContainer;
 import fr.simon.marquis.preferencesmanager.model.PreferenceFile;
@@ -77,15 +78,15 @@ public class Utils {
     public static ArrayList<AppEntry> getApplications(Context ctx) {
         PackageManager pm = ctx.getPackageManager();
         if (pm == null) {
-            applications = new ArrayList<AppEntry>();
+            applications = new ArrayList<>();
         } else {
             boolean showSystemApps = isShowSystemApps(ctx);
             List<ApplicationInfo> appsInfo = pm.getInstalledApplications(0);
             if (appsInfo == null) {
-                appsInfo = new ArrayList<ApplicationInfo>();
+                appsInfo = new ArrayList<>();
             }
 
-            List<AppEntry> entries = new ArrayList<AppEntry>(appsInfo.size());
+            List<AppEntry> entries = new ArrayList<>(appsInfo.size());
             for (ApplicationInfo a : appsInfo) {
                 if (showSystemApps || (a.flags & ApplicationInfo.FLAG_SYSTEM) == 0) {
                     entries.add(new AppEntry(a, ctx));
@@ -93,7 +94,7 @@ public class Utils {
             }
 
             Collections.sort(entries, new MyComparator());
-            applications = new ArrayList<AppEntry>(entries);
+            applications = new ArrayList<>(entries);
         }
         Log.d(TAG, "Applications: " + Arrays.toString(applications.toArray()));
         return applications;
@@ -137,7 +138,7 @@ public class Utils {
 
     private static void initFavorites(Context ctx) {
         if (favorites == null) {
-            favorites = new HashSet<String>();
+            favorites = new HashSet<>();
 
             SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(ctx);
 
@@ -167,7 +168,7 @@ public class Utils {
 
     public static List<String> findXmlFiles(final String packageName) {
         Log.d(TAG, String.format("findXmlFiles(%s)", packageName));
-        List<String> files = Shell.SU.run(String.format(CMD_FIND_XML_FILES, packageName));
+        List<String> files = Shell.su(String.format(CMD_FIND_XML_FILES, packageName)).exec().getOut();
         Log.d(TAG, "files: " + Arrays.toString(files.toArray()));
         return files;
     }
@@ -175,7 +176,7 @@ public class Utils {
     public static String readFile(String file) {
         Log.d(TAG, String.format("readFile(%s)", file));
         final StringBuilder sb = new StringBuilder();
-        List<String> lines = Shell.SU.run(String.format(CMD_CAT_FILE, file));
+        List<String> lines = Shell.su(String.format(CMD_CAT_FILE, file)).exec().getOut();
         if(lines != null) {
             for (String line : lines) {
                 sb.append(line).append(LINE_SEPARATOR);
@@ -223,7 +224,7 @@ public class Utils {
                             container.put("FILE", FILE_SEPARATOR + file);
                         }
                         JSONArray backups = container.getJSONArray("BACKUPS");
-                        ArrayList<String> values = new ArrayList<String>(backups.length());
+                        ArrayList<String> values = new ArrayList<>(backups.length());
                         for (int j = 0; j < backups.length(); j++) {
                             values.add(String.valueOf(backups.getJSONObject(j).getLong("TIME")));
                         }
@@ -284,7 +285,7 @@ public class Utils {
     public static boolean backupFile(String backup, String fileName, Context ctx) {
         Log.d(TAG, String.format("backupFile(%s, %s)", backup, fileName));
         File destination = new File(ctx.getFilesDir(), backup);
-        Shell.SU.run(String.format(CMD_CP, fileName, destination.getAbsolutePath()));
+        Shell.su(String.format(CMD_CP, fileName, destination.getAbsolutePath())).exec();
         Log.d(TAG, String.format("backupFile --> " + destination));
         return true;
     }
@@ -292,7 +293,7 @@ public class Utils {
     public static boolean restoreFile(Context ctx, String backup, String fileName, String packageName) {
         Log.d(TAG, String.format("restoreFile(%s, %s, %s)", backup, fileName, packageName));
         File backupFile = new File(ctx.getFilesDir(), backup);
-        Shell.SU.run(String.format(CMD_CP, backupFile.getAbsolutePath(), fileName));
+        Shell.su(String.format(CMD_CP, backupFile.getAbsolutePath(), fileName)).exec();
 
         if (!fixUserAndGroupId(ctx, fileName, packageName)) {
             Log.e(TAG, "Error fixUserAndGroupId");
@@ -347,7 +348,7 @@ public class Utils {
             return false;
         }
 
-        Shell.SU.run(String.format(CMD_CP, tmpFile.getAbsolutePath(), file));
+        Shell.su(String.format(CMD_CP, tmpFile.getAbsolutePath(), file)).exec();
 
         if (!fixUserAndGroupId(ctx, file, packageName)) {
             Log.e(TAG, "Error fixUserAndGroupId");
@@ -392,7 +393,7 @@ public class Utils {
             return false;
         }
 
-        Shell.SU.run(String.format(CMD_CHOWN, uid, uid, file));
+        Shell.su(String.format(CMD_CHOWN, uid, uid, file)).exec();
         return true;
     }
 }
