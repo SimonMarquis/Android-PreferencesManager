@@ -15,8 +15,10 @@ android {
         debug {
             applicationIdSuffix '.debug'
             versionNameSuffix '-debug'
+            manifestPlaceholders = [appName: 'Preferences Manager (Debug) ']
         }
         release {
+            manifestPlaceholders = [appName: 'Preferences Manager']
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -27,11 +29,15 @@ android {
     }
 }
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
     implementation 'com.android.support:support-v4:28.0.0'
     implementation 'com.android.support:exifinterface:28.0.0'
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'se.emilsjolander:stickylistheaders:2.7.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
-    implementation 'eu.chainfire:libsuperuser:1.0.0.+'
+    implementation 'com.github.topjohnwu.libsu:core:2.5.1'
 }

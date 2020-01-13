@@ -34,8 +34,6 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
-import com.squareup.picasso.Picasso;
-
 import org.json.JSONArray;
 
 import java.util.ArrayList;
@@ -106,7 +104,6 @@ public class PreferencesActivity extends AppCompatActivity implements
 
         getSupportActionBar().setTitle(Ui.applyCustomTypeFace(title, this));
         getSupportActionBar().setSubtitle(Ui.applyCustomTypeFace(packageName, this));
-        Picasso.get().load(iconUri).error(R.drawable.ic_launcher).into((android.widget.ImageView) findViewById(android.R.id.home));
 
         if (savedInstanceState == null) {
             findFilesAndBackupsTask = new FindFilesAndBackupsTask(packageName);

@@ -20,11 +20,23 @@ import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 
+import com.topjohnwu.superuser.Shell;
+
+import fr.simon.marquis.preferencesmanager.BuildConfig;
 import fr.simon.marquis.preferencesmanager.model.AppTheme;
 
 public class App extends Application {
 
     public static AppTheme theme = AppTheme.DEFAULT_THEME;
+
+    static {
+        /* Shell.Config methods shall be called before any shell is created
+         * This is the why in this example we call it in a static block
+         * The followings are some examples, check Javadoc for more details */
+        Shell.Config.setFlags(Shell.FLAG_REDIRECT_STDERR);
+        Shell.Config.verboseLogging(BuildConfig.DEBUG);
+        Shell.Config.setTimeout(10);
+    }
 
     @Override
     public void onCreate() {
