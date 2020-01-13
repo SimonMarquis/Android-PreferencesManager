@@ -39,7 +39,7 @@ If you want to start to create a new feature or have any other questions regardi
 
 ## Credits
 
- * [Chainfire][2] - Author of [libsuperuser][3]
+ * [topjohnwu][2] - Author of [libsu][3]
 
 ## License
 
@@ -59,8 +59,8 @@ If you want to start to create a new feature or have any other questions regardi
 
 
  [1]: http://www.simon-marquis.fr
- [2]: https://github.com/Chainfire
- [3]: https://github.com/Chainfire/libsuperuser
+ [2]: https://github.com/topjohnwu
+ [3]: https://github.com/topjohnwu/libsu
  
  [screen1]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/1%20-%20resized.png "List of applications"
  [screen2]: https://raw.github.com/SimonMarquis/Android-PreferencesManager/master/Resources/framed/2%20-%20resized.png "List of preferences"
