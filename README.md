@@ -43,7 +43,7 @@ If you want to start to create a new feature or have any other questions regardi
 
 ## License
 
-	Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
+	Copyright (C) 2020 Simon Marquis (http://www.simon-marquis.fr)
 	
 	Licensed under the Apache License, Version 2.0 (the "License"); you may not
 	use this file except in compliance with the License. You may obtain a copy of
