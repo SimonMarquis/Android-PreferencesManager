@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+
+          http://www.apache.org/licenses/LICENSE-2.0
+
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+<resources>
+
+    <string name="app_name" translatable="false">Preferences Manager</string>
+    <string name="app_name_and_version" translatable="false"><![CDATA[
+    <b>Preferences Manager</b>&nbsp;<font color="#888888">v%1$s</font>
+    ]]></string>
+    <string name="about_body"><![CDATA[
+        Preferences Manager è un\'applicazione Open Source che ti consente di modificare rapidamente le preferenze dell\'applicazione. Se vuoi maggiori informazioni a riguardo, segui questi link:<br><br>
+        <b>&bull;&nbsp;&nbsp;<a href="https://plus.google.com/u/0/communities/112244514442534711821">Community Google+</a></b> <i>Condividi le tue richieste, bug, ecc…</i><br>
+        <b>&bull;&nbsp;&nbsp;<a href="http://simonmarquis.github.io/Android-PreferencesManager/">Github Pages</a></b> <i>Descrizione del progetto</i><br>
+        <b>&bull;&nbsp;&nbsp;<a href="https://github.com/SimonMarquis/Android-PreferencesManager">Repository Github</a></b> <i>Codice sorgente del progetto</i><br>
+        <b>&bull;&nbsp;&nbsp;<a href="http://www.simon-marquis.fr">Il mio sito web personale</a></b> <i>Informazioni su di me, e altri progetti</i>
+    ]]></string>
+
+    <string name="close">Chiudi</string>
+    <string name="exit">Esci</string>
+
+    <string name="no_root_title">Problema individuato</string>
+    <string name="no_root_message">"Il tuo dispositivo non sembra essere rootato!\n\n • Il tuo dispositivo è rootato?\n • Hai concesso i permessi di root?"</string>
+    <string name="no_root_button">Continua</string>
+
+    <string name="popup_edit_message">Questo file è stato modificato.\nVuoi salvare i cambiamenti?</string>
+    <string name="toast_shortcut">Scorciatoia creata</string>
+    <string name="toast_backup_success">Backup completato</string>
+    <string name="toast_backup_fail">Backup fallito</string>
+
+    <string name="action_fav">Aggiunti ai preferiti</string>
+    <string name="action_shortcut">Crea una scorciatoia</string>
+    <string name="action_save_file">Salva il file</string>
+    <string name="action_change_theme">Cambia il colore del tema</string>
+    <string name="action_unfav">Rimuovi dai preferiti</string>
+    <string name="action_direct_edit">Modifica il file</string>
+    <string name="action_backup_file">Backup</string>
+    <string name="action_restore_file">Ripristina</string>
+    <string name="action_add">Aggiungi una preferenza</string>
+    <string name="action_add_int">Integer</string>
+    <string name="action_add_string">String</string>
+    <string name="action_add_boolean">Boolean</string>
+    <string name="action_add_float">Float</string>
+    <string name="action_add_long">Long</string>
+    <string name="action_add_stringset">StringSet</string>
+    <string name="action_add_stringset_entry">Aggiungi una voce</string>
+
+    <string name="action_theme_eclipse">Eclipse</string>
+    <string name="action_theme_google">Google</string>
+    <string name="action_theme_roboticket">Roboticket</string>
+    <string name="action_theme_notepad">Notepad++</string>
+    <string name="action_theme_netbeans">Netbeans 6++</string>
+
+    <string name="action_size">Font size</string>
+    <string name="action_size_extra_small">Extra small</string>
+    <string name="action_size_small">Small</string>
+    <string name="action_size_medium">Medium</string>
+    <string name="action_size_large">Large</string>
+    <string name="action_size_extra_large">Extra large</string>
+
+    <string name="save_success">File salvato</string>
+    <string name="save_fail">Il file xml file non è valido…</string>
+
+    <string name="hint_key">Chiave</string>
+    <string name="hint_value">Valore</string>
+
+    <string name="title_add_boolean">Add a Boolean value</string>
+    <string name="title_add_int">Add an Integer value</string>
+    <string name="title_add_string">Add a String value</string>
+    <string name="title_add_float">Add a Float value</string>
+    <string name="title_add_long">Add a Long value</string>
+    <string name="title_add_stringset">Add a StringSet value</string>
+
+    <string name="title_edit_boolean">Edit a Boolean value</string>
+    <string name="title_edit_int">Edit an Integer value</string>
+    <string name="title_edit_string">Edit a String value</string>
+    <string name="title_edit_float">Edit a Float value</string>
+    <string name="title_edit_long">Edit a Long value</string>
+    <string name="title_edit_stringset">Edit a StringSet value</string>
+
+    <string name="dialog_add">Aggiungi</string>
+    <string name="dialog_cancel">Annulla</string>
+    <string name="dialog_update">Aggiorna</string>
+    <string name="dialog_suppr">Cancella</string>
+
+    <string name="action_search">Cerca un\'app</string>
+    <string name="show_system_apps">Mostra app di sistema</string>
+    <string name="hide_system_apps">Nascondi app di sistema</string>
+    <string name="light_theme">Tema chiaro</string>
+    <string name="dark_theme">Tema scuro</string>
+    <string name="show_popup">Informazioni su</string>
+
+    <string name="empty_preference_file_valid">Nessuna preferenza per questo file</string>
+    <string name="empty_preference_file_invalid">Questo file sembra essere rotto.\nProva a modificarlo in linea.</string>
+    <string name="empty_preference_application">Nessun file di preferenze per questa app</string>
+    <string name="empty_apps">Nessuna app trovata</string>
+    <string name="loading_apps">Caricamento delle app</string>
+    <string name="loading_preference_application">Scannerizzando il file delle preferenze</string>
+
+    <string name="preference_unsupported">Questa preferenza non è supportata…</string>
+
+    <string name="yes">Sì</string>
+    <string name="no">No</string>
+
+    <string name="action_sort">Ordina</string>
+    <string name="action_sort_alpha">Alfabeticamente</string>
+    <string name="action_sort_type">Tipo</string>
+    <string name="action_search_preference">Cerca una preferenza</string>
+    <string name="action_select_all">Seleziona tutto</string>
+    <string name="action_delete">Cancella</string>
+
+    <string name="pick_restore">Seleziona una revisione</string>
+    <string name="file_restored">Backup ripristinato</string>
+</resources>
