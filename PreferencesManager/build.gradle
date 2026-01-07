@@ -1,32 +1,67 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
-    buildToolsVersion "23.0.3"
+    namespace = "fr.simon.marquis.preferencesmanager"
+    compileSdkVersion 36
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 23
+        minSdkVersion 23
+        targetSdkVersion 36
+        vectorDrawables.useSupportLibrary = true
+        versionName "3.0.0"
+        versionCode 300
+        resConfigs "en", "fr", "it"
+    }
 
-        versionName "1.8.3"
-        versionCode 183
+    buildFeatures {
+        compose = true
+        buildConfig = true
     }
 
     buildTypes {
         debug {
             applicationIdSuffix '.debug'
             versionNameSuffix '-debug'
+            manifestPlaceholders = [appName: 'Preferences Manager (Debug) ']
         }
         release {
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            manifestPlaceholders = [appName: 'Preferences Manager']
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    /*
+    kotlin {
+        jvmToolchain(17)
+    }
+    */
+
+    lintOptions {
+        abortOnError false
     }
 }
 
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
 dependencies {
-    compile 'com.android.support:support-v4:20.+'
-    compile 'com.android.support:appcompat-v7:20.+'
-    compile 'se.emilsjolander:stickylistheaders:2.7.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'eu.chainfire:libsuperuser:1.0.0.+'
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+    implementation 'se.emilsjolander:stickylistheaders:2.7.0'
+    implementation 'com.squareup.picasso:picasso:2.71828'
+    implementation 'com.github.topjohnwu.libsu:core:2.5.1'
+    implementation 'androidx.fragment:fragment:1.8.9'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
 }

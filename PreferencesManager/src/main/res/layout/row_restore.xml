@@ -32,6 +32,9 @@
         android:layout_weight="1.0"
         android:ellipsize="end"
         android:maxLines="2"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingRight="8dp"
         android:paddingLeft="8dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         app:typeface="robotoslab_regular" />

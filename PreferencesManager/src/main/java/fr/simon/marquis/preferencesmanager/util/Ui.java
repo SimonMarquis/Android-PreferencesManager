@@ -43,7 +43,8 @@ public class Ui {
     public static SpannableString applyCustomTypeFace(CharSequence src, Context ctx) {
         SpannableString span = new SpannableString(src);
 
-        span.setSpan(new CustomTypefaceSpan("", RobotoTypefaceManager.obtainTypeface(ctx, RobotoTypefaceManager.ROBOTOSLAB_REGULAR)), 0,
+        span.setSpan(new CustomTypefaceSpan("", RobotoTypefaceManager.obtainTypeface(ctx,
+                RobotoTypefaceManager.ROBOTOSLAB_REGULAR)), 0,
                 span.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         return span;
     }

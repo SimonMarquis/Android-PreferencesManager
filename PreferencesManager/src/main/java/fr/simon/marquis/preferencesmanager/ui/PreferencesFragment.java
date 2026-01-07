@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2013 Simon Marquis (http://www.simon-marquis.fr)
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License. You may obtain a copy of
  * the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
@@ -21,13 +21,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.MenuItemCompat;
-import android.support.v4.view.MenuItemCompat.OnActionExpandListener;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,6 +39,12 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.view.MenuItemCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import java.util.List;
 import java.util.Map.Entry;
@@ -115,8 +114,8 @@ public class PreferencesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         loadingView = view.findViewById(R.id.loadingView);
         emptyView = view.findViewById(R.id.emptyView);
-        emptyViewText = (TextView) view.findViewById(R.id.emptyViewText);
-        gridView = (GridView) view.findViewById(R.id.gridView);
+        emptyViewText = view.findViewById(R.id.emptyViewText);
+        gridView = view.findViewById(R.id.gridView);
         gridView.setChoiceMode(GridView.CHOICE_MODE_MULTIPLE_MODAL);
 
         updateFilter(null);
@@ -140,7 +139,7 @@ public class PreferencesFragment extends Fragment {
         MenuItem searchItem = menu.findItem(R.id.menu_search);
         mSearchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         mSearchView.setQueryHint(getString(R.string.action_search_preference));
-        mSearchView.setOnQueryTextListener(new OnQueryTextListener() {
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
             @Override
             public boolean onQueryTextSubmit(String s) {
@@ -155,7 +154,7 @@ public class PreferencesFragment extends Fragment {
             }
         });
 
-        MenuItemCompat.setOnActionExpandListener(searchItem, new OnActionExpandListener() {
+        MenuItemCompat.setOnActionExpandListener(searchItem, new MenuItemCompat.OnActionExpandListener() {
             @Override
             public boolean onMenuItemActionExpand(MenuItem arg0) {
                 return true;
@@ -273,7 +272,7 @@ public class PreferencesFragment extends Fragment {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == CODE_EDIT_FILE && resultCode == ActionBarActivity.RESULT_OK) {
+        if (requestCode == CODE_EDIT_FILE && resultCode == AppCompatActivity.RESULT_OK) {
             loadingView.setVisibility(View.VISIBLE);
             gridView.setVisibility(View.GONE);
 
@@ -367,18 +366,14 @@ public class PreferencesFragment extends Fragment {
 
         gridView.setAdapter(new PreferenceAdapter(getActivity(), this));
         gridView.setEmptyView(emptyView);
-        gridView.setOnItemClickListener(new OnItemClickListener() {
-            @SuppressWarnings("unchecked")
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+        gridView.setOnItemClickListener((arg0, arg1, arg2, arg3) -> {
 
-                Entry<String, Object> item = (Entry<String, Object>) gridView.getAdapter().getItem(arg2);
-                PreferenceType type = PreferenceType.fromObject(item.getValue());
-                if (type == PreferenceType.UNSUPPORTED) {
-                    Toast.makeText(getActivity(), R.string.preference_unsupported, Toast.LENGTH_SHORT).show();
-                } else {
-                    showPrefDialog(type, true, item.getKey(), item.getValue());
-                }
+            Entry<String, Object> item = (Entry<String, Object>) gridView.getAdapter().getItem(arg2);
+            PreferenceType type = PreferenceType.fromObject(item.getValue());
+            if (type == PreferenceType.UNSUPPORTED) {
+                Toast.makeText(getActivity(), R.string.preference_unsupported, Toast.LENGTH_SHORT).show();
+            } else {
+                showPrefDialog(type, true, item.getKey(), item.getValue());
             }
         });
         gridView.setMultiChoiceModeListener(new MultiChoiceModeListener() {

@@ -18,14 +18,15 @@ package fr.simon.marquis.preferencesmanager.ui;
 import android.app.Activity;
 import android.app.Dialog;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -69,7 +70,7 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mFullPath = getArguments().getString(ARG_FULL_PATH);
-            backups = new ArrayList<String>();
+            backups = new ArrayList<>();
             try {
                 JSONArray array = new JSONArray(getArguments().getString(ARG_BACKUPS));
                 for (int i = 0; i < array.length(); i++) {
@@ -90,7 +91,7 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
         }
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_restore, null);
         assert view != null;
-        ListView listView = (ListView) view.findViewById(R.id.listView);
+        ListView listView = view.findViewById(R.id.listView);
         listView.setAdapter(new RestoreAdapter(getActivity(), this, backups, listener, mFullPath));
         listView.setOnItemClickListener(this);
         return view;
@@ -153,8 +154,8 @@ public class RestoreDialogFragment extends DialogFragment implements AdapterView
 
 
     public interface OnRestoreFragmentInteractionListener {
-        public String onRestoreFile(String backup, String fullPath);
+        String onRestoreFile(String backup, String fullPath);
 
-        public List<String> onDeleteBackup(String backup, String fullPath);
+        List<String> onDeleteBackup(String backup, String fullPath);
     }
 }

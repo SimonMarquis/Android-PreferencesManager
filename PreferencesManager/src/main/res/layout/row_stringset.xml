@@ -20,21 +20,23 @@
 
     <fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout
         style="@style/FloatLabelContainerValue"
-        app:floatLabelTextAppearance="@style/TextAppearance.PreferencesManager.FloatLabel.Gold"
-        android:layout_marginBottom="5dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginTop="0dp"
         android:layout_marginRight="5dp"
-        android:layout_marginTop="0dp">
+        android:layout_marginBottom="5dp"
+        app:floatLabelTextAppearance="@style/TextAppearance.PreferencesManager.FloatLabel.Gold">
 
         <fr.simon.marquis.preferencesmanager.roboto.RobotoEditText
             style="@style/EditTextValue"
-            android:layout_marginBottom="2dp"
+            android:layout_marginStart="0dp"
             android:layout_marginLeft="0dp"
-            android:layout_marginRight="5dp"
             android:layout_marginTop="0dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="2dp"
+            android:background="@drawable/edittext_gold_edit_text_holo_light"
             android:inputType="textMultiLine"
-            app:typeface="robotoslab_regular"
-            android:background="@drawable/edittext_gold_edit_text_holo_light" />
+            app:typeface="robotoslab_regular" />
 
     </fr.simon.marquis.preferencesmanager.ui.FloatLabelLayout>
 

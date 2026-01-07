@@ -18,6 +18,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".ui.AppListActivity" >
 
     <se.emilsjolander.stickylistheaders.StickyListHeadersListView
@@ -42,7 +43,8 @@
         android:orientation="vertical"
         android:visibility="gone" >
 
-        <ProgressBar
+        <androidx.core.widget.ContentLoadingProgressBar
+            style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp" />
